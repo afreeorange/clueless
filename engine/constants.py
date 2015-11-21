@@ -6,6 +6,7 @@ from .models import (
     )
 
 
+# Weapons
 ROPE = Weapon('rope')
 KNIFE = Weapon('knife')
 LEAD_PIPE = Weapon('lead pipe')
@@ -22,7 +23,7 @@ LIST_OF_WEAPONS = [
     CANDLESTICK
     ]
 
-# Create the Suspects
+# Suspects
 SCARLET = Suspect('Miss Scarlet')
 MUSTARD = Suspect('Colonel Mustard')
 WHITE = Suspect('Mrs. White')
@@ -30,17 +31,18 @@ GREEN = Suspect('Mr. Green')
 PEACOCK = Suspect('Mrs. Peacock')
 PLUM = Suspect('Professor Plum')
 
-# Used to iterate over suspects/turns
-LIST_OF_SUSPECTS = (
+LIST_OF_SUSPECTS = [
     SCARLET,
     MUSTARD,
     WHITE,
     GREEN,
     PEACOCK,
     PLUM,
-    )
+    ]
 
-# Start creating the spaces
+# Spaces
+
+# Rooms
 STUDY = Room('The Study')
 HALL = Room('The Hall')
 LOUNGE = Room('The Lounge')
@@ -51,6 +53,7 @@ CONSERVATORY = Room('The Conservatory')
 BALLROOM = Room('The Ballroom')
 KITCHEN = Room('The Kitchen')
 
+# Hallways
 STUDY_TO_HALL = Hallway('The Study to Hall Hallway')
 HALL_TO_LOUNGE = Hallway('The Hall to Lounge Hallway')
 STUDY_TO_LIBRARY = Hallway('The Study to Library Hallway')
@@ -77,7 +80,7 @@ CONSERVATORY.passage_way_to = LOUNGE
 KITCHEN.has_secret_passageway = True
 KITCHEN.passage_way_to = STUDY
 
-# Add the suspects
+# Add suspects to the spaces
 HALL_TO_LOUNGE.suspects_present = [SCARLET]
 STUDY_TO_LIBRARY.suspects_present = [PLUM]
 LOUNGE_TO_DINING.suspects_present = [MUSTARD]
@@ -85,7 +88,6 @@ LIBRARY_TO_CONSERVATORY.suspects_present = [PEACOCK]
 CONSERVATORY_TO_BALLROOM.suspects_present = [GREEN]
 BALLROOM_TO_KITCHEN.suspects_present = [WHITE]
 
-# ADD THE SPACES
 LIST_OF_ROOMS = [
     STUDY,
     HALL,

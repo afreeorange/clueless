@@ -64,3 +64,11 @@ class InvalidRoom(Exception):
 
 class InvalidHallway(Exception):
     pass
+
+
+class InvalidPlayerName(Exception):
+    pass
+
+
+class InvalidPlayer(Exception):
+    pass

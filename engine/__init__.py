@@ -10,7 +10,6 @@ from .models import (
     Weapon,
     )
 
-
 # Logging. Prevent the "No handlers could be found" error
 import logging
 try:
