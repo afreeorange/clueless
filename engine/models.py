@@ -7,9 +7,11 @@ from uuid import uuid4
 from .exceptions import (
     BlockedSpace,
     BoardIsFull,
+    CardsAlreadyDealt,
     GameOver,
     InsufficientPlayers,
     InvalidHallway,
+    InvalidPlayer,
     InvalidPlayerName,
     InvalidRoom,
     InvalidSpace,
@@ -67,26 +69,60 @@ class Weapon:
         self.name = name
 
 
+from .constants import *
+log = logging.getLogger(__name__)
+
+
 class Player:
 
     def __init__(self, name, suspect):
         self.__name = name
-        self.in_the_game = True
         self.__suspect = suspect
-        self.board = None
-        self.cards = []
-        self.last_suggestion = {
-            'weapon': None,
-            'suspect': None,
-            'room': None,
-        }
+        self.__cards = []
 
-    def set_last_suggestion(self, room, suspect, weapon):
-        self.last_suggestion = {
-            'weapon': weapon,
-            'suspect': suspect,
-            'room': room,
-        }
+        # Keep a list of all suggestions
+        self.__suggestions = []
+
+        # Keep track of suggestions and disproves. Start with True
+        # since every board entity might be involved in... MURDER!
+        self.game_sheet = {_: True for _ in GAME_DECK}
+
+        self.in_the_game = True
+        self.board = None
+        self.turn = {
+                'moved': False,
+                'suggested': False,
+                'accused': False
+            }
+
+    @property
+    def cards(self):
+        return self.__cards
+
+    @cards.setter
+    def cards(self, cards):
+        if self.__cards:
+            raise CardsAlreadyDealt('Cards have been dealt to this player')
+        self.__cards = cards
+        for card in cards:
+            self.game_sheet[card] = False
+
+    @property
+    def suggestion(self):
+        return self.__suggestions[-1] if self.__suggestions else []
+
+    @suggestion.setter
+    def suggestion(self, suggestion):
+        print('adding', suggestion)
+        self.__suggestions.append({
+                    'weapon': suggestion['weapon'],
+                    'suspect': suggestion['suspect'],
+                    'room': suggestion['room'],
+                })
+
+    @property
+    def suggestions(self):
+        return self.__suggestions
 
     @property
     def suspect(self):
@@ -96,28 +132,16 @@ class Player:
     def name(self):
         return self.__name
 
-    @property
-    def state(self):
-        return {
-            'name': self.__name,
-            'suspect': self.__suspect.name,
-            'cards': [
-                {type(c).__name__: c.name}
-                for c in self.cards
-            ],
-            'in_the_game': self.__in_the_game
-        }
-
-
-from .constants import *
-log = logging.getLogger(__name__)
+    def update_game_sheet(self, card):
+        self.game_sheet[card] = False
 
 
 class Board:
 
     def __init__(self):
         self.id = uuid4()
-        self.time_started = '{}Z'.format(str(datetime.utcnow().isoformat()))
+        self.__game_started = False
+        self.__time_started = None
 
         # The Board is a 5x5 grid with four holes.
         self.__map = [
@@ -183,46 +207,39 @@ class Board:
         self.__deck = iter(self.__deck)
 
         # Maintain a map of Suspect objects to Player objects
-        self.__player_map = dict.fromkeys(LIST_OF_SUSPECTS, None)
+        self.__suspect_to_player_map = dict.fromkeys(LIST_OF_SUSPECTS, None)
 
-        self.__state = {
-            # This will be set once all suspects are bound to players
-            # Setting this means that the game has begun
-            'current_player': None,
+        # Initialize the current player. This will be set once all suspects
+        # are bound to players. Setting this means that the game has begun
+        self.__current_player = None
 
-            'current_turn': {
-                'moved': False,
-                'suggested': False,
-                'accused': False
-            },
-
-            'game_over': False
-        }
-
+        # "GAME _OVER_, MAN :'("
+        self.__game_over = False
 
         # Use to yield the next player
         self.__suspect_looper = cycle(LIST_OF_SUSPECTS)
-
 
         log.info('Started game')
         log.info('Confidential file contains "{}"'.format(
                     '", "'.join([_.name for _ in self.confidential_file])
                     ))
 
+    # ------ Board Actions ------
+
     def add_player(self, player):
         if not player.name or not player.name.strip():
             raise InvalidPlayerName('Player name not specified')
 
-        if self.cannot_add_more_players():
+        if self.__cannot_add_more_players():
             raise BoardIsFull('All players mapped to suspects on this board')
 
-        if self.__player_map[player.suspect]:
+        if self.__suspect_to_player_map[player.suspect]:
             raise PlayerAlreadyMappedToSuspect('Player already mapped to suspect: {} <-> {}'.format(
-                            self.__player_map[player.suspect].name,
+                            self.__suspect_to_player_map[player.suspect].name,
                             player.suspect.name
                         ))
 
-        self.__player_map[player.suspect] = player
+        self.__suspect_to_player_map[player.suspect] = player
         self.deal_cards_to(player)
 
         log.info('Added player {} as {}'.format(
@@ -232,20 +249,244 @@ class Board:
 
         # If this is the last player, start the game
         # The first suspect returned is scarlet
-        if self.cannot_add_more_players():
-            self.__state['current_player'] = self.__get_player_mapped_to(self.__get_next_suspect())
+        if self.__cannot_add_more_players():
+            self.__game_started = True
+            self.__time_started = '{}Z'.format(str(datetime.utcnow().isoformat()))
+            self.current_player = self.__get_player_mapped_to(self.__get_next_suspect())
 
         return player
 
-    def cannot_add_more_players(self):
-        if None in set(self.__player_map.values()):
+    def __cannot_add_more_players(self):
+        if None in set(self.__suspect_to_player_map.values()):
             return False
         return True
 
-    def can_add_more_players(self):
-        if None in set(self.__player_map.values()):
-            return True
-        return False
+    def move_player(self, player, space=None):
+        self.__valid_board_state()
+        self.__valid_player(player)
+        self.__valid_player_turn(player)
+        self.__valid_space(space)
+
+        # Update the turn. Throw an error if player already made a move
+        if player.turn['moved']:
+            raise MoveCompleted('{} ({}) has already moved'.format(
+                        self.current_player.name,
+                        self.current_suspect.name
+                    ))
+
+        old_space = [_
+                     for _ in LIST_OF_SPACES
+                     if player.suspect in _.suspects_present
+                     ][0]
+        new_space = old_space if not space else space
+
+        self.__valid_target_space(old_space, new_space)
+
+        old_space.remove_suspect(player.suspect)
+        new_space.add_suspect(player.suspect)
+
+        player.turn['moved'] = True
+
+        if old_space == new_space:
+            log.info('{} ({}) stayed in {}'.format(
+                    player.name,
+                    player.suspect.name,
+                    old_space.name
+                ))
+        else:
+            log.info('{} ({}) moved from {} to {}'.format(
+                    player.name,
+                    player.suspect.name,
+                    old_space.name,
+                    new_space.name
+                ))
+
+    def make_suggestion(self, player, suspect, weapon):
+        self.__valid_board_state()
+        self.__valid_player(player)
+        self.__valid_player_turn(player)
+        self.__valid_suspect(suspect)
+        self.__valid_weapon(weapon)
+        self.__valid_space_for_suggestion()
+
+        suspect_space = self.__get_space_for(suspect)
+        player_room = self.__get_space_for(player)
+
+        # Update the turn. Throw an error if player already made a suggestion
+        if player.turn['suggested']:
+            raise MoveCompleted('{} ({}) has already made a suggestion'.format(
+                        self.current_player.name,
+                        self.current_suspect.name
+                    ))
+
+        player.turn['suggested'] = True
+        print({
+                    'weapon': weapon,
+                    'suspect': suspect,
+                    'room': player_room,
+                })
+        player.suggestion = {
+                    'weapon': weapon,
+                    'suspect': suspect,
+                    'room': player_room,
+                }
+
+        log.info('{} ({}) suggested that {} ({}) did it with a {} in {}'.format(
+                    player.name,
+                    player.suspect.name,
+                    self.__get_player_mapped_to(suspect).name,
+                    suspect.name,
+                    weapon.name,
+                    player_room.name
+                ))
+
+        # First move the suspect into the player's space
+        suspect_space.remove_suspect(suspect)
+        player_room.add_suspect(suspect)
+
+        log.info('{} ({}) moved from {} to {}'.format(
+                    self.__get_player_mapped_to(suspect).name,
+                    suspect.name,
+                    suspect_space.name,
+                    player_room.name
+                    ))
+
+        # End the game if the suggestion is in the game file
+        if [player_room, suspect, weapon] == self.__confidential_file:
+            self.__game_over = True
+
+            log.info('{} ({})\'s suggestion was correct. Game Over!'.format(
+                        self.current_player.name,
+                        self.current_suspect.name
+                    ))
+
+        return True
+
+    def disprove_suggestion(self, player):
+        self.__valid_board_state()
+        self.__valid_player(player)
+        self.__valid_player_turn(player)
+
+        if not player.turn['suggested']:
+            raise UnfinishedMove('{} ({}) must make a suggestion before getting a card to disprove it'.format(
+                    self.current_player.name,
+                    self.current_suspect.name,
+                ))
+
+        # Need to cycle through the list of suspects clockwise
+        suspect_index = LIST_OF_SUSPECTS.index(self.current_suspect)
+        bottom = LIST_OF_SUSPECTS[suspect_index + 1:]
+        top = LIST_OF_SUSPECTS[:suspect_index]
+
+        our_suggestion = player.suggestion.values()
+
+        for suspect in bottom + top:
+            their_cards = self.__get_player_mapped_to(suspect).cards
+
+            # Cast to list because, for some reason,
+            # 'if not common_cards' doesn't work :/
+            common_cards = list(set(their_cards) & set(our_suggestion))
+
+            # If the next player has card(s) to disprove the suggestion,
+            # pick one and return it
+            if common_cards:
+                random_card = random.choice(common_cards)
+
+                log.info('{} ({}) showed {} ({}) "{}"'.format(
+                        self.__get_player_mapped_to(suspect).name,
+                        suspect.name,
+                        player.name,
+                        player.suspect.name,
+                        random_card.name
+                    ))
+
+                player.update_game_sheet(random_card)
+
+                return (player, player.suspect, random_card)
+
+    def make_accusation(self, suspect, weapon, room=None):
+        """
+        * Players can make accusation any time. No need to move or
+          suggest beforehand.
+        * Player is out of game if the accusation is incorrect.
+        * The game ends if the accusation is correct.
+        """
+        self.__valid_board_state()
+        self.__valid_player_turn(self.current_player)
+        self.__valid_suspect(suspect)
+        self.__valid_weapon(weapon)
+
+        if room:
+            self.__valid_room(room)
+            player_room = room
+        else:
+            player_room = self.__get_space_for(self.current_player)
+
+        log.info('{} ({}) accused {} ({}) of doing it with a {} in {}'.format(
+                    self.current_player.name,
+                    self.current_suspect.name,
+                    self.__get_player_mapped_to(suspect).name,
+                    suspect.name,
+                    weapon.name,
+                    player_room.name
+                ))
+
+        # End the game if the suggestion is in the game file
+        if [player_room, suspect, weapon] == self.__confidential_file:
+            self.__game_over = True
+            log.info('{} ({})\'s accusation was correct. Game Over!'.format(
+                        self.current_player.name,
+                        self.current_suspect.name
+                    ))
+
+        # Kick the player out of the game if incorrect
+        else:
+            self.current_player.in_the_game = False
+            log.info('{} ({}) is now out of the game due to a wrong accusation'.format(
+                        self.current_player.name,
+                        self.current_suspect.name,
+                    ))
+            self.end_turn(force=True)
+
+        return True
+
+    def end_turn(self, player, force=False):
+        self.__valid_board_state()
+        self.__valid_player(player)
+        self.__valid_player_turn(player)
+
+        if not force:
+            # Can only end turn if moved and suggested
+            if not player.turn['moved']:
+                raise UnfinishedMove('Cannot end turn: {} ({}) must make a move'.format(
+                        player.name,
+                        player.suspect.name
+                    ))
+
+            if not player.turn['suggested']:
+                raise UnfinishedMove('Cannot end turn: {} ({}) must make a suggestion'.format(
+                        player.name,
+                        player.suspect.name
+                    ))
+
+        # Reset the turn tracker
+        for key in player.turn:
+            player.turn[key] = False
+
+        log.info('{} ({}) ended their turn'.format(self.current_player.name, self.current_suspect.name))
+
+        # Check if everyone's out of the game!
+        players_status = set([
+                self.__get_player_mapped_to(suspect).in_the_game
+                for suspect
+                in LIST_OF_SUSPECTS
+            ])
+
+        if players_status == {False}:
+            raise GameOver('No players available. Game Over.')
+
+        # Get the next suspect's player and mark them current
+        self.current_player = self.__get_player_mapped_to(self.__get_next_suspect())
 
     def deal_cards_to(self, player):
         # So this is beautiful:
@@ -257,12 +498,30 @@ class Board:
                         next(self.__deck)
                         ]
 
+    # ------ Useful helper methods ------
+
+    def __get_next_suspect(self):
+        """
+        No guard to see if the game's ended: This will keep looping!
+        """
+        while True:
+            next_suspect = next(self.__suspect_looper)
+            next_player = self.__get_player_mapped_to(next_suspect)
+
+            if next_player.in_the_game is False:
+                log.warning('{} ({}) is not in the game; skipping'.format(
+                        next_player.name,
+                        next_suspect.name
+                    ))
+            else:
+                return next_suspect
+
     def __get_player_mapped_to(self, suspect):
-        for k, v in self.__player_map.items():
+        for k, v in self.__suspect_to_player_map.items():
             if k == suspect:
                 return v
 
-    def get_space_for(self, entity):
+    def __get_space_for(self, entity):
         suspect = None
 
         if type(entity) is Suspect:
@@ -295,8 +554,7 @@ class Board:
                 if space in _
                 ][0]
 
-    def __suspects_in_space(self, space):
-        return space.suspects_present
+    # ------ Validators ------
 
     def __valid_target_space(self, old_space, new_space):
         if new_space in self.__bad_coordinates:
@@ -310,7 +568,8 @@ class Board:
         #     raise SameTargetSpace('Destination space same as target')
 
         if tuple(x - y for x, y in zip(osc, nsc)) not in self.__valid_coord_deltas:
-            raise InvalidTargetSpace('Cannot teleport {} ({}) from {} to {}'.format(
+            raise InvalidTargetSpace(
+                'Cannot teleport {} ({}) from {} to {}'.format(
                     self.current_player.name,
                     self.current_player.suspect.name,
                     old_space.name,
@@ -319,23 +578,25 @@ class Board:
 
         suspects_in_space = [
             _
-            for _ in self.__suspects_in_space(new_space)
+            for _ in new_space.suspects_present
             if _ != self.current_player.suspect
         ]
 
         if suspects_in_space:
-            raise BlockedSpace('Suspect(s) already in space: {}. Cannot move.'.format(
+            raise BlockedSpace(
+                    'Cannot move. Suspect(s) blocking {}: {}.'.format(
+                        new_space.name,
                         ', '.join([_.name for _ in suspects_in_space])
                     ))
 
         return True
 
     def __valid_player(self, player):
-        if player not in self.__player_map.values():
+        if player not in self.__suspect_to_player_map.values():
             raise InvalidPlayer('Don\'t know this player')
 
     def __valid_player_turn(self, player):
-        current_player = self.__state['current_player']
+        current_player = self.current_player
 
         if player != current_player:
             raise NotPlayersTurn('Turn belongs to {} ({})'.format(
@@ -376,16 +637,13 @@ class Board:
         return True
 
     def __valid_board_state(self):
-        if not self.__state['current_player']:
+        if not self.current_player:
             unmapped_suspect_names = [_.name for _ in self.unmapped_suspects]
-            print(unmapped_suspect_names)
-            raise InsufficientPlayers('''
-                    Not enough players to start the game. Still waiting
-                    for players for {}'''.format(
+            raise InsufficientPlayers('Not enough players to start the game. Still waiting for players for {}'.format(
                             ', '.join(unmapped_suspect_names)
                         ))
 
-        if self.__state['game_over']:
+        if self.__game_over:
             raise GameOver('{} ({}) has won the game'.format(
                         self.current_player.name,
                         self.current_suspect.name
@@ -394,15 +652,20 @@ class Board:
         return True
 
     def __valid_space_for_suggestion(self):
-        """ Player must be in a room to make a suggestion
         """
-        space = self.get_space_for(self.current_player)
+        Player must be in a room to make a suggestion
+        """
+        space = self.__get_space_for(self.current_player)
         if type(space) is not Room:
-            raise InvalidSpaceForSuggestion('{} ({}) must be in a room to suggest; currently in {}'.format(
-                        self.current_player.name,
-                        self.current_suspect.name,
-                        space.name
-                    ))
+            raise InvalidSpaceForSuggestion(
+                        '{} ({}) must be in a room to '
+                        'suggest; currently in {}'.format(
+                            self.current_player.name,
+                            self.current_suspect.name,
+                            space.name
+                        ))
+
+    # ------ 'Public' properties ------
 
     @property
     def confidential_file(self):
@@ -410,7 +673,11 @@ class Board:
 
     @property
     def current_player(self):
-        return self.__state.get('current_player', None)
+        return self.__current_player
+
+    @current_player.setter
+    def current_player(self, player):
+        self.__current_player = player
 
     @property
     def current_suspect(self):
@@ -419,236 +686,26 @@ class Board:
     @property
     def unmapped_suspects(self):
         return [k
-                for k, v in self.__player_map.items()
+                for k, v in self.__suspect_to_player_map.items()
                 if v is None
                 ]
 
-    def __get_next_suspect(self):
-        """
-        No guard to see if the game's ended: This will keep looping!
-        """
-        while True:
-            next_suspect = next(self.__suspect_looper)
-            next_player = self.__get_player_mapped_to(next_suspect)
+    @property
+    def suspect_to_player_map(self):
+        return self.__suspect_to_player_map
 
-            if next_player.in_the_game is False:
-                log.warning('{} ({}) is not in the game; skipping'.format(
-                        next_player.name,
-                        next_suspect.name
-                    ))
-            else:
-                return next_suspect
+    @property
+    def map(self):
+        return self.__map
 
-    def move_player(self, space=None):
-        player = self.current_player
-        suspect = self.current_suspect
+    @property
+    def game_started(self):
+        return self.__game_started
 
-        self.__valid_board_state()
-        self.__valid_player(player)
-        self.__valid_player_turn(player)
-        self.__valid_space(space)
+    @property
+    def game_over(self):
+        return self.__game_over
 
-        # Update the turn. Throw an error if player already made a move
-        if self.__state['current_turn']['moved']:
-            raise MoveCompleted('{} ({}) has already moved'.format(
-                        self.current_player.name,
-                        self.current_suspect.name
-                    ))
-
-        old_space = [_
-                     for _ in LIST_OF_SPACES
-                     if suspect in _.suspects_present
-                     ][0]
-        new_space = old_space if not space else space
-
-        self.__valid_target_space(old_space, new_space)
-
-        old_space.remove_suspect(suspect)
-        new_space.add_suspect(suspect)
-
-        self.__state['current_turn']['moved'] = True
-
-        if old_space == new_space:
-            log.info('{} ({}) stayed in {}'.format(
-                    player.name,
-                    suspect.name,
-                    old_space.name
-                ))
-        else:
-            log.info('{} ({}) moved to {}'.format(
-                    player.name,
-                    suspect.name,
-                    new_space.name
-                ))
-
-    def make_suggestion(self, suspect, weapon):
-        self.__valid_board_state()
-        self.__valid_player_turn(self.current_player)
-        self.__valid_suspect(suspect)
-        self.__valid_weapon(weapon)
-        self.__valid_space_for_suggestion()
-
-        suspect_space = self.get_space_for(suspect)
-        player_room = self.get_space_for(self.current_player)
-
-        # Update the turn. Throw an error if player already made a suggestion
-        if self.__state['current_turn']['suggested']:
-            raise MoveCompleted('{} ({}) has already made a suggestion'.format(
-                        self.current_player.name,
-                        self.current_suspect.name
-                    ))
-
-        self.__state['current_turn']['suggested'] = True
-        self.current_player.set_last_suggestion(player_room, suspect, weapon)
-
-        log.info('{} ({}) suggested that {} ({}) did it with a {} in {}'.format(
-                    self.current_player.name,
-                    self.current_suspect.name,
-                    self.__get_player_mapped_to(suspect).name,
-                    suspect.name,
-                    weapon.name,
-                    player_room.name
-                ))
-
-        # First move the suspect into the player's space
-        suspect_space.remove_suspect(suspect)
-        player_room.add_suspect(suspect)
-
-        log.info('Moved {} ({}) from {} to {}'.format(
-                    self.__get_player_mapped_to(suspect).name,
-                    suspect.name,
-                    suspect_space.name,
-                    player_room.name
-                    ))
-
-        # End the game if the suggestion is in the game file
-        if [player_room, suspect, weapon] == self.__confidential_file:
-            self.__state['game_over'] = True
-
-            log.info('{} ({})\'s suggestion was correct. Game Over!'.format(
-                        self.current_player.name,
-                        self.current_suspect.name
-                    ))
-
-        return True
-
-    def make_accusation(self, suspect, weapon, room=None):
-        """
-        * Players can make accusation any time. No need to move or
-          suggest beforehand.
-        * Player is out of game if the accusation is incorrect.
-        * The game ends if the accusation is correct.
-        """
-        self.__valid_board_state()
-        self.__valid_player_turn(self.current_player)
-        self.__valid_suspect(suspect)
-        self.__valid_weapon(weapon)
-
-        if room:
-            self.__valid_room(room)
-            player_room = room
-        else:
-            player_room = self.get_space_for(self.current_player)
-
-        log.info('{} ({}) accused {} ({}) of doing it with a {} in {}'.format(
-                    self.current_player.name,
-                    self.current_suspect.name,
-                    self.__get_player_mapped_to(suspect).name,
-                    suspect.name,
-                    weapon.name,
-                    player_room.name
-                ))
-
-        # End the game if the suggestion is in the game file
-        if [player_room, suspect, weapon] == self.__confidential_file:
-            self.__state['game_over'] = True
-            log.info('{} ({})\'s accusation was correct. Game Over!'.format(
-                        self.current_player.name,
-                        self.current_suspect.name
-                    ))
-
-        # Kick the player out of the game if incorrect
-        else:
-            self.current_player.in_the_game = False
-            log.info('{} ({}) is now out of the game due to a wrong accusation'.format(
-                        self.current_player.name,
-                        self.current_suspect.name,
-                    ))
-            self.end_turn(force=True)
-
-        return True
-
-    def disprove_suggestion(self):
-        self.__valid_board_state()
-        self.__valid_player_turn(self.current_player)
-
-        if not self.__state['current_turn']['suggested']:
-            raise UnfinishedMove('{} ({}) must make a suggestion before getting a card to disprove it'.format(
-                    self.current_player.name,
-                    self.current_suspect.name,
-                ))
-
-        # Need to cycle through the list of suspects clockwise
-        suspect_index = LIST_OF_SUSPECTS.index(self.current_suspect)
-        bottom = LIST_OF_SUSPECTS[suspect_index + 1:]
-        top = LIST_OF_SUSPECTS[:suspect_index]
-
-        our_suggestion = self.current_player.last_suggestion.values()
-
-        for suspect in bottom + top:
-            their_cards = self.__get_player_mapped_to(suspect).cards
-
-            # Cast to list because, for some reason,
-            # 'if not common_cards' doesn't work :/
-            common_cards = list(set(their_cards) & set(our_suggestion))
-
-            # If the next player has card(s) to disprove the suggestion,
-            # pick one and return it
-            if common_cards:
-                random_card = random.choice(common_cards)
-
-                log.info('{} ({}) showed {} ({}) "{}"'.format(
-                        self.__get_player_mapped_to(suspect).name,
-                        suspect.name,
-                        self.current_player.name,
-                        self.current_suspect.name,
-                        random_card.name
-                    ))
-
-                return random_card
-
-    def end_turn(self, force=False):
-        self.__valid_board_state()
-
-        if not force:
-            # Can only end turn if moved and suggested
-            if not self.__state['current_turn']['moved']:
-                raise UnfinishedMove('Cannot end turn: {} ({}) must make a move'.format(
-                        self.current_player.name,
-                        self.current_suspect.name
-                    ))
-
-            if not self.__state['current_turn']['suggested']:
-                raise UnfinishedMove('Cannot end turn: {} ({}) must make a suggestion'.format(
-                        self.current_player.name,
-                        self.current_suspect.name
-                    ))
-
-        # Reset the turn tracker
-        for key in self.__state['current_turn']:
-            self.__state['current_turn'][key] = False
-
-        log.info('Ended turn of {} ({})'.format(self.current_player.name, self.current_suspect.name))
-
-        # Check if everyone's out of the game!
-        players_status = set([
-                self.__get_player_mapped_to(suspect).in_the_game
-                for suspect
-                in LIST_OF_SUSPECTS
-            ])
-
-        if players_status == {False}:
-            raise GameOver('No players available. Game Over.')
-
-        # Get the next suspect's player and mark them current
-        self.__state['current_player'] = self.__get_player_mapped_to(self.__get_next_suspect())
+    @property
+    def time_started(self):
+        return self.__time_started

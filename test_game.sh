@@ -3,18 +3,10 @@
 unset http_proxy
 unset https_proxy
 
-curl -X GET 'http://localhost:8000'
-echo -e ''
-curl -X POST -H "Content-Type: multipart/form-data" -F "name=Nikhil" -F "suspect=scarlet" 'http://localhost:8000/players'
-echo -e ''
-curl -X POST -H "Content-Type: multipart/form-data" -F "name=Dawn" -F "suspect=white" 'http://localhost:8000/players'
-echo -e ''
-curl -X POST -H "Content-Type: multipart/form-data" -F "name=Madhu" -F "suspect=mustard" 'http://localhost:8000/players'
-echo -e ''
-curl -X POST -H "Content-Type: multipart/form-data" -F "name=Deepu" -F "suspect=green" 'http://localhost:8000/players'
-echo -e ''
-curl -X POST -H "Content-Type: multipart/form-data" -F "name=Catherine" -F "suspect=peacock" 'http://localhost:8000/players'
-echo -e ''
-curl -X POST -H "Content-Type: multipart/form-data" -F "name=Tony" -F "suspect=plum" 'http://localhost:8000/players'
-echo -e ''
-curl -X GET 'http://localhost:8000/current_player'
+curl -X POST http://localhost:8000/api/players --header 'content-type: application/json' --data '{"name": "Nikhil", "suspect": "scarlet"}'
+curl -X POST http://localhost:8000/api/players --header 'content-type: application/json' --data '{"name": "Dawn", "suspect": "white"}'
+curl -X POST http://localhost:8000/api/players --header 'content-type: application/json' --data '{"name": "Madhu", "suspect": "mustard"}'
+curl -X POST http://localhost:8000/api/players --header 'content-type: application/json' --data '{"name": "Deepu", "suspect": "green"}'
+curl -X POST http://localhost:8000/api/players --header 'content-type: application/json' --data '{"name": "Catherine", "suspect": "peacock"}'
+curl -X POST http://localhost:8000/api/players --header 'content-type: application/json' --data '{"name": "Tony", "suspect": "plum"}'
+

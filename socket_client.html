@@ -5,102 +5,124 @@
     <link rel="stylesheet" href="__misc/bootstrap.min.css">
 </head>
 <body class="container">
+    <div class="panel">
+    <table border="1" class="table">
+        <tbody>
+            <tr>
+                <td id="study"></td>
+                <td id="study_to_hall"></td>
+                <td id="hall"></td>
+                <td id="hall_to_lounge"></td>
+                <td id="lounge"></td>
+            </tr>
+            <tr>
+                <td id="study_to_library"></td>
+                <td></td>
+                <td id="hall_to_billiard"></td>
+                <td></td>
+                <td id="lounge_to_dining"</td>
+            </tr>
+            <tr>
+                <td id="library"></td>
+                <td id="library_to_billiard"></td>
+                <td id="billiard_room"></td>
+                <td id="billiard_to_dining"></td>
+                <td id="dining_room"></td>
+            </tr>
+            <tr>
+                <td id="library_to_conservatory"></td>
+                <td></td>
+                <td id="billiard_to_ballroom"></td>
+                <td></td>
+                <td id="dining_to_kitchen"></td>
+            </tr>
+            <tr>
+                <td id="conservatory"></td>
+                <td id="conservatory_to_ballroom"></td>
+                <td id="ballroom"></td>
+                <td id="ballroom_to_kitchen"></td>
+                <td id="kitchen"></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+
     <h1>Add Player</h1>
 
     <form id="add_player">
-      <div class="form-group">
-        <label for="name">Player Name</label>
-        <input type="text" class="form-control" id="name" placeholder="Type player name" required>
-      </div>
-      <div class="form-group">
-        <label for="suspect">Suspect</label>
-        <select class="form-control" id="suspect">
-            <option value="scarlet">Miss Scarlet</option>
-            <option value="mustard">Colonel Mustard</option>
-            <option value="white">Mrs. White</option>
-            <option value="green">Mr. Green</option>
-            <option value="peacock">Mrs. Peacock</option>
-            <option value="plum">Professor Plum</option>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-default">Add</button>
-    </form>
-
-    <hr>
-
-    <h1>Move</h1>
-
-    <form id="move_player">
         <div class="form-group">
-            <label for="name">Room</label>
-            <select id="new_space">
-                <option value="study">study</option>
-                <option value="hall">hall</option>
-                <option value="lounge">lounge</option>
-                <option value="library">library</option>
-                <option value="billiard_room">billiard_room</option>
-                <option value="dining_room">dining_room</option>
-                <option value="conservatory">conservatory</option>
-                <option value="ballroom">ballroom</option>
-                <option value="kitchen">kitchen</option>
-                <option value="study_to_hall">study_to_hall</option>
-                <option value="hall_to_lounge">hall_to_lounge</option>
-                <option value="study_to_library">study_to_library</option>
-                <option value="hall_to_billiard">hall_to_billiard</option>
-                <option value="lounge_to_dining">lounge_to_dining</option>
-                <option value="library_to_billiard">library_to_billiard</option>
-                <option value="billiard_to_dining">billiard_to_dining</option>
-                <option value="library_to_conservatory">library_to_conservatory</option>
-                <option value="billiard_to_ballroom">billiard_to_ballroom</option>
-                <option value="dining_to_kitchen">dining_to_kitchen</option>
-                <option value="conservatory_to_ballroom">conservatory_to_ballroom</option>
-                <option value="ballroom_to_kitchen">ballroom_to_kitchen</option>
+            <label for="name">Player Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Type player name" required>
+        </div>
+        <div class="form-group">
+            <label for="suspect">Suspect</label>
+            <select class="form-control" id="suspect">
+                <option value="scarlet">Miss Scarlet</option>
+                <option value="mustard">Colonel Mustard</option>
+                <option value="white">Mrs. White</option>
+                <option value="green">Mr. Green</option>
+                <option value="peacock">Mrs. Peacock</option>
+                <option value="plum">Professor Plum</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-default">Go</button>
+        <button type="submit" class="btn btn-default">Add</button>
     </form>
 
-    <hr>
-
-    <h2>Message</h2>
-
-    <input type="text" class="form-control" id="player_id" placeholder="Type player ID">
-    <button type="button" class="btn btn-default" id="player_id_go">Go</button>
-
-    <hr>
-
-
-
     <ul id="log"></div>
+
+
 </body>
 
 <script type="text/javascript" src="__misc/jquery.min.js"></script>
 <script type="text/javascript" src="__misc/socket.io.min.js"></script>
 <script type="text/javascript">
+
+function GUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16|0;
+        var v;
+        if (c === 'x') {
+            v = r;
+        } else {
+            v = (r&0x3|0x8);
+        }
+        return v.toString(16);
+    });
+}
+
 $(document).ready(function(){
+
     var socket = io.connect();
 
-    socket.on('clueless server response', function(msg) {
-        $('#log').append('<li>' + msg.data + '</li>');
-        console.log(msg.json);
+    var player_id = localStorage.getItem('clueless_player_id');
+
+    socket.on('registration channel', function(msg) {
+        $('#log').append('<li> REGISTER: ' + msg.data + '</li>');
     });
 
-    $('form#add_player').submit(function(event) {
+    socket.on('client channel', function(msg) {
+        $('#log').append('<li>' + msg.data + '</li>');
+    });
+
+    socket.on('broadcast channel', function(msg) {
+        console.log(msg);
+        $('#log').append('<li><b>EVERYONE:</b> ' + JSON.stringify(msg.data) + '</li>');
+    });
+
+
+    $('#add_player').submit(function(event) {
+        // if (!player_id) {
+        //     console.log('Client has not added player');
+        //     localStorage.setItem('clueless_player_id', GUID());
+        // } else {
+        //     console.log('Client has added player before ' + player_id)
+        // }
+
         socket.emit('add player', {
                         name: $('#name').val(),
                         suspect: $('#suspect').val()
                     });
         return false;
-    });
-    $('form#move_player').submit(function(event) {
-        socket.emit('move player', {
-                'space': $('#new_space').val()
-            });
-        return false;
-    });
-
-    $('#player_id_go').click(function(event) {
-        socket.emit('touch player', {id: $('#player_id').val()})
     });
 
 });
