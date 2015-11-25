@@ -1,0 +1,32 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "Clueless Client Interface",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nikhil Anand <mail@nikhil.io>",
+  "license": "MIT",
+  "dependencies": {
+    "add-stream": "^1.0.0",
+    "angular-loading-bar": "^0.8.0",
+    "del": "^2.1.0",
+    "gulp-angular-templatecache": "^1.8.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-cssmin": "^0.1.7",
+    "gulp-debug": "^2.1.2",
+    "gulp-jade": "^1.1.0",
+    "gulp-jshint": "^2.0.0",
+    "gulp-less": "^3.0.5",
+    "gulp-load-plugins": "^1.1.0",
+    "gulp-ng-annotate": "^1.1.0",
+    "gulp-recess": "^1.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.1",
+    "gulp-webserver": "^0.9.1",
+    "http-server": "^0.8.5",
+    "jshint": "^2.8.0",
+    "jshint-stylish": "^2.1.0"
+  }
+}

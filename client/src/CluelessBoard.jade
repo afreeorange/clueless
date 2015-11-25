@@ -1,0 +1,82 @@
+.pure-g
+    .pure-u-4-5
+
+        h2 Board
+        table.pure-table.pure-table-bordered#board-map
+            tr
+                td#study
+                    player-box(players="bc.boardState.map.study.players")
+                td#study_to_hall
+                    player-box(players="bc.boardState.map.study_to_hall.players")
+                td#hall
+                    player-box(players="bc.boardState.map.hall.players")
+                td#hall_to_lounge
+                    player-box(players="bc.boardState.map.hall_to_lounge.players")
+                td#lounge
+                    player-box(players="bc.boardState.map.lounge.players")
+            tr
+                td#study_to_library
+                    player-box(players="bc.boardState.map.study_to_library.players")
+                td.hole
+                td#hall_to_billiard
+                    player-box(players="bc.boardState.map.hall_to_billiard.players")
+                td.hole
+                td#lounge_to_dining
+                    player-box(players="bc.boardState.map.lounge_to_dining.players")
+            tr
+                td#library
+                    player-box(players="bc.boardState.map.library.players")
+                td#library_to_billiard
+                    player-box(players="bc.boardState.map.library_to_billiard.players")
+                td#billiard_room
+                    player-box(players="bc.boardState.map.billiard_room.players")
+                td#billiard_to_dining
+                    player-box(players="bc.boardState.map.billiard_to_dining.players")
+                td#dining_room
+                    player-box(players="bc.boardState.map.dining_room.players")
+            tr
+                td#library_to_conservatory
+                    player-box(players="bc.boardState.map.library_to_conservatory.players")
+                td.hole
+                td#billiard_to_ballroom
+                    player-box(players="bc.boardState.map.billiard_to_ballroom.players")
+                td.hole
+                td#dining_to_kitchen
+                    player-box(players="bc.boardState.map.dining_to_kitchen.players")
+            tr
+                td#conservatory
+                    player-box(players="bc.boardState.map.conservatory.players")
+                td#conservatory_to_ballroom
+                    player-box(players="bc.boardState.map.conservatory_to_ballroom.players")
+                td#ballroom
+                    player-box(players="bc.boardState.map.ballroom.players")
+                td#ballroom_to_kitchen
+                    player-box(players="bc.boardState.map.ballroom_to_kitchen.players")
+                td#kitchen
+                    player-box(players="bc.boardState.map.kitchen.players")
+
+    .pure-u-1-5
+        div(ng-if="!bc.boardState.game_started && !bc.addedPlayer()")
+            h3 Add
+            form.pure-form
+                input(type="text" ng-model="bc.playerName")
+                select(ng-model="bc.suspect")
+                    option(ng-repeat="(shortname, fullname) in bc.suspectList"
+                           ng-disabled="bc.boardState.suspect_to_player[shortname] != null"
+                           value="{{shortname}}"
+                           ) {{fullname}}
+                button.pure-button(type="button" ng-click="bc.addPlayer()") Add
+
+        h3 Move
+        form.pure-form
+            select(ng-model="bc.room")
+                option(ng-repeat="(shortname, fullname) in bc.roomList"
+                       value="{{shortname}}"
+                       ) {{fullname}}
+            button.pure-button(type="button" ng-click="bc.movePlayer()") Move        
+
+
+
+
+
+

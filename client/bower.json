@@ -1,0 +1,24 @@
+{
+  "name": "client",
+  "description": "Clueless Client Interface",
+  "main": "index.js",
+  "authors": [
+    "Nikhil Anand <mail@nikhil.io>"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-ui-router": "~0.2.15",
+    "toastr": "~2.1.2",
+    "pure": "~0.6.0",
+    "angular-local-storage": "~0.2.3"
+  }
+}

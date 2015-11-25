@@ -1,0 +1,6 @@
+h2 Logs
+
+table.pure-table.pure-table-bordered
+    tr(ng-repeat="log in lc.logs | orderBy:'-timestamp'")
+        td {{ log.timestamp }}
+        td {{ log.message }}
