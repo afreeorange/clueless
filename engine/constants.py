@@ -7,12 +7,12 @@ from .models import (
 
 
 # Weapons
-ROPE = Weapon('rope')
-KNIFE = Weapon('knife')
-LEAD_PIPE = Weapon('lead pipe')
-WRENCH = Weapon('wrench')
-REVOLVER = Weapon('revolver')
-CANDLESTICK = Weapon('candlestick')
+ROPE = Weapon('Rope')
+KNIFE = Weapon('Knife')
+LEAD_PIPE = Weapon('Lead Pipe')
+WRENCH = Weapon('Wrench')
+REVOLVER = Weapon('Revolver')
+CANDLESTICK = Weapon('Candlestick')
 
 LIST_OF_WEAPONS = [
     ROPE,

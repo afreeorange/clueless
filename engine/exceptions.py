@@ -1,3 +1,7 @@
+class BadSuggestion(Exception):
+    pass
+
+
 class BlockedSpace(Exception):
     pass
 

@@ -64,6 +64,8 @@ angular.module('Clueless')
             );
     };
 
+    service.makeSuggestion = function() {};
+
     return service;
 })
 
@@ -71,7 +73,7 @@ angular.module('Clueless')
     var service = {};
 
     service.getLogs = function() {
-        return $http.get(CluelessAPI + '/log')
+        return $http.get(CluelessAPI + '/logs')
             .then(
                 function(response) {
                     return response.data;

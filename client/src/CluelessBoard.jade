@@ -1,7 +1,6 @@
 .pure-g
     .pure-u-4-5
-
-        h2 Board
+        p(ng-if="bc.addedPlayer()") You are playing as {{bc.suspect}}
         table.pure-table.pure-table-bordered#board-map
             tr
                 td#study
@@ -56,6 +55,8 @@
                     player-box(players="bc.boardState.map.kitchen.players")
 
     .pure-u-1-5
+        h3(ng-if="bc.boardState.game_over") Game Over!
+
         div(ng-if="!bc.boardState.game_started && !bc.addedPlayer()")
             h3 Add
             form.pure-form
@@ -75,8 +76,13 @@
                        ) {{fullname}}
             button.pure-button(type="button" ng-click="bc.movePlayer()") Move        
 
-
-
-
+        h3 Make Suggestion
+        form.pure-form
+            label Player
+            br
+            select(ng-model="bc.suggestion_suspect")
+                option(ng-repeat="(shortname, fullname) in bc.roomList"
+                       value="{{shortname}}"
+                       ) {{fullname}}            
 
 

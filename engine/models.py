@@ -5,6 +5,7 @@ import random
 from uuid import uuid4
 
 from .exceptions import (
+    BadSuggestion,
     BlockedSpace,
     BoardIsFull,
     CardsAlreadyDealt,
@@ -69,10 +70,6 @@ class Weapon:
         self.name = name
 
 
-from .constants import *
-log = logging.getLogger(__name__)
-
-
 class Player:
 
     def __init__(self, name, suspect):
@@ -85,7 +82,8 @@ class Player:
 
         # Keep track of suggestions and disproves. Start with True
         # since every board entity might be involved in... MURDER!
-        self.game_sheet = {_: True for _ in GAME_DECK}
+        # This is now set by the Board
+        self.game_sheet = {}
 
         self.in_the_game = True
         self.board = None
@@ -113,7 +111,6 @@ class Player:
 
     @suggestion.setter
     def suggestion(self, suggestion):
-        print('adding', suggestion)
         self.__suggestions.append({
                     'weapon': suggestion['weapon'],
                     'suspect': suggestion['suspect'],
@@ -139,46 +136,161 @@ class Player:
 class Board:
 
     def __init__(self):
+
+        # Weapons
+        self.ROPE = Weapon('Rope')
+        self.KNIFE = Weapon('Knife')
+        self.LEAD_PIPE = Weapon('Lead Pipe')
+        self.WRENCH = Weapon('Wrench')
+        self.REVOLVER = Weapon('Revolver')
+        self.CANDLESTICK = Weapon('Candlestick')
+        self.LIST_OF_WEAPONS = [
+            self.ROPE,
+            self.KNIFE,
+            self.LEAD_PIPE,
+            self.WRENCH,
+            self.REVOLVER,
+            self.CANDLESTICK
+            ]
+
+        # Suspects
+        self.SCARLET = Suspect('Miss Scarlet')
+        self.MUSTARD = Suspect('Colonel Mustard')
+        self.WHITE = Suspect('Mrs. White')
+        self.GREEN = Suspect('Mr. Green')
+        self.PEACOCK = Suspect('Mrs. Peacock')
+        self.PLUM = Suspect('Professor Plum')
+
+        self.LIST_OF_SUSPECTS = [
+            self.SCARLET,
+            self.MUSTARD,
+            self.WHITE,
+            self.GREEN,
+            self.PEACOCK,
+            self.PLUM,
+            ]
+
+        # Rooms
+        self.STUDY = Room('The Study')
+        self.HALL = Room('The Hall')
+        self.LOUNGE = Room('The Lounge')
+        self.LIBRARY = Room('The Library')
+        self.BILLIARD_ROOM = Room('The Billiard Room')
+        self.DINING_ROOM = Room('The Dining Room')
+        self.CONSERVATORY = Room('The Conservatory')
+        self.BALLROOM = Room('The Ballroom')
+        self.KITCHEN = Room('The Kitchen')
+
+        # Hallways
+        self.STUDY_TO_HALL = Hallway('The Study to Hall Hallway')
+        self.HALL_TO_LOUNGE = Hallway('The Hall to Lounge Hallway')
+        self.STUDY_TO_LIBRARY = Hallway('The Study to Library Hallway')
+        self.HALL_TO_BILLIARD = Hallway('The Hall to Billiard Room Hallway')
+        self.LOUNGE_TO_DINING = Hallway('The Lounge to Dining Room Hallway')
+        self.LIBRARY_TO_BILLIARD = Hallway('The Library to Billiard Room Hallway')
+        self.BILLIARD_TO_DINING = Hallway('The Billiard Room to Dining Room Hallway')
+        self.LIBRARY_TO_CONSERVATORY = Hallway('The Library to Conservatory Hallway')
+        self.BILLIARD_TO_BALLROOM = Hallway('The Billiard Room to Ballroom Hallway')
+        self.DINING_TO_KITCHEN = Hallway('The Dining Room to Kitchen Hallway')
+        self.CONSERVATORY_TO_BALLROOM = Hallway('The Conservatory to Ballroom Hallway')
+        self.BALLROOM_TO_KITCHEN = Hallway('The Ballroom to Kitchen Hallway')
+
+        # Define the spaces a little more
+        self.STUDY.has_secret_passageway = True
+        self.STUDY.passage_way_to = self.KITCHEN
+
+        self.LOUNGE.has_secret_passageway = True
+        self.LOUNGE.passage_way_to = self.CONSERVATORY
+
+        self.CONSERVATORY.has_secret_passageway = True
+        self.CONSERVATORY.passage_way_to = self.LOUNGE
+
+        self.KITCHEN.has_secret_passageway = True
+        self.KITCHEN.passage_way_to = self.STUDY
+
+        # Add suspects to the spaces
+        self.HALL_TO_LOUNGE.suspects_present = [self.SCARLET]
+        self.STUDY_TO_LIBRARY.suspects_present = [self.PLUM]
+        self.LOUNGE_TO_DINING.suspects_present = [self.MUSTARD]
+        self.LIBRARY_TO_CONSERVATORY.suspects_present = [self.PEACOCK]
+        self.CONSERVATORY_TO_BALLROOM.suspects_present = [self.GREEN]
+        self.BALLROOM_TO_KITCHEN.suspects_present = [self.WHITE]
+
+        self.LIST_OF_ROOMS = [
+            self.STUDY,
+            self.HALL,
+            self.LOUNGE,
+            self.LIBRARY,
+            self.BILLIARD_ROOM,
+            self.DINING_ROOM,
+            self.CONSERVATORY,
+            self.BALLROOM,
+            self.KITCHEN,
+            ]
+
+        self.LIST_OF_HALLWAYS = [
+            self.STUDY_TO_HALL,
+            self.HALL_TO_LOUNGE,
+            self.STUDY_TO_LIBRARY,
+            self.HALL_TO_BILLIARD,
+            self.LOUNGE_TO_DINING,
+            self.LIBRARY_TO_BILLIARD,
+            self.BILLIARD_TO_DINING,
+            self.LIBRARY_TO_CONSERVATORY,
+            self.BILLIARD_TO_BALLROOM,
+            self.DINING_TO_KITCHEN,
+            self.CONSERVATORY_TO_BALLROOM,
+            self.BALLROOM_TO_KITCHEN,
+            ]
+
+        self.LIST_OF_SPACES = self.LIST_OF_ROOMS + self.LIST_OF_HALLWAYS
+
+        # Make a deck
+        self.GAME_DECK = self.LIST_OF_WEAPONS + list(self.LIST_OF_SUSPECTS) + self.LIST_OF_ROOMS
+
         self.id = uuid4()
         self.__game_started = False
         self.__time_started = None
 
+        # Initialize a logger
+        self.log = logging.getLogger(__name__)
+
         # The Board is a 5x5 grid with four holes.
         self.__map = [
                 [
-                    STUDY,
-                    STUDY_TO_HALL,
-                    HALL,
-                    HALL_TO_LOUNGE,
-                    LOUNGE
+                    self.STUDY,
+                    self.STUDY_TO_HALL,
+                    self.HALL,
+                    self.HALL_TO_LOUNGE,
+                    self.LOUNGE
                 ],
                 [
-                    STUDY_TO_LIBRARY,
+                    self.STUDY_TO_LIBRARY,
                     None,
-                    HALL_TO_BILLIARD,
+                    self.HALL_TO_BILLIARD,
                     None,
-                    LOUNGE_TO_DINING
+                    self.LOUNGE_TO_DINING
                 ],
                 [
-                    LIBRARY,
-                    LIBRARY_TO_BILLIARD,
-                    BILLIARD_ROOM,
-                    BILLIARD_TO_DINING,
-                    DINING_ROOM
+                    self.LIBRARY,
+                    self.LIBRARY_TO_BILLIARD,
+                    self.BILLIARD_ROOM,
+                    self.BILLIARD_TO_DINING,
+                    self.DINING_ROOM
                 ],
                 [
-                    LIBRARY_TO_CONSERVATORY,
+                    self.LIBRARY_TO_CONSERVATORY,
                     None,
-                    BILLIARD_TO_BALLROOM,
+                    self.BILLIARD_TO_BALLROOM,
                     None,
-                    DINING_TO_KITCHEN
+                    self.DINING_TO_KITCHEN
                 ],
                 [
-                    CONSERVATORY,
-                    CONSERVATORY_TO_BALLROOM,
-                    BALLROOM,
-                    BALLROOM_TO_KITCHEN,
-                    KITCHEN
+                    self.CONSERVATORY,
+                    self.CONSERVATORY_TO_BALLROOM,
+                    self.BALLROOM,
+                    self.BALLROOM_TO_KITCHEN,
+                    self.KITCHEN
                 ]
             ]
 
@@ -193,21 +305,21 @@ class Board:
 
         # Create the confidential file
         self.__confidential_file = [
-                random.choice(LIST_OF_ROOMS),
-                random.choice(LIST_OF_SUSPECTS),
-                random.choice(LIST_OF_WEAPONS),
+                random.choice(self.LIST_OF_ROOMS),
+                random.choice(self.LIST_OF_SUSPECTS),
+                random.choice(self.LIST_OF_WEAPONS),
             ]
 
         # Now that the confidential envelope is set up, shuffle the
         # remaining deck. Make it an iterable so cards can be distributed
         # to players.
-        self.__deck = [_ for _ in GAME_DECK
-                       if _ not in self.__confidential_file]
+        self.__deck = [card for card in self.GAME_DECK
+                       if card not in self.__confidential_file]
         random.shuffle(self.__deck)
         self.__deck = iter(self.__deck)
 
         # Maintain a map of Suspect objects to Player objects
-        self.__suspect_to_player_map = dict.fromkeys(LIST_OF_SUSPECTS, None)
+        self.__suspect_to_player_map = dict.fromkeys(self.LIST_OF_SUSPECTS, None)
 
         # Initialize the current player. This will be set once all suspects
         # are bound to players. Setting this means that the game has begun
@@ -217,10 +329,10 @@ class Board:
         self.__game_over = False
 
         # Use to yield the next player
-        self.__suspect_looper = cycle(LIST_OF_SUSPECTS)
+        self.__suspect_looper = cycle(self.LIST_OF_SUSPECTS)
 
-        log.info('Started game')
-        log.info('Confidential file contains "{}"'.format(
+        self.log.info('Started game')
+        self.log.info('Confidential file contains "{}"'.format(
                     '", "'.join([_.name for _ in self.confidential_file])
                     ))
 
@@ -241,8 +353,9 @@ class Board:
 
         self.__suspect_to_player_map[player.suspect] = player
         self.deal_cards_to(player)
+        player.game_sheet = {_: True for _ in self.GAME_DECK}
 
-        log.info('Added player {} as {}'.format(
+        self.log.info('Added player {} as {}'.format(
                 player.name,
                 player.suspect.name
             ))
@@ -252,7 +365,7 @@ class Board:
         if self.__cannot_add_more_players():
             self.__game_started = True
             self.__time_started = '{}Z'.format(str(datetime.utcnow().isoformat()))
-            self.current_player = self.__get_player_mapped_to(self.__get_next_suspect())
+            self.current_player = self.get_player_mapped_to(self.__get_next_suspect())
 
         return player
 
@@ -275,12 +388,12 @@ class Board:
                     ))
 
         old_space = [_
-                     for _ in LIST_OF_SPACES
+                     for _ in self.LIST_OF_SPACES
                      if player.suspect in _.suspects_present
                      ][0]
         new_space = old_space if not space else space
 
-        self.__valid_target_space(old_space, new_space)
+        self.__valid_target_space(player, old_space, new_space)
 
         old_space.remove_suspect(player.suspect)
         new_space.add_suspect(player.suspect)
@@ -288,13 +401,13 @@ class Board:
         player.turn['moved'] = True
 
         if old_space == new_space:
-            log.info('{} ({}) stayed in {}'.format(
+            self.log.info('{} ({}) stayed in {}'.format(
                     player.name,
                     player.suspect.name,
                     old_space.name
                 ))
         else:
-            log.info('{} ({}) moved from {} to {}'.format(
+            self.log.info('{} ({}) moved from {} to {}'.format(
                     player.name,
                     player.suspect.name,
                     old_space.name,
@@ -319,43 +432,44 @@ class Board:
                         self.current_suspect.name
                     ))
 
+        if suspect in player.cards or weapon in player.cards:
+            raise BadSuggestion('Look at your cards, yo...')
+
         player.turn['suggested'] = True
-        print({
-                    'weapon': weapon,
-                    'suspect': suspect,
-                    'room': player_room,
-                })
+
         player.suggestion = {
                     'weapon': weapon,
                     'suspect': suspect,
                     'room': player_room,
                 }
 
-        log.info('{} ({}) suggested that {} ({}) did it with a {} in {}'.format(
+        self.log.info('{} ({}) suggested that {} ({}) did it with a {} in {}'.format(
                     player.name,
                     player.suspect.name,
-                    self.__get_player_mapped_to(suspect).name,
+                    self.get_player_mapped_to(suspect).name,
                     suspect.name,
                     weapon.name,
                     player_room.name
                 ))
 
         # First move the suspect into the player's space
-        suspect_space.remove_suspect(suspect)
-        player_room.add_suspect(suspect)
+        # if the player is active
+        if self.get_player_mapped_to(suspect).in_the_game:
+            suspect_space.remove_suspect(suspect)
+            player_room.add_suspect(suspect)
 
-        log.info('{} ({}) moved from {} to {}'.format(
-                    self.__get_player_mapped_to(suspect).name,
-                    suspect.name,
-                    suspect_space.name,
-                    player_room.name
-                    ))
+            self.log.info('{} ({}) moved from {} to {}'.format(
+                        self.get_player_mapped_to(suspect).name,
+                        suspect.name,
+                        suspect_space.name,
+                        player_room.name
+                        ))
 
         # End the game if the suggestion is in the game file
         if [player_room, suspect, weapon] == self.__confidential_file:
             self.__game_over = True
 
-            log.info('{} ({})\'s suggestion was correct. Game Over!'.format(
+            self.log.info('{} ({})\'s suggestion was correct. Game Over!'.format(
                         self.current_player.name,
                         self.current_suspect.name
                     ))
@@ -374,14 +488,14 @@ class Board:
                 ))
 
         # Need to cycle through the list of suspects clockwise
-        suspect_index = LIST_OF_SUSPECTS.index(self.current_suspect)
-        bottom = LIST_OF_SUSPECTS[suspect_index + 1:]
-        top = LIST_OF_SUSPECTS[:suspect_index]
+        suspect_index = self.LIST_OF_SUSPECTS.index(self.current_suspect)
+        bottom = self.LIST_OF_SUSPECTS[suspect_index + 1:]
+        top = self.LIST_OF_SUSPECTS[:suspect_index]
 
         our_suggestion = player.suggestion.values()
 
         for suspect in bottom + top:
-            their_cards = self.__get_player_mapped_to(suspect).cards
+            their_cards = self.get_player_mapped_to(suspect).cards
 
             # Cast to list because, for some reason,
             # 'if not common_cards' doesn't work :/
@@ -392,8 +506,8 @@ class Board:
             if common_cards:
                 random_card = random.choice(common_cards)
 
-                log.info('{} ({}) showed {} ({}) "{}"'.format(
-                        self.__get_player_mapped_to(suspect).name,
+                self.log.info('{} ({}) showed {} ({}) "{}"'.format(
+                        self.get_player_mapped_to(suspect).name,
                         suspect.name,
                         player.name,
                         player.suspect.name,
@@ -404,15 +518,16 @@ class Board:
 
                 return (player, player.suspect, random_card)
 
-    def make_accusation(self, suspect, weapon, room=None):
-        """
+    def make_accusation(self, player, suspect, weapon, room=None):
+        '''
         * Players can make accusation any time. No need to move or
           suggest beforehand.
         * Player is out of game if the accusation is incorrect.
         * The game ends if the accusation is correct.
-        """
+        '''
         self.__valid_board_state()
-        self.__valid_player_turn(self.current_player)
+        self.__valid_player(player)
+        self.__valid_player_turn(player)
         self.__valid_suspect(suspect)
         self.__valid_weapon(weapon)
 
@@ -420,12 +535,12 @@ class Board:
             self.__valid_room(room)
             player_room = room
         else:
-            player_room = self.__get_space_for(self.current_player)
+            player_room = self.__get_space_for(player)
 
-        log.info('{} ({}) accused {} ({}) of doing it with a {} in {}'.format(
-                    self.current_player.name,
-                    self.current_suspect.name,
-                    self.__get_player_mapped_to(suspect).name,
+        self.log.info('{} ({}) accused {} ({}) of murder with a {} in {}'.format(
+                    player.name,
+                    player.suspect.name,
+                    self.get_player_mapped_to(suspect).name,
                     suspect.name,
                     weapon.name,
                     player_room.name
@@ -434,19 +549,19 @@ class Board:
         # End the game if the suggestion is in the game file
         if [player_room, suspect, weapon] == self.__confidential_file:
             self.__game_over = True
-            log.info('{} ({})\'s accusation was correct. Game Over!'.format(
-                        self.current_player.name,
-                        self.current_suspect.name
+            self.log.info('{} ({})\'s accusation was correct. Game Over!'.format(
+                        player.name,
+                        player.suspect.name
                     ))
 
         # Kick the player out of the game if incorrect
         else:
-            self.current_player.in_the_game = False
-            log.info('{} ({}) is now out of the game due to a wrong accusation'.format(
-                        self.current_player.name,
-                        self.current_suspect.name,
+            player.in_the_game = False
+            self.log.info('{} ({}) is now out of the game due to a wrong accusation'.format(
+                        player.name,
+                        player.suspect.name,
                     ))
-            self.end_turn(force=True)
+            self.end_turn(player, force=True)
 
         return True
 
@@ -456,43 +571,46 @@ class Board:
         self.__valid_player_turn(player)
 
         if not force:
-            # Can only end turn if moved and suggested
+            # Can only end turn if moved
             if not player.turn['moved']:
                 raise UnfinishedMove('Cannot end turn: {} ({}) must make a move'.format(
                         player.name,
                         player.suspect.name
                     ))
 
-            if not player.turn['suggested']:
-                raise UnfinishedMove('Cannot end turn: {} ({}) must make a suggestion'.format(
-                        player.name,
-                        player.suspect.name
-                    ))
+            # if not player.turn['suggested']:
+            #     raise UnfinishedMove('Cannot end turn: {} ({}) must make a suggestion'.format(
+            #             player.name,
+            #             player.suspect.name
+            #         ))
 
         # Reset the turn tracker
         for key in player.turn:
             player.turn[key] = False
 
-        log.info('{} ({}) ended their turn'.format(self.current_player.name, self.current_suspect.name))
+        self.log.info('{} ({}) ended their turn'.format(self.current_player.name, self.current_suspect.name))
 
         # Check if everyone's out of the game!
         players_status = set([
-                self.__get_player_mapped_to(suspect).in_the_game
+                self.get_player_mapped_to(suspect).in_the_game
                 for suspect
-                in LIST_OF_SUSPECTS
+                in self.LIST_OF_SUSPECTS
             ])
 
         if players_status == {False}:
-            raise GameOver('No players available. Game Over.')
+            self.__game_over = True
+            message = 'No players available. Game Over.'
+            self.log.info(message)
+            raise GameOver(message)
 
         # Get the next suspect's player and mark them current
-        self.current_player = self.__get_player_mapped_to(self.__get_next_suspect())
+        self.current_player = self.get_player_mapped_to(self.__get_next_suspect())
 
     def deal_cards_to(self, player):
         # So this is beautiful:
         # [next(self.__deck)] * 3
         # but it will _replicate_ the elements in the list thrice
-        # and won't call __iter__ !
+        # and won't call __iter__ ! Ha!
         player.cards = [next(self.__deck),
                         next(self.__deck),
                         next(self.__deck)
@@ -501,25 +619,26 @@ class Board:
     # ------ Useful helper methods ------
 
     def __get_next_suspect(self):
-        """
+        '''
         No guard to see if the game's ended: This will keep looping!
-        """
+        '''
         while True:
             next_suspect = next(self.__suspect_looper)
-            next_player = self.__get_player_mapped_to(next_suspect)
+            next_player = self.get_player_mapped_to(next_suspect)
 
             if next_player.in_the_game is False:
-                log.warning('{} ({}) is not in the game; skipping'.format(
+                self.log.warning('{} ({}) is not in the game; skipping'.format(
                         next_player.name,
                         next_suspect.name
                     ))
             else:
                 return next_suspect
 
-    def __get_player_mapped_to(self, suspect):
+    def get_player_mapped_to(self, suspect):
         for k, v in self.__suspect_to_player_map.items():
             if k == suspect:
                 return v
+        return None
 
     def __get_space_for(self, entity):
         suspect = None
@@ -556,22 +675,22 @@ class Board:
 
     # ------ Validators ------
 
-    def __valid_target_space(self, old_space, new_space):
+    def __valid_target_space(self, player, old_space, new_space):
         if new_space in self.__bad_coordinates:
             raise InvalidSpace('Cannot move to holes')
 
         osc = self.__get_coordinates_of(old_space)
         nsc = self.__get_coordinates_of(new_space)
 
-        # Allow the target to be the same as the destination.
-        # if osc == nsc:
-        #     raise SameTargetSpace('Destination space same as target')
+        # Allow players to stay put
+        if osc == nsc:
+            return True
 
         if tuple(x - y for x, y in zip(osc, nsc)) not in self.__valid_coord_deltas:
             raise InvalidTargetSpace(
                 'Cannot teleport {} ({}) from {} to {}'.format(
-                    self.current_player.name,
-                    self.current_player.suspect.name,
+                    player.name,
+                    player.suspect.name,
                     old_space.name,
                     new_space.name,
                 ))
@@ -579,7 +698,7 @@ class Board:
         suspects_in_space = [
             _
             for _ in new_space.suspects_present
-            if _ != self.current_player.suspect
+            if _ != player.suspect and _.in_the_game
         ]
 
         if suspects_in_space:
@@ -607,31 +726,31 @@ class Board:
         return True
 
     def __valid_suspect(self, suspect):
-        if suspect not in LIST_OF_SUSPECTS:
+        if suspect not in self.LIST_OF_SUSPECTS:
             raise InvalidSuspect('Invalid suspect')
 
         return True
 
     def __valid_weapon(self, weapon):
-        if weapon not in LIST_OF_WEAPONS:
+        if weapon not in self.LIST_OF_WEAPONS:
             raise InvalidWeapon('Invalid weapon')
 
         return True
 
     def __valid_space(self, space):
-        if space not in LIST_OF_SPACES:
+        if space not in self.LIST_OF_SPACES:
             raise InvalidSpace('Invalid space')
 
         return True
 
     def __valid_room(self, room):
-        if room not in LIST_OF_ROOMS:
+        if room not in self.LIST_OF_ROOMS:
             raise InvalidRoom('Invalid room')
 
         return True
 
     def __valid_hallway(self, hallway):
-        if hallway not in LIST_OF_HALLWAYS:
+        if hallway not in self.LIST_OF_HALLWAYS:
             raise InvalidHallway('Invalid hallway')
 
         return True
@@ -652,9 +771,9 @@ class Board:
         return True
 
     def __valid_space_for_suggestion(self):
-        """
+        '''
         Player must be in a room to make a suggestion
-        """
+        '''
         space = self.__get_space_for(self.current_player)
         if type(space) is not Room:
             raise InvalidSpaceForSuggestion(
