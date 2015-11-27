@@ -5,22 +5,23 @@ os.environ['http_proxy'] = ''
 os.environ['https_proxy'] = ''
 
 endpoint = 'http://localhost:8000/api'
+requests.post('{}/players'.format(endpoint), json={"name": "Nikhil", "suspect": "scarlet"})
 
-p1 = requests.post('{}/players'.format(endpoint), json={"name": "Nikhil", "suspect": "scarlet"}).json().get('player_token')
+# p1 = requests.post('{}/players'.format(endpoint), json={"name": "Nikhil", "suspect": "scarlet"}).json().get('player_token')
 p2 = requests.post('{}/players'.format(endpoint), json={"name": "Madhu", "suspect": "mustard"}).json().get('player_token')
 p3 = requests.post('{}/players'.format(endpoint), json={"name": "Dawn", "suspect": "white"}).json().get('player_token')
 p4 = requests.post('{}/players'.format(endpoint), json={"name": "Deepu", "suspect": "green"}).json().get('player_token')
 p5 = requests.post('{}/players'.format(endpoint), json={"name": "Catherine", "suspect": "peacock"}).json().get('player_token')
 p6 = requests.post('{}/players'.format(endpoint), json={"name": "Tony", "suspect": "plum"}).json().get('player_token')
 
-players = [
-    p1,
-    p2,
-    p3,
-    p4,
-    p5,
-    p6,
-    ]
+# players = [
+#     p1,
+#     p2,
+#     p3,
+#     p4,
+#     p5,
+#     p6,
+#     ]
 
-print('\n'.join(players))
+# print('\n'.join(players))
 

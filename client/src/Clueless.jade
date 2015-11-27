@@ -12,9 +12,99 @@ html(ng-app="Clueless")
 
     body
         div.container
+            div.ui-view.pure-g
+                div.pure-u-4-5
 
-            div.ui-view(name="board")
+                    //- Game Board
+                    table.pure-table.pure-table-bordered#board-map
+                        tr
+                            td#study
+                                player-box(players="gc.gameState.map.study.players")
+                            td#study_to_hall
+                                player-box(players="gc.gameState.map.study_to_hall.players")
+                            td#hall
+                                player-box(players="gc.gameState.map.hall.players")
+                            td#hall_to_lounge
+                                player-box(players="gc.gameState.map.hall_to_lounge.players")
+                            td#lounge
+                                player-box(players="gc.gameState.map.lounge.players")
+                        tr
+                            td#study_to_library
+                                player-box(players="gc.gameState.map.study_to_library.players")
+                            td.hole
+                            td#hall_to_billiard
+                                player-box(players="gc.gameState.map.hall_to_billiard.players")
+                            td.hole
+                            td#lounge_to_dining
+                                player-box(players="gc.gameState.map.lounge_to_dining.players")
+                        tr
+                            td#library
+                                player-box(players="gc.gameState.map.library.players")
+                            td#library_to_billiard
+                                player-box(players="gc.gameState.map.library_to_billiard.players")
+                            td#billiard_room
+                                player-box(players="gc.gameState.map.billiard_room.players")
+                            td#billiard_to_dining
+                                player-box(players="gc.gameState.map.billiard_to_dining.players")
+                            td#dining_room
+                                player-box(players="gc.gameState.map.dining_room.players")
+                        tr
+                            td#library_to_conservatory
+                                player-box(players="gc.gameState.map.library_to_conservatory.players")
+                            td.hole
+                            td#billiard_to_ballroom
+                                player-box(players="gc.gameState.map.billiard_to_ballroom.players")
+                            td.hole
+                            td#dining_to_kitchen
+                                player-box(players="gc.gameState.map.dining_to_kitchen.players")
+                        tr
+                            td#conservatory
+                                player-box(players="gc.gameState.map.conservatory.players")
+                            td#conservatory_to_ballroom
+                                player-box(players="gc.gameState.map.conservatory_to_ballroom.players")
+                            td#ballroom
+                                player-box(players="gc.gameState.map.ballroom.players")
+                            td#ballroom_to_kitchen
+                                player-box(players="gc.gameState.map.ballroom_to_kitchen.players")
+                            td#kitchen
+                                player-box(players="gc.gameState.map.kitchen.players")
+
+                    p(ng-if="!gc.gameState.game_started") The game has not started yet
+
+                div.pure-u-1-5
+                    div(ng-show="!gc.gameState.game_started && !gc.addedPlayer()")
+                        h3 Add
+                        form
+                            input(type="text" ng-model="gc.addForm.name")
+                            select(ng-model="gc.addForm.suspect")
+                                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects"
+                                       ng-disabled="gc.gameState.suspect_to_player[shortname] != null"
+                                       value="{{shortname}}"
+                                       ) {{fullname}}
+                            button(type="submit" ng-click="gc.addPlayer()") Go
+
+                    div(ng-show="gc.gameState.game_started")
+                        h3 Current Player
+                        h4
+                            |{{ gc.gameState.current_player.name }}
+                            br
+                            small {{ gc.gameState.current_player.suspect_fullname }}
+
+                    div(ng-show="gc.gameState.game_started")
+                        h3 Move
+                        form
+                            select(ng-model="gc.moveForm.target")
+                                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.spaces" value="{{shortname}}") {{fullname}}
+                            button(type="submit" ng-click="gc.movePlayer()") Go
+
             div.ui-view(name="logs")
 
         script(type="application/javascript", src="/scripts/vendor.js")
         script(type="application/javascript", src="/scripts/app.js")
+
+
+
+
+
+
+

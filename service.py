@@ -340,16 +340,26 @@ class BoardService:
             'current_player': {
                 'name': self.__board.current_player.name if self.__board.current_player else None,
                 'suspect': self.get_stub_from_suspect(self.__board.current_player.suspect) if self.__board.current_player else None,
+                'suspect_fullname': self.__board.current_player.suspect.name if self.__board.current_player else None,
             },
+            'unmapped_suspects': [
+                {
+                    'suspect': self.get_stub_from_suspect(_),
+                    'suspect_fullname': _.name,
+                }
+                for _ in self.__board.unmapped_suspects
+            ],
             'map': self.map
         }
 
     @property
     def metadata(self):
         return {
-            'shortname_map': {self.get_stub(_): _.name for _ in self.__board.GAME_DECK},
+            'shortname_map': {self.get_stub(_): _.name for _ in self.__board.GAME_DECK + self.__board.LIST_OF_HALLWAYS},
             'organized_shortname_map': {
                     'rooms': {self.get_stub(_): _.name for _ in self.__board.LIST_OF_ROOMS},
+                    'hallways': {self.get_stub(_): _.name for _ in self.__board.LIST_OF_HALLWAYS},
+                    'spaces': {self.get_stub(_): _.name for _ in self.__board.LIST_OF_SPACES},
                     'suspects': {self.get_stub(_): _.name for _ in self.__board.LIST_OF_SUSPECTS},
                     'weapons': {self.get_stub(_): _.name for _ in self.__board.LIST_OF_WEAPONS},
                 },
@@ -379,7 +389,7 @@ class BoardService:
     @property
     def confidential_file(self):
         return [_.name for _ in self.__board.confidential_file]
-    
+
 
 
 app = Flask(__name__)

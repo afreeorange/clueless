@@ -5,6 +5,7 @@ angular.module('Clueless')
 .config(function($locationProvider, $urlRouterProvider) {
     $locationProvider.html5Mode(true);
 
+    // Set default route
     $urlRouterProvider
     .when('', '/')
     .otherwise(
@@ -19,10 +20,10 @@ angular.module('Clueless')
     localStorageServiceProvider.setPrefix('Clueless');
 })
 
-.run(function(localStorageService, BoardService){
+.run(function(localStorageService, GameService){
 
     // Get the board ID
-    BoardService.getState().then(
+    GameService.getState().then(
         function(response) {
             var loaded_board_id = response.id;
             var cached_board_id = localStorageService.get('board_id');
@@ -32,7 +33,7 @@ angular.module('Clueless')
                 console.log('Set board ID ' + loaded_board_id);
             } else {
                 if (loaded_board_id === cached_board_id) {
-                    console.log('Usig existing board ' + cached_board_id);
+                    console.log('Using existing board ' + cached_board_id);
                 } else {
                     localStorageService.clearAll();
                     console.log('Cleared all local storage for new board');
@@ -41,6 +42,22 @@ angular.module('Clueless')
         }, function(response) {
             toastr.error('Could not fetch state for ID');
         });
+})
+
+.run(function(GameService, $http, CluelessAPI) {
+
+    // Fetch and store game metadata
+    $http.get(CluelessAPI + '/meta')
+         .then(
+            function(response) {
+                return GameService.setMetadata(response.data);
+            }, 
+            function(response) {
+                toastr.error('Could not fetch game metadata');
+                return false;
+            }
+        );
+
 })
 
 ;

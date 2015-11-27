@@ -252,9 +252,6 @@ class Board:
         self.__game_started = False
         self.__time_started = None
 
-        # Initialize a logger
-        self.log = logging.getLogger(__name__)
-
         # The Board is a 5x5 grid with four holes.
         self.__map = [
                 [
@@ -331,6 +328,8 @@ class Board:
         # Use to yield the next player
         self.__suspect_looper = cycle(self.LIST_OF_SUSPECTS)
 
+        # Initialize a logger
+        self.log = logging.getLogger(__name__)
         self.log.info('Started game')
         self.log.info('Confidential file contains "{}"'.format(
                     '", "'.join([_.name for _ in self.confidential_file])

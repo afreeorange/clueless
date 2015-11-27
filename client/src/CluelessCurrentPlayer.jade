@@ -1,0 +1,6 @@
+div(ng-show="bc.boardState.game_started")
+    h3 Current Player
+    h4
+        |{{ bc.boardState.current_player.name }}
+        br
+        small {{ bc.boardState.current_player.suspect_fullname }}

@@ -1,42 +1,23 @@
 angular.module('Clueless')
 
-.controller('boardController', function(BoardService, boardState, boardMetadata, $interval) {
+.controller('gameController', function(GameService, gameState, gameMetadata) {
 
     var vm = this;
-    vm.boardState = boardState;
-    vm.playerName = null;
-    vm.suspect = null;
+    vm.gameState = gameState;
+    vm.gameMetadata = gameMetadata;
 
-    vm.suspectList = boardMetadata.data.organized_shortname_map.suspects;
-    vm.roomList = boardMetadata.data.organized_shortname_map.rooms;
-    vm.weaponList = boardMetadata.data.organized_shortname_map.weapons;
-
-    vm.space = null;
-    vm.suggestion_suspect = null;
-    vm.suggestion_weapon = null;
-    vm.suggestion_room = null;
-
-    vm.addedPlayer = function() {
-        return BoardService.addedPlayer();
-    };
-
+    vm.addForm = {};
+    vm.addForm.name = null;
+    vm.addForm.suspect = null;
     vm.addPlayer = function() {
-        return BoardService.addPlayer(vm.playerName, vm.suspect);
+        return GameService.addPlayer(vm.addForm.name, vm.addForm.suspect);
     };
 
+    vm.moveForm = {};
+    vm.moveForm.target = Object.keys(vm.gameMetadata.organized_shortname_map.spaces)[0];
     vm.movePlayer = function() {
-        return BoardService.movePlayer(vm.room);
+        return GameService.movePlayer(vm.moveForm.target);
     };
-
-    $interval(function(){
-        BoardService.getState().then(
-            function(response) {
-                vm.boardState = response;
-            },
-            function(response) {
-                return;
-            });
-    }.bind(this), 2000);  
 
 })
 
@@ -45,15 +26,15 @@ angular.module('Clueless')
     var vm = this;
     vm.logs = logs;
 
-    $interval(function(){
-        LogsService.getLogs().then(
-            function(response) {
-                vm.logs = response;
-            },
-            function(response) {
-                return;
-            });
-    }.bind(this), 2000);  
+    // $interval(function(){
+    //     LogsService.getLogs().then(
+    //         function(response) {
+    //             vm.logs = response;
+    //         },
+    //         function(response) {
+    //             return;
+    //         });
+    // }.bind(this), 1000);  
 
 })
 

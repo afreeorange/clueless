@@ -3,25 +3,23 @@ angular.module('Clueless')
 .config(function($stateProvider) {
 
     $stateProvider
+
     .state('index', {
         url: '/',
         views: {
             '@': {
-                template: 'Welcome!'
-            },
-            'board@': {
-                templateUrl: 'CluelessBoard.html',
-                controller: 'boardController',
-                controllerAs: 'bc',
+                controller: 'gameController',
+                controllerAs: 'gc',
                 resolve: {
-                    boardState: function(BoardService) {
-                        return BoardService.getState();
+                    gameState: function(GameService) {
+                        return GameService.getState();
                     },
-                    boardMetadata: function(BoardService) {
-                        return BoardService.getMetadata();
+                    gameMetadata: function(GameService) {
+                        return GameService.getMetadata();
                     }
                 }
             },
+
             'logs@': {
                 templateUrl: 'CluelessLogs.html',
                 controller: 'logsController',
@@ -34,15 +32,15 @@ angular.module('Clueless')
             }
         }
     })
+
     .state('404', {
         url: '/oops',
         views: {
             '@': {
-                template: 'HELLOWWWWWWW'
+                template: 'What\'t <em>that</em>?'
             }
         }
     })
-    ;
     
 });
         

@@ -1,6 +1,10 @@
-h2 Logs
+div#logs(ng-if="lc.logs.length > 0")
+    h2 Logs
 
-table.pure-table.pure-table-bordered
-    tr(ng-repeat="log in lc.logs | orderBy:'-timestamp'")
-        td {{ log.timestamp }}
-        td {{ log.message }}
+    table.pure-table.pure-table-bordered
+        tr(ng-repeat="log in lc.logs | orderBy:'-timestamp'")
+            td 
+                span(am-time-ago="log.timestamp")
+                br
+                small {{ log.timestamp }}
+            td {{ log.message }}
