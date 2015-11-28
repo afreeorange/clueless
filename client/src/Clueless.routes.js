@@ -41,6 +41,8 @@ angular.module('Clueless')
             }
         }
     })
+
+    ;
     
 });
         

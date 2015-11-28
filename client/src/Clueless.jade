@@ -72,6 +72,9 @@ html(ng-app="Clueless")
                     p(ng-if="!gc.gameState.game_started") The game has not started yet
 
                 div.pure-u-1-5
+
+                    //- h2 hand: {{ gc.isCurrentTurn() }}
+
                     div(ng-show="!gc.gameState.game_started && !gc.addedPlayer()")
                         h3 Add
                         form
@@ -83,6 +86,8 @@ html(ng-app="Clueless")
                                        ) {{fullname}}
                             button(type="submit" ng-click="gc.addPlayer()") Go
 
+                        hr
+
                     div(ng-show="gc.gameState.game_started")
                         h3 Current Player
                         h4
@@ -90,12 +95,69 @@ html(ng-app="Clueless")
                             br
                             small {{ gc.gameState.current_player.suspect_fullname }}
 
+                        hr
+
                     div(ng-show="gc.gameState.game_started")
                         h3 Move
                         form
                             select(ng-model="gc.moveForm.target")
                                 option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.spaces" value="{{shortname}}") {{fullname}}
                             button(type="submit" ng-click="gc.movePlayer()") Go
+
+                        hr
+
+                    div(ng-show="gc.gameState.game_started")
+                        h3 Suggest
+                        form
+                            div.form-group
+                                label Suspect
+                                select(ng-model="gc.suggestForm.suspect")
+                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects" value="{{shortname}}") {{fullname}}
+
+                            div.form-group
+                                label Weapon
+                                select(ng-model="gc.suggestForm.weapon")
+                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.weapons" value="{{shortname}}") {{fullname}}
+
+                            button(type="submit" ng-click="gc.makeSuggestion()") Go
+
+                        hr
+
+                    div(ng-show="gc.gameState.game_started")
+                        h3 Accuse
+                        form
+                            div.form-group
+                                label Suspect
+                                select(ng-model="gc.suggestForm.suspect")
+                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects" value="{{shortname}}") {{fullname}}
+
+                            div.form-group
+                                label Room
+                                select(ng-model="gc.suggestForm.room")
+                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.rooms" value="{{shortname}}") {{fullname}}
+
+                            div.form-group
+                                label Weapon
+                                select(ng-model="gc.suggestForm.weapon")
+                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.weapons" value="{{shortname}}") {{fullname}}
+
+                            button(type="submit" ng-click="gc.makeSuggestion()") Go
+
+                        hr
+
+                    div(ng-show="gc.gameState.game_started")
+                        h3 Current Player
+                        h4
+                            |{{ gc.gameState.current_player.name }}
+                            br
+                            small {{ gc.gameState.current_player.suspect_fullname }}
+
+                        hr
+
+                    div(ng-show="gc.gameState.game_started")
+                        button(type="button" ng-click="gc.endTurn()") End Turn
+
+                        hr
 
             div.ui-view(name="logs")
 

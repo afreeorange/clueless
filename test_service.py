@@ -5,7 +5,7 @@ os.environ['http_proxy'] = ''
 os.environ['https_proxy'] = ''
 
 endpoint = 'http://localhost:8000/api'
-requests.post('{}/players'.format(endpoint), json={"name": "Nikhil", "suspect": "scarlet"})
+# requests.post('{}/players'.format(endpoint), json={"name": "Nikhil", "suspect": "scarlet"})
 
 # p1 = requests.post('{}/players'.format(endpoint), json={"name": "Nikhil", "suspect": "scarlet"}).json().get('player_token')
 p2 = requests.post('{}/players'.format(endpoint), json={"name": "Madhu", "suspect": "mustard"}).json().get('player_token')

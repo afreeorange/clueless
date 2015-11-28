@@ -161,7 +161,7 @@ class BoardService:
         player_token = self.__make_player_token()
         self.__map_token_to_player(player_token, p)
 
-        return player_token
+        return self.get_player(player_token)
 
     def move_player(self, player_token, space):
         self.__board.move_player(
@@ -219,6 +219,43 @@ class BoardService:
 
     def get_player_with_token(self, player_token):
         return self.__token_to_player_map.get(player_token, None)
+
+    def get_player(self, player_token):
+        player = self.get_player_with_token(player_token)
+
+        if not player:
+            raise InvalidPlayerToken('Couldn\'t find that player')
+
+        return {
+            'token': player_token,
+            'name': player.name,
+            'suspect': self.get_stub(player.suspect),
+            'cards': [self.get_stub(_) for _ in player.cards],
+            'game_sheet': {
+                    'rooms': {
+                            bs.get_stub(k): v
+                            for k, v in player.game_sheet.items()
+                            if type(k) is Room
+                        },
+                    'suspects': {
+                            bs.get_stub(k): v
+                            for k, v in player.game_sheet.items()
+                            if type(k) is Suspect
+                        },
+                    'weapons': {
+                            bs.get_stub(k): v
+                            for k, v in player.game_sheet.items()
+                            if type(k) is Weapon
+                        },
+                },
+            'suggestions': [
+                    {
+                        k: bs.get_stub(v)
+                        for k, v in _.items()
+                    }
+                    for _ in player.suggestions
+                ]
+        }
 
     # Go from a shortname/stub to an object
 
@@ -291,12 +328,6 @@ class BoardService:
             return self.__board.get_player_mapped_to(suspect).name
 
         return None
-
-    def player_cards(self, player_token):
-        player = self.get_player_with_token(player_token)
-
-    def get_player(self, player_token):
-        return self.get_player_with_token(player_token)
 
     def __make_player_token(self):
         if self.__test_mode:
@@ -410,6 +441,16 @@ b = Board()
 bs = BoardService(b, test_mode=True)
 
 
+def handle_exceptions(f):
+    ''' Unused
+    '''
+    def wrapped(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception as e:
+            return {'message': str(e)}, 400
+
+
 class CluelessLog(Resource):
     def get(self):
         return bs.log
@@ -417,45 +458,10 @@ class CluelessLog(Resource):
 
 class CluelessPlayer(Resource):
     def get(self, player_token):
-        player = bs.get_player(player_token)
-
-        if not player:
-            return {'message': 'Couldn\'t find that player'}, 404
-
-        player_cards = [bs.get_stub(_) for _ in player.cards]
-        player_suggestions = [
-                    {
-                        k: bs.get_stub(v)
-                        for k, v in _.items()
-                    }
-                    for _ in player.suggestions
-                ]
-        game_sheet = {
-                    'rooms': {
-                            bs.get_stub(k): v
-                            for k, v in player.game_sheet.items()
-                            if type(k) is Room
-                        },
-                    'suspects': {
-                            bs.get_stub(k): v
-                            for k, v in player.game_sheet.items()
-                            if type(k) is Suspect
-                        },
-                    'weapons': {
-                            bs.get_stub(k): v
-                            for k, v in player.game_sheet.items()
-                            if type(k) is Weapon
-                        },
-                }
-
-        return {
-                'name': player.name,
-                'suspect': bs.get_stub_from_suspect(player.suspect),
-                'cards': player_cards,
-                'suggestions': player_suggestions,
-                'game_sheet': game_sheet,
-                'in_the_game': player.in_the_game,
-            }
+        try:
+            return bs.get_player(player_token)
+        except Exception as e:
+            return {'message': str(e)}, 404
 
 
 class CluelessPlayers(Resource):
@@ -464,19 +470,12 @@ class CluelessPlayers(Resource):
 
     def post(self):
         try:
-            player_token = bs.add_player(
-                                name=request.json.get('name'),
-                                suspect=request.json.get('suspect'),
-                                )
+            return bs.add_player(
+                        name=request.json.get('name'),
+                        suspect=request.json.get('suspect'),
+                        )
         except Exception as e:
             return {'message': str(e)}, 400
-        else:
-            return {
-                    'name': request.json.get('name'),
-                    'suspect': request.json.get('suspect'),
-                    'suspect_fullname': bs.get_suspect_from_stub(request.json.get('suspect')).name,
-                    'player_token': player_token
-                }
 
 
 class CluelessEndTurn(Resource):
@@ -490,15 +489,13 @@ class CluelessEndTurn(Resource):
 class CluelessMakeSuggestion(Resource):
     def put(self):
         try:
-            disprover = bs.make_suggestion(
-                player_token=request.json.get('token'),
-                suspect=request.json.get('suspect'),
-                weapon=request.json.get('weapon'),
-                )
+            return bs.make_suggestion(
+                        player_token=request.json.get('token'),
+                        suspect=request.json.get('suspect'),
+                        weapon=request.json.get('weapon'),
+                        )
         except Exception as e:
             return {'message': str(e)}, 400
-        else:
-            return disprover
 
 
 class CluelessMakeAccusation(Resource):

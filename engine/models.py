@@ -353,6 +353,8 @@ class Board:
         self.__suspect_to_player_map[player.suspect] = player
         self.deal_cards_to(player)
         player.game_sheet = {_: True for _ in self.GAME_DECK}
+        for _ in player.cards:
+            player.game_sheet[_] = False
 
         self.log.info('Added player {} as {}'.format(
                 player.name,

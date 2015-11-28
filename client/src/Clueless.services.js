@@ -50,6 +50,7 @@ angular.module('Clueless')
                 function(response) {
                     toastr.success('Created new player');
                     localStorageService.set('player_token', response.data.player_token);
+                    localStorageService.set('suspect', response.data.suspect);
                     return response.data;
                 },
                function(response) {
@@ -65,7 +66,23 @@ angular.module('Clueless')
         return localStorageService.get('player_token') ? true : false;
     };
 
+    // // Check if it's the current turn
+    // service.isCurrentTurn = function() {
+    //     currentTurn = service.getState()
+    //     .then(
+    //         function(response) {
+    //             if (response.current_player == localStorageService.get('suspect')) {
+    //                 return true;
+    //             }
+    //             return false;
+    //         }, function(response) {
+    //             toastr.error('Couldn\'t fetch turn data');
+    //         }
+    //     );
+    // };
+
     // Get player sheet
+
 
     // Update player sheet
 
@@ -75,8 +92,6 @@ angular.module('Clueless')
             'token': localStorageService.get('player_token'),
             'space': target_space
         };
-
-        console.log(data);
 
         return $http.put(CluelessAPI + '/move', data)
             .then(
@@ -92,10 +107,45 @@ angular.module('Clueless')
     };
 
     // Make suggestion
+    service.makeSuggestion = function(suspect, weapon, room) {
+        data = {
+            'token': localStorageService.get('player_token'),
+            'suspect': suspect,
+            'weapon': weapon
+        }
+
+        return $http.put(CluelessAPI + '/suggest', data)
+            .then(
+                function(response) {
+                    toastr.success('Sent suggestion');
+                    return response.data;
+                },
+               function(response) {
+                    toastr.error(response.data.message);
+                }
+            );
+    };
+
 
     // Make accusation
 
     // End turn
+    service.endTurn = function() {
+        data = {
+            'token': localStorageService.get('player_token')
+        };
+
+        return $http.put(CluelessAPI + '/end_turn', data)
+            .then(
+                function(response) {
+                    toastr.success('Ended turn');
+                    return response.data;
+                },
+               function(response) {
+                    toastr.error(response.data.message);
+                }
+            );
+    };
 
     return service;
 })
