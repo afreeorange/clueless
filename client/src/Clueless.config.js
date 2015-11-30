@@ -44,7 +44,7 @@ angular.module('Clueless')
         });
 })
 
-.run(function(GameService, $http, CluelessAPI) {
+.run(function(GameService, $http, CluelessAPI, localStorageService) {
 
     // Fetch and store game metadata
     $http.get(CluelessAPI + '/meta')
@@ -58,6 +58,28 @@ angular.module('Clueless')
             }
         );
 
+    // Fetch and store player data
+    GameService.refreshPlayerData();
+
 })
 
 ;
+
+
+// Global settings for all toast notifications
+toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": true,
+    "positionClass": "toast-bottom-left",
+    "preventDuplicates": true,
+    "showDuration": "600",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+};

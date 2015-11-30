@@ -2,9 +2,9 @@ div#logs(ng-if="lc.logs.length > 0")
     h2 Logs
 
     table.pure-table.pure-table-bordered
-        tr(ng-repeat="log in lc.logs | orderBy:'-timestamp'")
-            td 
+        ul(ng-repeat="log in lc.logs | orderBy:'-timestamp'")
+            li {{ log.message }}
+                br
                 span(am-time-ago="log.timestamp")
                 br
                 small {{ log.timestamp }}
-            td {{ log.message }}

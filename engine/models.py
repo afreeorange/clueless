@@ -109,17 +109,19 @@ class Player:
     def suggestion(self):
         return self.__suggestions[-1] if self.__suggestions else []
 
-    @suggestion.setter
-    def suggestion(self, suggestion):
-        self.__suggestions.append({
-                    'weapon': suggestion['weapon'],
-                    'suspect': suggestion['suspect'],
-                    'room': suggestion['room'],
-                })
-
     @property
     def suggestions(self):
         return self.__suggestions
+
+    @property
+    def all_suggestions(self):
+        return self.__all_suggestions
+
+    def update_suggestions(self, suggestion, disprove):
+        self.__suggestions.append({
+                'suggestion': suggestion,
+                'disprove': disprove
+            })
 
     @property
     def suspect(self):
@@ -302,7 +304,7 @@ class Board:
 
         # Create the confidential file
         self.__confidential_file = [
-                random.choice(self.LIST_OF_ROOMS),
+                self.HALL, # random.choice(self.LIST_OF_ROOMS),
                 random.choice(self.LIST_OF_SUSPECTS),
                 random.choice(self.LIST_OF_WEAPONS),
             ]
@@ -324,6 +326,9 @@ class Board:
 
         # "GAME _OVER_, MAN :'("
         self.__game_over = False
+
+        # Winner of the game
+        self.__winner = None
 
         # Use to yield the next player
         self.__suspect_looper = cycle(self.LIST_OF_SUSPECTS)
@@ -438,11 +443,12 @@ class Board:
 
         player.turn['suggested'] = True
 
-        player.suggestion = {
-                    'weapon': weapon,
-                    'suspect': suspect,
-                    'room': player_room,
-                }
+        suggestion = {
+                'weapon': weapon,
+                'suspect': suspect,
+                'room': player_room,
+            }
+        disprove = None
 
         self.log.info('{} ({}) suggested that {} ({}) did it with a {} in {}'.format(
                     player.name,
@@ -469,23 +475,34 @@ class Board:
         # End the game if the suggestion is in the game file
         if [player_room, suspect, weapon] == self.__confidential_file:
             self.__game_over = True
+            self.__winner = player
+            disprove = None
 
             self.log.info('{} ({})\'s suggestion was correct. Game Over!'.format(
-                        self.current_player.name,
-                        self.current_suspect.name
+                        player.name,
+                        player.suspect.name
                     ))
+        else:
+            disprove_player, suspect, card = self.disprove_suggestion(player, suggestion)
+            disprove = {
+                'suspect': suspect,
+                'player': disprove_player,
+                'card': card,
+            }
+
+        player.update_suggestions(suggestion, disprove)
 
         return True
 
-    def disprove_suggestion(self, player):
+    def disprove_suggestion(self, player, suggestion):
         self.__valid_board_state()
         self.__valid_player(player)
         self.__valid_player_turn(player)
 
         if not player.turn['suggested']:
             raise UnfinishedMove('{} ({}) must make a suggestion before getting a card to disprove it'.format(
-                    self.current_player.name,
-                    self.current_suspect.name,
+                    player.name,
+                    player.suspect.name,
                 ))
 
         # Need to cycle through the list of suspects clockwise
@@ -493,7 +510,7 @@ class Board:
         bottom = self.LIST_OF_SUSPECTS[suspect_index + 1:]
         top = self.LIST_OF_SUSPECTS[:suspect_index]
 
-        our_suggestion = player.suggestion.values()
+        our_suggestion = suggestion.values()
 
         for suspect in bottom + top:
             their_cards = self.get_player_mapped_to(suspect).cards
@@ -517,7 +534,10 @@ class Board:
 
                 player.update_game_sheet(random_card)
 
-                return (player, player.suspect, random_card)
+                return (self.get_player_mapped_to(suspect),
+                        suspect,
+                        random_card
+                        )
 
     def make_accusation(self, player, suspect, weapon, room=None):
         '''
@@ -550,6 +570,7 @@ class Board:
         # End the game if the suggestion is in the game file
         if [player_room, suspect, weapon] == self.__confidential_file:
             self.__game_over = True
+            self.__winner = player
             self.log.info('{} ({})\'s accusation was correct. Game Over!'.format(
                         player.name,
                         player.suspect.name
@@ -600,6 +621,7 @@ class Board:
 
         if players_status == {False}:
             self.__game_over = True
+            self.__winner = player
             message = 'No players available. Game Over.'
             self.log.info(message)
             raise GameOver(message)
@@ -825,6 +847,10 @@ class Board:
     @property
     def game_over(self):
         return self.__game_over
+
+    @property
+    def winner(self):
+        return self.__winner
 
     @property
     def time_started(self):

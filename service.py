@@ -134,8 +134,9 @@ class BoardService:
 
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%z'))
+        handler.setLevel(logging.DEBUG)
         self.engine_log = logging.getLogger('engine')
-        self.engine_log.setLevel(logging.INFO)
+        self.engine_log.setLevel(logging.DEBUG)
         self.engine_log.addHandler(handler)
         self.engine_log.addHandler(JSONHandler(self.__game_log))
 
@@ -181,24 +182,11 @@ class BoardService:
                 )
 
         if not self.__board.game_over:
-            return self.disprove_suggestion(player_token)
-
-    def disprove_suggestion(self, player_token):
-        player = self.get_player_with_token(player_token)
-        disprover, disprover_suspect, disprover_card = self.__board.disprove_suggestion(player)
-
-        # if type(disprover_card) is Room:
-        #     card = self.get_stub_from_space(disprover_card)
-        # elif type(disprover_card) is Weapon:
-        #     card = self.get_stub_from_weapon(disprover_card)
-        # elif type(disprover_card) is Suspect:
-        #     card = self.get_stub_from_suspect(disprover_card)
-
-        return {
-                'disprover': disprover.name,
-                'suspect': disprover_suspect.name,
-                'card': disprover_card.name
-            }
+            return {
+                    'suspect': self.get_stub(player.suggestions[-1]['disprove']['suspect']),
+                    'player': player.suggestions[-1]['disprove']['player'].name,
+                    'card': self.get_stub(player.suggestions[-1]['disprove']['card']),
+                }
 
     def make_accusation(self, player_token, suspect, weapon, room):
         player = self.get_player_with_token(player_token)
@@ -227,7 +215,7 @@ class BoardService:
             raise InvalidPlayerToken('Couldn\'t find that player')
 
         return {
-            'token': player_token,
+            'player_token': player_token,
             'name': player.name,
             'suspect': self.get_stub(player.suspect),
             'cards': [self.get_stub(_) for _ in player.cards],
@@ -250,11 +238,18 @@ class BoardService:
                 },
             'suggestions': [
                     {
-                        k: bs.get_stub(v)
-                        for k, v in _.items()
+                        'disprove': {
+                            k: bs.get_stub(v) if type(v) is not Player else v.name
+                            for k, v in _['disprove'].items()
+                        },
+                        'suggestion': {
+                            k: bs.get_stub(v)
+                            for k, v in _['suggestion'].items()
+                        }
                     }
                     for _ in player.suggestions
-                ]
+                ],
+            'turn': player.turn
         }
 
     # Go from a shortname/stub to an object
@@ -339,7 +334,6 @@ class BoardService:
         return {
             'name': self.get_player_name_from_suspect(suspect),
             'suspect': self.get_stub_from_suspect(suspect),
-            'suspect_fullname': suspect.name,
             'in_the_game': self.get_player_object_from_suspect(suspect).in_the_game if self.get_player_object_from_suspect(suspect) else None
         }
 
@@ -356,7 +350,10 @@ class BoardService:
             'time_started': self.__board.time_started,
             'game_started': self.__board.game_started,
             'game_over': self.__board.game_over,
-            'winner': None,
+            'winner': {
+                'name': self.__board.winner.name if self.__board.winner else None,
+                'suspect': self.get_stub_from_suspect(self.__board.winner.suspect) if self.__board.winner else None
+            },
             'suspect_to_player': {
                 self.get_stub_from_suspect(suspect): player_object.name if player_object else None
                 for suspect, player_object
@@ -419,7 +416,7 @@ class BoardService:
 
     @property
     def confidential_file(self):
-        return [_.name for _ in self.__board.confidential_file]
+        return [self.get_stub(_) for _ in self.__board.confidential_file]
 
 
 
@@ -440,16 +437,12 @@ def after_request(response):
 b = Board()
 bs = BoardService(b, test_mode=True)
 
+handler = logging.StreamHandler(sys.stdout)
+handler.setFormatter(logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%z'))
 
-def handle_exceptions(f):
-    ''' Unused
-    '''
-    def wrapped(*args, **kwargs):
-        try:
-            return f(*args, **kwargs)
-        except Exception as e:
-            return {'message': str(e)}, 400
-
+log = logging.getLogger('CluelessService')
+log.setLevel(logging.DEBUG)
+log.addHandler(handler)
 
 class CluelessLog(Resource):
     def get(self):
@@ -551,21 +544,12 @@ api.add_resource(CluelessConfidentialFile, '/api/confidential_file')
 api.add_resource(Clueless, '/api')
 
 
-@app.route('/test')
-def test():
-    return bs.map
-
-
 @app.route('/new')
 def new_game():
-    importlib.reload(engine)
     global bs
-    global b
-    b = None
-    bs = None
     bs = BoardService(Board(), test_mode=True)
-    print(bs)
     return jsonify(bs.state)
+
 
 @app.route('/')
 def client_interface():

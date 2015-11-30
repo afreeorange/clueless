@@ -4,15 +4,7 @@ angular.module('Clueless')
     var service = {};
 
     // Metadata services
-    service.metadata = $http.get(CluelessAPI + '/meta')
-                         .then(
-                             function(response) {
-                                 return response.data;
-                             },
-                            function(response) {
-                                 toastr.error('Could not get board metadata');
-                             }
-                         );
+    service.metadata = null;
     service.getMetadata = function() {
         return service.metadata;
     };
@@ -20,22 +12,24 @@ angular.module('Clueless')
         service.metadata = data;
         return true;
     };
-    service.expandShortname = function(shortname) {
-        return service.metadata.shortname_map[shortname];
-    };
 
     // State services
-    service.state = $http.get(CluelessAPI)
-                         .then(
-                             function(response) {
-                                 return response.data;
-                             },
-                            function(response) {
-                                 toastr.error('Could not get board state');
-                             }
-                         );
+    service.state = null;
     service.getState = function() {
+        service.state = $http.get(CluelessAPI)
+                             .then(
+                                 function(response) {
+                                     return response.data;
+                                 },
+                                function(response) {
+                                     toastr.error('Could not get board state');
+                                 }
+                             );
         return service.state;
+    };
+    service.setState = function(data) {
+        service.state = data;
+        return true;
     };
 
     // Add player and set local storage with token
@@ -48,15 +42,40 @@ angular.module('Clueless')
         return $http.post(CluelessAPI + '/players', data)
             .then(
                 function(response) {
-                    toastr.success('Created new player');
                     localStorageService.set('player_token', response.data.player_token);
                     localStorageService.set('suspect', response.data.suspect);
+
                     return response.data;
                 },
                function(response) {
                     toastr.error(response.data.message);
                 }
             );
+    };
+
+    // Get player information
+    service.playerData = null;
+    service.getPlayerData = function() {
+        return service.playerData;
+    };
+    service.setPlayerData = function(data) {
+        service.playerData = data;
+        return true;
+    };
+    service.refreshPlayerData = function() {
+        player_token = localStorageService.get('player_token');
+
+        $http.get(CluelessAPI + '/players/' + player_token)
+           .then(
+               function(response) {
+                   service.playerData = response.data;
+               },
+               function(response) {
+                   return;
+               }
+           );
+
+        return service.playerData;
     };
 
     // Set player token
@@ -112,7 +131,7 @@ angular.module('Clueless')
             'token': localStorageService.get('player_token'),
             'suspect': suspect,
             'weapon': weapon
-        }
+        };
 
         return $http.put(CluelessAPI + '/suggest', data)
             .then(
@@ -153,7 +172,9 @@ angular.module('Clueless')
 .factory('LogsService', function(CluelessAPI, $http) {
     var service = {};
 
-    service.logs = $http.get(CluelessAPI + '/logs')
+    service.logs = null;
+    service.getLogs = function() {
+        service.logs = $http.get(CluelessAPI + '/logs')
                          .then(
                              function(response) {
                                 return response.data;
@@ -162,8 +183,6 @@ angular.module('Clueless')
                                 toastr.error('Could not get logs');
                              }
                          );
-
-    service.getLogs = function() {
         return service.logs;
     };
 

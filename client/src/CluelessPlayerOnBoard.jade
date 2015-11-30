@@ -2,4 +2,4 @@ div
     div.player-on-board(ng-repeat="player in players" ng-class="{'player-out-of-game': player.in_the_game === false}")
         div.player-suspect {{ player.name }}
         div.player-name(ng-if="player.name") 
-            small {{ player.suspect_fullname }}
+            small {{ pbc.expandShortname(player.suspect) }}

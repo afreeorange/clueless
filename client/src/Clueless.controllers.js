@@ -1,15 +1,20 @@
 angular.module('Clueless')
 
-.controller('gameController', function(GameService, gameState, gameMetadata) {
+.controller('gameController', function(GameService, gameState, $interval) {
 
     var vm = this;
     vm.gameState = gameState;
-    vm.gameMetadata = gameMetadata;
+    // vm.gameMetadata = gameMetadata;
+    vm.gameMetadata = GameService.getMetadata();
 
     // Resolve shortnames
     vm.expandShortname = function(shortname) {
-        console.log(vm.expandShortname(shortname));
-        return vm.expandShortname(shortname);
+        return vm.gameMetadata.shortname_map[shortname];
+    };
+
+    // Determine of the client is already added to the board
+    vm.addedPlayer = function() {
+        return GameService.addedPlayer();
     };
 
     // Add player
@@ -19,6 +24,10 @@ angular.module('Clueless')
     vm.addPlayer = function() {
         return GameService.addPlayer(vm.addForm.name, vm.addForm.suspect);
     };
+
+    // Player data
+    vm.playerData = GameService.getPlayerData();
+    console.log(vm.playerData);
 
     // Move 
     vm.moveForm = {};
@@ -45,6 +54,21 @@ angular.module('Clueless')
         return GameService.isCurrentTurn();
     };
 
+    $interval(function(){
+        GameService.getState().then(
+            function(response) {
+                vm.gameState = response;
+            },
+            function(response) {
+                return;
+            });
+
+        if (vm.addedPlayer()) {
+            vm.playerData = GameService.refreshPlayerData();    
+        }
+
+    }.bind(this), 2000);  
+
 })
 
 .controller('logsController', function(LogsService, logs, $interval) {
@@ -52,15 +76,15 @@ angular.module('Clueless')
     var vm = this;
     vm.logs = logs;
 
-    // $interval(function(){
-    //     LogsService.getLogs().then(
-    //         function(response) {
-    //             vm.logs = response;
-    //         },
-    //         function(response) {
-    //             return;
-    //         });
-    // }.bind(this), 1000);  
+    $interval(function(){
+        LogsService.getLogs().then(
+            function(response) {
+                vm.logs = response;
+            },
+            function(response) {
+                return;
+            });
+    }.bind(this), 2000);  
 
 })
 
