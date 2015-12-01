@@ -17,6 +17,14 @@ angular.module('Clueless')
         return GameService.addedPlayer();
     };
 
+    // Determine if the client is in the game
+    vm.playerInTheGame = function() {
+        if (vm.playerData) {
+            return vm.playerData.in_the_game;
+        }
+        return null;
+    };
+
     // Add player
     vm.addForm = {};
     vm.addForm.name = null;
@@ -27,7 +35,6 @@ angular.module('Clueless')
 
     // Player data
     vm.playerData = GameService.getPlayerData();
-    console.log(vm.playerData);
 
     // Move 
     vm.moveForm = {};
@@ -40,9 +47,17 @@ angular.module('Clueless')
     vm.suggestForm = {};
     vm.suggestForm.suspect = Object.keys(vm.gameMetadata.organized_shortname_map.suspects)[0];
     vm.suggestForm.weapon = Object.keys(vm.gameMetadata.organized_shortname_map.weapons)[0];
-    vm.suggestForm.room = Object.keys(vm.gameMetadata.organized_shortname_map.rooms)[0];
     vm.makeSuggestion = function() {
-        return GameService.makeSuggestion(vm.suggestForm.suspect, vm.suggestForm.weapon, vm.suggestForm.room);
+        return GameService.makeSuggestion(vm.suggestForm.suspect, vm.suggestForm.weapon);
+    };
+
+    // Accuse
+    vm.accuseForm = {};
+    vm.accuseForm.suspect = Object.keys(vm.gameMetadata.organized_shortname_map.suspects)[0];
+    vm.accuseForm.weapon = Object.keys(vm.gameMetadata.organized_shortname_map.weapons)[0];
+    vm.accuseForm.room = Object.keys(vm.gameMetadata.organized_shortname_map.rooms)[0];
+    vm.makeAccusation = function() {
+        return GameService.makeAccusation(vm.accuseForm.suspect, vm.accuseForm.weapon, vm.accuseForm.room);
     };
 
     // End turn

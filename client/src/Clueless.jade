@@ -10,9 +10,14 @@ html(ng-app="Clueless")
         link(rel="stylesheet", href="/styles/vendor.css")
         link(rel="stylesheet", href="/styles/app.css")
 
-    body
+    body.ui-view
+
+
+        div#game-over(ng-if="gc.gameState.game_over")
+            h1 Game Over
+
         div.container
-            div.ui-view.pure-g
+            div.pure-g
                 div.pure-u-3-5
 
                     //- Game Board
@@ -85,12 +90,15 @@ html(ng-app="Clueless")
 
                 div.pure-u-1-5
 
+                    h2 In the game? {{ gc.playerData.in_the_game }}
+                    h2 Current turn? {{ gc.playerData.is_current_turn }}
+
                     div(ng-if="!gc.gameState.game_started") 
                         h3 The game has not started yet
 
 
                     div(ng-if="gc.addedPlayer()")
-                        h3 Cards
+                        h3 Cards {{gc.addedPlayer()}}
                         ul
                             li(ng-repeat="card in gc.playerData.cards") {{gc.expandShortname(card)}}
 
@@ -117,7 +125,7 @@ html(ng-app="Clueless")
                         hr
 
                     div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
-                        h3 Move
+                        h3 Move ({{ gc.playerData.turn.moved }})
                         form
                             select(ng-model="gc.moveForm.target")
                                 optgroup(label="Rooms")
@@ -129,7 +137,7 @@ html(ng-app="Clueless")
                         hr
 
                     div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
-                        h3 Suggest
+                        h3 Suggest ({{ gc.playerData.turn.suggested }})
                         form
                             div.form-group
                                 label Suspect
@@ -146,29 +154,29 @@ html(ng-app="Clueless")
                         hr
 
                     div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
-                        h3 Accuse
+                        h3 Accuse ({{ gc.playerData.turn.accused }})
                         form
                             div.form-group
                                 label Suspect
-                                select(ng-model="gc.suggestForm.suspect")
+                                select(ng-model="gc.accuseForm.suspect")
                                     option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects" value="{{shortname}}") {{fullname}}
 
                             div.form-group
                                 label Room
-                                select(ng-model="gc.suggestForm.room")
+                                select(ng-model="gc.accuseForm.room")
                                     option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.rooms" value="{{shortname}}") {{fullname | removeThe}}
 
                             div.form-group
                                 label Weapon
-                                select(ng-model="gc.suggestForm.weapon")
+                                select(ng-model="gc.accuseForm.weapon")
                                     option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.weapons" value="{{shortname}}") {{fullname}}
 
-                            button(type="submit" ng-click="gc.makeSuggestion()") Go
+                            button(type="submit" ng-click="gc.makeAccusation()") Go
 
                         hr
 
                     div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
-                        button(type="button" ng-click="gc.endTurn()") End Turn
+                        button(type="button" ng-click="gc.endTurn()") End Turn {{ gc.playerData.turn.moved || gc.playerData.turn.suggested }}
 
                         hr
 

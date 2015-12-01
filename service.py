@@ -217,6 +217,8 @@ class BoardService:
         return {
             'player_token': player_token,
             'name': player.name,
+            'in_the_game': player.in_the_game,
+            'is_current_turn': True if self.__board.current_player == player else False,
             'suspect': self.get_stub(player.suspect),
             'cards': [self.get_stub(_) for _ in player.cards],
             'game_sheet': {

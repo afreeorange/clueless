@@ -78,32 +78,10 @@ angular.module('Clueless')
         return service.playerData;
     };
 
-    // Set player token
-
     // Check if player's been added
     service.addedPlayer = function() {
         return localStorageService.get('player_token') ? true : false;
     };
-
-    // // Check if it's the current turn
-    // service.isCurrentTurn = function() {
-    //     currentTurn = service.getState()
-    //     .then(
-    //         function(response) {
-    //             if (response.current_player == localStorageService.get('suspect')) {
-    //                 return true;
-    //             }
-    //             return false;
-    //         }, function(response) {
-    //             toastr.error('Couldn\'t fetch turn data');
-    //         }
-    //     );
-    // };
-
-    // Get player sheet
-
-
-    // Update player sheet
 
     // Move player
     service.movePlayer = function(target_space) {
@@ -126,7 +104,7 @@ angular.module('Clueless')
     };
 
     // Make suggestion
-    service.makeSuggestion = function(suspect, weapon, room) {
+    service.makeSuggestion = function(suspect, weapon) {
         data = {
             'token': localStorageService.get('player_token'),
             'suspect': suspect,
@@ -145,8 +123,26 @@ angular.module('Clueless')
             );
     };
 
-
     // Make accusation
+    service.makeAccusation = function(suspect, weapon, room) {
+        data = {
+            'token': localStorageService.get('player_token'),
+            'suspect': suspect,
+            'weapon': weapon,
+            'room': room
+        };
+
+        return $http.put(CluelessAPI + '/accuse', data)
+            .then(
+                function(response) {
+                    toastr.success('Sent accusation');
+                    return response.data;
+                },
+               function(response) {
+                    toastr.error(response.data.message);
+                }
+            );
+    };
 
     // End turn
     service.endTurn = function() {

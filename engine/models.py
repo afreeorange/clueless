@@ -567,7 +567,7 @@ class Board:
                     player_room.name
                 ))
 
-        # End the game if the suggestion is in the game file
+        # End the game if the accusation is in the game file
         if [player_room, suspect, weapon] == self.__confidential_file:
             self.__game_over = True
             self.__winner = player
@@ -621,7 +621,7 @@ class Board:
 
         if players_status == {False}:
             self.__game_over = True
-            self.__winner = player
+            # self.__winner = player
             message = 'No players available. Game Over.'
             self.log.info(message)
             raise GameOver(message)
@@ -786,10 +786,13 @@ class Board:
                         ))
 
         if self.__game_over:
-            raise GameOver('{} ({}) has won the game'.format(
-                        self.current_player.name,
-                        self.current_suspect.name
-                    ))
+            if not self.__winner:
+                raise GameOver('Game over. There were no winners :/')
+            else:
+                raise GameOver('{} ({}) has won the game'.format(
+                            self.current_player.name,
+                            self.current_suspect.name
+                        ))
 
         return True
 
