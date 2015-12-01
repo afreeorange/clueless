@@ -28,17 +28,16 @@ angular.module('Clueless')
             var loaded_board_id = response.id;
             var cached_board_id = localStorageService.get('board_id');
 
-            if (!cached_board_id) {
+            if (loaded_board_id === cached_board_id) {
+                console.log('Using existing board ' + cached_board_id);
+            } else {
+                localStorageService.clearAll();
+                console.log('Cleared all local storage for new board');
+
                 localStorageService.set('board_id', loaded_board_id);
                 console.log('Set board ID ' + loaded_board_id);
-            } else {
-                if (loaded_board_id === cached_board_id) {
-                    console.log('Using existing board ' + cached_board_id);
-                } else {
-                    localStorageService.clearAll();
-                    console.log('Cleared all local storage for new board');
-                }
             }
+
         }, function(response) {
             toastr.error('Could not fetch state for ID');
         });

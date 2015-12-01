@@ -80,5 +80,3 @@ class SameTargetSpace(Exception):
 
 class UnfinishedMove(Exception):
     pass
-
-

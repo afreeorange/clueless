@@ -441,9 +441,10 @@ bs = BoardService(b, test_mode=True)
 
 handler = logging.StreamHandler(sys.stdout)
 handler.setFormatter(logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%z'))
+handler.setLevel(logging.INFO)
 
 log = logging.getLogger('CluelessService')
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 log.addHandler(handler)
 
 class CluelessLog(Resource):

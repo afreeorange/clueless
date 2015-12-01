@@ -12,7 +12,6 @@ html(ng-app="Clueless")
 
     body.ui-view
 
-
         div#game-over(ng-if="gc.gameState.game_over")
             h1 Game Over
 
@@ -205,17 +204,9 @@ html(ng-app="Clueless")
                                     td {{ gc.expandShortname(shortname) }}
                                     td: span(ng-if="status == false") X
 
-
                 div.pure-u-1-5
 
                     div.ui-view(name="logs")
 
         script(type="application/javascript", src="/scripts/vendor.js")
         script(type="application/javascript", src="/scripts/app.js")
-
-
-
-
-
-
-

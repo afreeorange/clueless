@@ -335,8 +335,8 @@ class Board:
 
         # Initialize a logger
         self.log = logging.getLogger(__name__)
-        self.log.info('Started game')
-        self.log.info('Confidential file contains "{}"'.format(
+        self.log.debug('Started game')
+        self.log.debug('Confidential file contains "{}"'.format(
                     '", "'.join([_.name for _ in self.confidential_file])
                     ))
 
@@ -524,7 +524,7 @@ class Board:
             if common_cards:
                 random_card = random.choice(common_cards)
 
-                self.log.info('{} ({}) showed {} ({}) "{}"'.format(
+                self.log.debug('{} ({}) showed {} ({}) "{}"'.format(
                         self.get_player_mapped_to(suspect).name,
                         suspect.name,
                         player.name,

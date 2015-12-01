@@ -143,4 +143,3 @@ gulp.task('serve', [], function() {
 gulp.task('default', ['clean', 'styles', 'scripts', 'templates'], function() {
     return;
 });
-
