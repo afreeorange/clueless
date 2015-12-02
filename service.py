@@ -1,21 +1,3 @@
-# # i can't hear that lullaby of the midnight train
-
-# Cilent adds player
-# server
-#     responds with uuid
-#     maps client sid to UUID
-# client sets it in localstorage
-# client must pass it with each REST request
-# server can address client by SID <> UUID map
-
-# Client disconnection
-#     if Client has UUID in localstorage, pass it upon connect via some special channel ('reconnect channel')
-#     get all the messages (REST)
-#     server updates SID <> UUID map
-
-# Need a boardservice
-# Need a board state
-
 import logging
 import sys
 import importlib
@@ -134,9 +116,9 @@ class BoardService:
 
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%z'))
-        handler.setLevel(logging.DEBUG)
+        handler.setLevel(logging.INFO)
         self.engine_log = logging.getLogger('engine')
-        self.engine_log.setLevel(logging.DEBUG)
+        self.engine_log.setLevel(logging.INFO)
         self.engine_log.addHandler(handler)
         self.engine_log.addHandler(JSONHandler(self.__game_log))
 
@@ -422,6 +404,12 @@ class BoardService:
 
 
 
+b = Board()
+bs = BoardService(b, test_mode=True)
+
+
+# -------
+
 app = Flask(__name__)
 app.debug = True
 api = Api(app)
@@ -436,16 +424,14 @@ def after_request(response):
     return response
 
 
-b = Board()
-bs = BoardService(b, test_mode=True)
 
-handler = logging.StreamHandler(sys.stdout)
-handler.setFormatter(logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%z'))
-handler.setLevel(logging.INFO)
+# handler = logging.StreamHandler(sys.stdout)
+# handler.setFormatter(logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%z'))
+# handler.setLevel(logging.INFO)
 
-log = logging.getLogger('CluelessService')
-log.setLevel(logging.INFO)
-log.addHandler(handler)
+# log = logging.getLogger('CluelessService')
+# log.setLevel(logging.INFO)
+# log.addHandler(handler)
 
 class CluelessLog(Resource):
     def get(self):

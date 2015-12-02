@@ -304,7 +304,7 @@ class Board:
 
         # Create the confidential file
         self.__confidential_file = [
-                self.HALL, # random.choice(self.LIST_OF_ROOMS),
+                random.choice(self.LIST_OF_ROOMS),
                 random.choice(self.LIST_OF_SUSPECTS),
                 random.choice(self.LIST_OF_WEAPONS),
             ]
