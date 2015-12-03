@@ -1,6 +1,6 @@
 angular.module('Clueless')
 
-.constant('CluelessAPI', 'http://localhost:8000/api')
+.constant('CluelessAPI', 'http://orangebook:8000/api')
 
 .config(function($locationProvider, $urlRouterProvider) {
     $locationProvider.html5Mode(true);

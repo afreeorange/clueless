@@ -82,7 +82,7 @@ angular.module('Clueless')
             vm.playerData = GameService.refreshPlayerData();    
         }
 
-    }.bind(this), 5000);  
+    }.bind(this), 1000);  
 
 })
 
@@ -99,7 +99,7 @@ angular.module('Clueless')
             function(response) {
                 return;
             });
-    }.bind(this), 5000);  
+    }.bind(this), 1000);  
 
 })
 

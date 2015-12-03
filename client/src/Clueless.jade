@@ -14,6 +14,8 @@ html(ng-app="Clueless")
 
         div#game-over(ng-if="gc.gameState.game_over")
             h1 Game Over
+            h2 Won the game {{gc.gameState.winner}}
+            h3 The case file contained (cards)
 
         div.container
             div.pure-g

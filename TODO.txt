@@ -1,3 +1,0 @@
-* Fine-tune logging
-* Socket server 
-* Documentation
