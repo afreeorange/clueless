@@ -1,12 +1,3 @@
-from .models import (
-    Board,
-    Player,
-    Room,
-    Suspect,
-    Weapon,
-    )
-
-
 import logging
 try:
     from logging import NullHandler

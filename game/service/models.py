@@ -2,19 +2,15 @@ import logging
 import sys
 from uuid import uuid4
 
-from ..engine import Board, Player
 from ..engine.exceptions import *
-from ..engine.models import Room, Hallway, Weapon, Suspect
+from ..engine.models import Room, Hallway, Weapon, Suspect, Board, Player
 from .exceptions import (
     InvalidPlayerToken,
     InvalidSpaceStub,
     InvalidWeaponStub,
     InvalidSuspectStub,
     )
-from .logging_handlers import (
-    SocketIOLoggingHandler,
-    JSONHandler,
-    )
+from .logging_handlers import JSONHandler
 
 
 class BoardService:
@@ -73,8 +69,7 @@ class BoardService:
 
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%z'))
-        handler.setLevel(logging.INFO)
-        self.engine_log = logging.getLogger('engine')
+        self.engine_log = logging.getLogger('game.engine.models')
         self.engine_log.setLevel(logging.INFO)
         self.engine_log.addHandler(handler)
         self.engine_log.addHandler(JSONHandler(self.__game_log))

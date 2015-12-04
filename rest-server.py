@@ -1,17 +1,14 @@
 import logging
 import sys
-import importlib
 from uuid import uuid4
 
 import arrow
-from flask import Flask, render_template, request, send_from_directory, jsonify
+from flask import Flask, render_template, request, send_file, jsonify
 from flask_restful import Api, Resource
-
 from game.service import BoardService
+import importlib
 
 bs = BoardService(test_mode=True)
-
-# -------
 
 app = Flask(__name__)
 app.debug = True
@@ -26,15 +23,6 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
     return response
 
-
-
-# handler = logging.StreamHandler(sys.stdout)
-# handler.setFormatter(logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%dT%H:%M:%S%z'))
-# handler.setLevel(logging.INFO)
-
-# log = logging.getLogger('CluelessService')
-# log.setLevel(logging.INFO)
-# log.addHandler(handler)
 
 class CluelessLog(Resource):
     def get(self):
@@ -136,18 +124,8 @@ api.add_resource(CluelessConfidentialFile, '/api/confidential_file')
 api.add_resource(Clueless, '/api')
 
 
-@app.route('/new')
+@app.route('/new_game')
 def new_game():
     global bs
-    bs = BoardService(Board(), test_mode=True)
+    bs = BoardService(test_mode=True)
     return jsonify(bs.state)
-
-
-@app.route('/')
-def client_interface():
-    return render_template('index.html')
-
-
-
-# if __name__ == '__main__':
-#     socketio.run(app)
