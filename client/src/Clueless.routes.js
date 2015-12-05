@@ -19,7 +19,7 @@ angular.module('Clueless')
 
             'logs@index': {
                 templateUrl: 'CluelessLogs.html',
-                controller: 'logsController',
+                controller: 'logsSocketController',
                 controllerAs: 'lc',
                 resolve: {
                     logs: function(LogsService) {

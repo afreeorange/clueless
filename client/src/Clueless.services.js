@@ -1,5 +1,11 @@
 angular.module('Clueless')
 
+.factory('SocketService', function (socketFactory, CluelessSocketServer) {
+    return socketFactory({
+        ioSocket: io.connect(CluelessSocketServer)
+    });
+})
+
 .factory('GameService', function(CluelessAPI, $http, localStorageService) {
     var service = {};
 

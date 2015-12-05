@@ -1,6 +1,8 @@
 angular.module('Clueless')
 
-.constant('CluelessAPI', 'http://localhost:8000/api')
+.constant('CluelessAPI', 'http://localhost:9000/api')
+
+.constant('CluelessSocketServer', 'http://localhost:9000')
 
 .config(function($locationProvider, $urlRouterProvider) {
     $locationProvider.html5Mode(true);

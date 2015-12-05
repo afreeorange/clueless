@@ -1,5 +1,6 @@
 angular.module('Clueless', [
     'ui.router',
     'LocalStorageModule',
-    'angularMoment'
+    'angularMoment',
+    'btford.socket-io'
 ]);

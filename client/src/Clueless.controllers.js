@@ -4,7 +4,6 @@ angular.module('Clueless')
 
     var vm = this;
     vm.gameState = gameState;
-    // vm.gameMetadata = gameMetadata;
     vm.gameMetadata = GameService.getMetadata();
 
     // Resolve shortnames
@@ -69,20 +68,20 @@ angular.module('Clueless')
         return GameService.isCurrentTurn();
     };
 
-    $interval(function(){
-        GameService.getState().then(
-            function(response) {
-                vm.gameState = response;
-            },
-            function(response) {
-                return;
-            });
+    // $interval(function(){
+    //     GameService.getState().then(
+    //         function(response) {
+    //             vm.gameState = response;
+    //         },
+    //         function(response) {
+    //             return;
+    //         });
 
-        if (vm.addedPlayer()) {
-            vm.playerData = GameService.refreshPlayerData();    
-        }
+    //     if (vm.addedPlayer()) {
+    //         vm.playerData = GameService.refreshPlayerData();    
+    //     }
 
-    }.bind(this), 1000);  
+    // }.bind(this), 1000);  
 
 })
 
@@ -91,15 +90,30 @@ angular.module('Clueless')
     var vm = this;
     vm.logs = logs;
 
-    $interval(function(){
-        LogsService.getLogs().then(
-            function(response) {
-                vm.logs = response;
-            },
-            function(response) {
-                return;
-            });
-    }.bind(this), 1000);  
+    // $interval(function(){
+    //     LogsService.getLogs().then(
+    //         function(response) {
+    //             vm.logs = response;
+    //         },
+    //         function(response) {
+    //             return;
+    //         });
+    // }.bind(this), 1000);  
+
+})
+
+.controller('logsSocketController', function(SocketService, LogsService, logs) {
+
+    var vm = this;
+    vm.logs = logs;
+
+    SocketService.on('connect', function() {
+        console.log('Connecting....');
+    });
+
+    SocketService.on('board:logs', function(message) {
+        vm.logs = message;
+    });
 
 })
 
