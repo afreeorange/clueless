@@ -12,6 +12,7 @@
     "add-stream": "^1.0.0",
     "angular-loading-bar": "^0.8.0",
     "del": "^2.1.0",
+    "gulp": "^3.9.0",
     "gulp-angular-templatecache": "^1.8.0",
     "gulp-concat": "^2.6.0",
     "gulp-cssmin": "^0.1.7",
