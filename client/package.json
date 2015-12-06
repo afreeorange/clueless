@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "clueless-client",
   "version": "1.0.0",
   "description": "Clueless Client Interface",
   "main": "index.js",

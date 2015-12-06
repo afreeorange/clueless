@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "clueless-client",
   "description": "Clueless Client Interface",
   "main": "index.js",
   "authors": [
@@ -22,8 +22,6 @@
     "angular-local-storage": "~0.2.3",
     "angular-moment": "~0.10.3",
     "moment": "~2.10.6",
-    "angular-poller": "~0.4.1",
-    "angular-socket-io": "~0.7.0",
-    "loglevel": "~1.4.0"
+    "angular-socket-io": "~0.7.0"
   }
 }

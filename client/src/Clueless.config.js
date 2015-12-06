@@ -37,7 +37,7 @@ angular.module('Clueless')
                 if (player_token) {
                     console.log('Fetching data for existing player token');
                     SocketService.emit('board:playerdata', {'token': player_token});
-                };
+                }
 
             } else {
                 localStorageService.clearAll();
