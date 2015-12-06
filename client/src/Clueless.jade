@@ -99,6 +99,7 @@ html(ng-app="Clueless")
 
 
                     div(ng-if="gc.playerData")
+                        h2 {{ gc.playerData.name }} as {{ gc.expandShortname(gc.playerData.suspect) }}
                         h3 Cards
                         ul
                             li(ng-repeat="card in gc.playerData.cards") {{gc.expandShortname(card)}}
