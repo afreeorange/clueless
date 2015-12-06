@@ -21,6 +21,8 @@ html(ng-app="Clueless")
             div.pure-g
                 div.pure-u-3-5
 
+                    code BAXTER: {{ gc.playerData }}
+
                     //- Game Board
                     table.pure-table.pure-table-bordered#board-map
                         tr
@@ -79,7 +81,7 @@ html(ng-app="Clueless")
                         h3 Game Over
                         h4 {{ gc.gameState.winner.name }} ({{ gc.expandShortname(gc.gameState.winner.suspect) }}) has won the game!
 
-                    div(ng-if="gc.gameState.game_started && gc.addedPlayer() && gc.playerData.suggestions.length > 0")
+                    div(ng-if="gc.gameState.game_started && gc.playerData && gc.playerData.suggestions.length > 0")
                         h3 Suggestions
                         ul
                             li(ng-repeat="item in gc.playerData.suggestions")
@@ -98,12 +100,12 @@ html(ng-app="Clueless")
                         h3 The game has not started yet
 
 
-                    div(ng-if="gc.addedPlayer()")
-                        h3 Cards {{gc.addedPlayer()}}
+                    div(ng-if="gc.playerData")
+                        h3 Cards
                         ul
                             li(ng-repeat="card in gc.playerData.cards") {{gc.expandShortname(card)}}
 
-                    div(ng-show="!gc.gameState.game_started&& !gc.gameState.game_over && !gc.addedPlayer()")
+                    div(ng-show="!gc.gameState.game_started&& !gc.gameState.game_over && !gc.playerData")
                         h3 Add
                         form
                             input(type="text" ng-model="gc.addForm.name")

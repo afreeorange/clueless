@@ -1,5 +1,8 @@
+import json
+
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
+from flask_socketio import SocketIO, emit
 from game.service import BoardService
 
 bs = BoardService(test_mode=True)
@@ -7,6 +10,7 @@ bs = BoardService(test_mode=True)
 app = Flask(__name__)
 app.debug = True
 api = Api(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 
 # CORS Headers
@@ -24,6 +28,7 @@ class CluelessLog(Resource):
 
 
 class CluelessPlayer(Resource):
+    @classmethod
     def get(self, player_token):
         try:
             return bs.get_player(player_token)
@@ -37,12 +42,16 @@ class CluelessPlayers(Resource):
 
     def post(self):
         try:
-            return bs.add_player(
+            player = bs.add_player(
                         name=request.json.get('name'),
                         suspect=request.json.get('suspect'),
                         )
         except Exception as e:
             return {'message': str(e)}, 400
+        else:
+            socketio.emit('board:state', bs.state)
+            socketio.emit('board:log', bs.log)
+            return player
 
 
 class CluelessEndTurn(Resource):
@@ -51,18 +60,26 @@ class CluelessEndTurn(Resource):
             bs.end_turn(player_token=request.json.get('token'))
         except Exception as e:
             return {'message': str(e)}, 400
+        else:
+            socketio.emit('board:state', bs.state)
+            socketio.emit('board:log', bs.log)
+            return {}
 
 
 class CluelessMakeSuggestion(Resource):
     def put(self):
         try:
-            return bs.make_suggestion(
-                        player_token=request.json.get('token'),
-                        suspect=request.json.get('suspect'),
-                        weapon=request.json.get('weapon'),
-                        )
+            suggestion = bs.make_suggestion(
+                            player_token=request.json.get('token'),
+                            suspect=request.json.get('suspect'),
+                            weapon=request.json.get('weapon'),
+                            )
         except Exception as e:
             return {'message': str(e)}, 400
+        else:
+            socketio.emit('board:state', bs.state)
+            socketio.emit('board:log', bs.log)
+            return suggestion
 
 
 class CluelessMakeAccusation(Resource):
@@ -77,6 +94,8 @@ class CluelessMakeAccusation(Resource):
         except Exception as e:
             return {'message': str(e)}, 400
         else:
+            socketio.emit('board:state', bs.state)
+            socketio.emit('board:log', bs.log)
             return {}
 
 
@@ -89,6 +108,10 @@ class CluelessMove(Resource):
                 )
         except Exception as e:
             return {'message': str(e)}, 400
+        else:
+            socketio.emit('board:state', bs.state)
+            socketio.emit('board:log', bs.log)
+            return {}
 
 
 class CluelessMetadata(Resource):
@@ -118,8 +141,33 @@ api.add_resource(CluelessConfidentialFile, '/api/confidential_file')
 api.add_resource(Clueless, '/api')
 
 
+@socketio.on('board:playerdata')
+def playerdata(message):
+    emit('board:playerdata', CluelessPlayer.get(player_token=message['token']))
+
+
+@socketio.on('board:metadata')
+def board_metadata():
+    emit('board:metadata', bs.metadata)
+
+
+@socketio.on('board:state')
+def board_metadata():
+    emit('board:state', bs.state)
+
+
+@socketio.on('board:log')
+def board_metadata():
+    emit('board:log', bs.log)
+
+
 @app.route('/new_game')
 def new_game():
     global bs
     bs = BoardService(test_mode=True)
     return jsonify(bs.state)
+
+
+if __name__ == '__main__':
+    socketio.run(app, host='0.0.0.0', port=9000)
+

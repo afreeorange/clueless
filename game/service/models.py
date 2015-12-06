@@ -351,5 +351,9 @@ class BoardService:
         return self.__game_log
 
     @property
+    def last_log(self):
+        return self.__game_log[-1] if self.__game_log else []
+
+    @property
     def confidential_file(self):
         return [self.get_stub(_) for _ in self.__board.confidential_file]

@@ -17,6 +17,7 @@ var paths = {
             'bower_components/jquery/dist/jquery.min.js',
             'bower_components/toastr/toastr.min.js',
             'bower_components/moment/min/moment.min.js',
+            'bower_components/loglevel/dist/loglevel.min.js',
             'cached_assets/**/*.js',
             'bower_components/angular/angular.min.js',
             'bower_components/angular-ui-router/release/angular-ui-router.min.js',
@@ -70,7 +71,7 @@ gulp.task('app.scripts', [], function() {
                .pipe($.jshint())
                .pipe($.jshint.reporter('jshint-stylish'))
                .pipe($.ngAnnotate({single_quotes: true}))
-               .pipe($.uglify())
+               // .pipe($.uglify())
                .pipe(addStream.obj(prepareTemplatesForCaching()))
                .pipe($.concat('app.js'))
                .pipe(gulp.dest(paths.destination + '/scripts'));

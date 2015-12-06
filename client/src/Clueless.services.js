@@ -10,19 +10,22 @@ angular.module('Clueless')
     var service = {};
 
     // Metadata services
-    service.metadata = null;
+    service.metadata = $http.get(CluelessAPI + '/meta')
+                            .then(
+                                function(response) {
+                                    return response.data;
+                                }, 
+                                function(response) {
+                                    toastr.error('Could not fetch game metadata');
+                                    return false;
+                                }
+                            );
     service.getMetadata = function() {
         return service.metadata;
     };
-    service.setMetadata = function(data) {
-        service.metadata = data;
-        return true;
-    };
 
     // State services
-    service.state = null;
-    service.getState = function() {
-        service.state = $http.get(CluelessAPI)
+    service.state = $http.get(CluelessAPI)
                              .then(
                                  function(response) {
                                      return response.data;
@@ -31,11 +34,8 @@ angular.module('Clueless')
                                      toastr.error('Could not get board state');
                                  }
                              );
+    service.getState = function() {
         return service.state;
-    };
-    service.setState = function(data) {
-        service.state = data;
-        return true;
     };
 
     // Add player and set local storage with token
@@ -59,34 +59,8 @@ angular.module('Clueless')
             );
     };
 
-    // Get player information
-    service.playerData = null;
-    service.getPlayerData = function() {
-        return service.playerData;
-    };
-    service.setPlayerData = function(data) {
-        service.playerData = data;
-        return true;
-    };
-    service.refreshPlayerData = function() {
-        player_token = localStorageService.get('player_token');
-
-        $http.get(CluelessAPI + '/players/' + player_token)
-           .then(
-               function(response) {
-                   service.playerData = response.data;
-               },
-               function(response) {
-                   return;
-               }
-           );
-
-        return service.playerData;
-    };
-
-    // Check if player's been added
-    service.addedPlayer = function() {
-        return localStorageService.get('player_token') ? true : false;
+    service.getPlayerToken = function() {
+        return localStorageService.get('player_token');
     };
 
     // Move player
@@ -106,7 +80,6 @@ angular.module('Clueless')
                     toastr.error(response.data.message);
                 }
             );
-
     };
 
     // Make suggestion
@@ -174,17 +147,17 @@ angular.module('Clueless')
 .factory('LogsService', function(CluelessAPI, $http) {
     var service = {};
 
-    service.logs = null;
-    service.getLogs = function() {
-        service.logs = $http.get(CluelessAPI + '/logs')
-                         .then(
-                             function(response) {
-                                return response.data;
-                             },
+    service.logs = $http.get(CluelessAPI + '/logs')
+                        .then(
                             function(response) {
-                                toastr.error('Could not get logs');
-                             }
-                         );
+                                 return response.data;
+                            },
+                           function(response) {
+                                 toastr.error('Could not get logs');
+                            }
+                        );
+
+    service.getLogs = function() {
         return service.logs;
     };
 

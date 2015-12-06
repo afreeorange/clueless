@@ -22,16 +22,23 @@ angular.module('Clueless')
     localStorageServiceProvider.setPrefix('Clueless');
 })
 
-.run(function(localStorageService, GameService){
+.run(function(localStorageService, GameService, SocketService, $http){
 
-    // Get the board ID
+    // Manage local storage based on Board ID
     GameService.getState().then(
         function(response) {
             var loaded_board_id = response.id;
             var cached_board_id = localStorageService.get('board_id');
+            var player_token = localStorageService.get('player_token');
 
             if (loaded_board_id === cached_board_id) {
                 console.log('Using existing board ' + cached_board_id);
+
+                if (player_token) {
+                    console.log('Fetching data for existing player token');
+                    SocketService.emit('board:playerdata', {'token': player_token});
+                };
+
             } else {
                 localStorageService.clearAll();
                 console.log('Cleared all local storage for new board');
@@ -43,29 +50,10 @@ angular.module('Clueless')
         }, function(response) {
             toastr.error('Could not fetch state for ID');
         });
-})
-
-.run(function(GameService, $http, CluelessAPI, localStorageService) {
-
-    // Fetch and store game metadata
-    $http.get(CluelessAPI + '/meta')
-         .then(
-            function(response) {
-                return GameService.setMetadata(response.data);
-            }, 
-            function(response) {
-                toastr.error('Could not fetch game metadata');
-                return false;
-            }
-        );
-
-    // Fetch and store player data
-    GameService.refreshPlayerData();
 
 })
 
 ;
-
 
 // Global settings for all toast notifications
 toastr.options = {

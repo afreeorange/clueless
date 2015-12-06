@@ -10,8 +10,16 @@ angular.module('Clueless')
         replace: true,
         controller: function(GameService) {
             var vm = this;
+            vm.shortNameMap = null;
+
+            GameService.getMetadata().then(
+                    function(response) {
+                        vm.shortNameMap = response;
+                    }, 
+                    function() {});
+
             vm.expandShortname = function(shortname) {
-                return GameService.getMetadata().shortname_map[shortname];
+                return vm.shortNameMap.shortname_map[shortname];
             };
         },
         controllerAs: 'pbc',

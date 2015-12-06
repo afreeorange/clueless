@@ -1,27 +1,24 @@
 angular.module('Clueless')
 
-.controller('gameController', function(GameService, gameState, $interval) {
+.controller('gameController', function(GameService, SocketService, gameState, gameMetadata) {
 
     var vm = this;
     vm.gameState = gameState;
-    vm.gameMetadata = GameService.getMetadata();
+    vm.gameMetadata = gameMetadata;
+    vm.playerData = null;
+
+    // Listen for changes to board state & player data
+    SocketService.on('board:state', function(message) {
+        vm.gameState = message;
+    });
+
+    SocketService.on('board:playerdata', function(message) {
+        vm.playerData = message;
+    });
 
     // Resolve shortnames
     vm.expandShortname = function(shortname) {
         return vm.gameMetadata.shortname_map[shortname];
-    };
-
-    // Determine of the client is already added to the board
-    vm.addedPlayer = function() {
-        return GameService.addedPlayer();
-    };
-
-    // Determine if the client is in the game
-    vm.playerInTheGame = function() {
-        if (vm.playerData) {
-            return vm.playerData.in_the_game;
-        }
-        return null;
     };
 
     // Add player
@@ -29,17 +26,26 @@ angular.module('Clueless')
     vm.addForm.name = null;
     vm.addForm.suspect = null;
     vm.addPlayer = function() {
-        return GameService.addPlayer(vm.addForm.name, vm.addForm.suspect);
+        GameService.addPlayer(vm.addForm.name, vm.addForm.suspect)
+                   .then(
+                        function(response) {
+                            SocketService.emit('board:playerdata', {'token': GameService.getPlayerToken()});
+                        },
+                        function(response) {}
+                    );
     };
-
-    // Player data
-    vm.playerData = GameService.getPlayerData();
 
     // Move 
     vm.moveForm = {};
     vm.moveForm.target = Object.keys(vm.gameMetadata.organized_shortname_map.spaces)[0];
     vm.movePlayer = function() {
-        return GameService.movePlayer(vm.moveForm.target);
+        return GameService.movePlayer(vm.moveForm.target)
+                   .then(
+                        function(response) {
+                            SocketService.emit('board:playerdata', {'token': GameService.getPlayerToken()});
+                        },
+                        function(response) {}
+                    );
     };
 
     // Suggest
@@ -47,7 +53,13 @@ angular.module('Clueless')
     vm.suggestForm.suspect = Object.keys(vm.gameMetadata.organized_shortname_map.suspects)[0];
     vm.suggestForm.weapon = Object.keys(vm.gameMetadata.organized_shortname_map.weapons)[0];
     vm.makeSuggestion = function() {
-        return GameService.makeSuggestion(vm.suggestForm.suspect, vm.suggestForm.weapon);
+        return GameService.makeSuggestion(vm.suggestForm.suspect, vm.suggestForm.weapon)
+                   .then(
+                        function(response) {
+                            SocketService.emit('board:playerdata', {'token': GameService.getPlayerToken()});
+                        },
+                        function(response) {}
+                    );
     };
 
     // Accuse
@@ -56,63 +68,39 @@ angular.module('Clueless')
     vm.accuseForm.weapon = Object.keys(vm.gameMetadata.organized_shortname_map.weapons)[0];
     vm.accuseForm.room = Object.keys(vm.gameMetadata.organized_shortname_map.rooms)[0];
     vm.makeAccusation = function() {
-        return GameService.makeAccusation(vm.accuseForm.suspect, vm.accuseForm.weapon, vm.accuseForm.room);
+        return GameService.makeAccusation(vm.accuseForm.suspect, vm.accuseForm.weapon, vm.accuseForm.room)
+                   .then(
+                        function(response) {
+                            SocketService.emit('board:playerdata', {'token': GameService.getPlayerToken()});
+                        },
+                        function(response) {}
+                    );
     };
 
     // End turn
     vm.endTurn = function() {
-        return GameService.endTurn();
+        return GameService.endTurn()
+                   .then(
+                        function(response) {
+                            SocketService.emit('board:playerdata', {'token': GameService.getPlayerToken()});
+                        },
+                        function(response) {}
+                    );
     };
 
     vm.isCurrentTurn = function() {
         return GameService.isCurrentTurn();
     };
 
-    // $interval(function(){
-    //     GameService.getState().then(
-    //         function(response) {
-    //             vm.gameState = response;
-    //         },
-    //         function(response) {
-    //             return;
-    //         });
-
-    //     if (vm.addedPlayer()) {
-    //         vm.playerData = GameService.refreshPlayerData();    
-    //     }
-
-    // }.bind(this), 1000);  
-
 })
 
-.controller('logsController', function(LogsService, logs, $interval) {
+.controller('logsController', function(logs, SocketService) {
 
     var vm = this;
     vm.logs = logs;
 
-    // $interval(function(){
-    //     LogsService.getLogs().then(
-    //         function(response) {
-    //             vm.logs = response;
-    //         },
-    //         function(response) {
-    //             return;
-    //         });
-    // }.bind(this), 1000);  
-
-})
-
-.controller('logsSocketController', function(SocketService, LogsService, logs) {
-
-    var vm = this;
-    vm.logs = logs;
-
-    SocketService.on('connect', function() {
-        console.log('Connecting....');
-    });
-
-    SocketService.on('board:logs', function(message) {
-        vm.logs = message;
+    SocketService.on('board:log', function(message) {
+        vm.logs = message; 
     });
 
 })

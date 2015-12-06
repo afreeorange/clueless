@@ -13,13 +13,16 @@ angular.module('Clueless')
                 resolve: {
                     gameState: function(GameService) {
                         return GameService.getState();
+                    },
+                    gameMetadata: function(GameService) {
+                        return GameService.getMetadata();
                     }
                 }
             },
 
             'logs@index': {
                 templateUrl: 'CluelessLogs.html',
-                controller: 'logsSocketController',
+                controller: 'logsController',
                 controllerAs: 'lc',
                 resolve: {
                     logs: function(LogsService) {
