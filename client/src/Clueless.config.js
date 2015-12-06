@@ -1,8 +1,8 @@
 angular.module('Clueless')
 
-.constant('CluelessAPI', 'http://localhost:9000/api')
+.constant('CluelessAPI', 'http://localhost:8000/api')
 
-.constant('CluelessSocketServer', 'http://localhost:9000')
+.constant('CluelessSocketServer', 'http://localhost:8000')
 
 .config(function($locationProvider, $urlRouterProvider) {
     $locationProvider.html5Mode(true);
@@ -26,6 +26,7 @@ angular.module('Clueless')
 
     // Manage local storage based on Board ID
     GameService.getState().then(
+
         function(response) {
             var loaded_board_id = response.id;
             var cached_board_id = localStorageService.get('board_id');
@@ -46,8 +47,9 @@ angular.module('Clueless')
                 localStorageService.set('board_id', loaded_board_id);
                 console.log('Set board ID ' + loaded_board_id);
             }
+        },
 
-        }, function(response) {
+        function(response) {
             toastr.error('Could not fetch state for ID');
         });
 
