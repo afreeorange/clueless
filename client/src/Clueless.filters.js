@@ -2,7 +2,10 @@ angular.module('Clueless')
 
 .filter('removeThe', function() {
     return function(input) {
-        return input.replace('The ', '');
+        if (input) {
+            return input.replace('The ', '');
+        }
+        return null;
     };
 })
 

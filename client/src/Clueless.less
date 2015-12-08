@@ -87,8 +87,13 @@ background-size: contain;
     color: green;
 }
 
+
 .player-out-of-game {
-    color: #CCC!important;
+background-color: #CCC!important;
+border-color: #CCC!important;
+}
+.player-out-of-game strong {
+color: #FFF!important;
 }
 
 .red {
@@ -161,7 +166,8 @@ transform: rotate(45deg);
 transform: rotate(-135deg);
 }
 
-.board-suspect div {
+.board-suspect .player-suspect,
+.board-suspect .player-name {
 display: none;
 }
 .board-suspect {
@@ -204,6 +210,49 @@ border-color: #6C006F;
 background-color: #F90403;
 border-color: #F90403;
 }
+
+
+// http://cssarrowplease.com/
+.player-info-wrapper {
+position: relative;
+cursor: pointer;
+}
+.player-info {
+background: #FFF;
+color: #333!important;
+position: relative;
+width: 150px;
+height: 100px;
+background: #FFF;
+border: 2px solid #CCC;
+left: -62px;
+top: -155px;
+z-index: 9999;
+border-radius: 5px;
+}
+.player-info:after, .player-info:before {
+top: 100%;
+left: 50%;
+border: solid transparent;
+content: " ";
+height: 0;
+width: 0;
+position: absolute;
+pointer-events: none;
+}
+.player-info:after {
+border-color: rgba(255, 255, 255, 0);
+border-top-color: #FFF;
+border-width: 20px;
+margin-left: -20px;
+}
+.player-info:before {
+border-color: rgba(204, 204, 204, 0);
+border-top-color: #CCC;
+border-width: 23px;
+margin-left: -23px;
+}
+
 
 // .player-card {
 // width: 90px;

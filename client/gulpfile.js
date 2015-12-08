@@ -24,7 +24,9 @@ var paths = {
             'bower_components/angular-ui-router/release/angular-ui-router.min.js',
             'bower_components/angular-local-storage/dist/angular-local-storage.min.js',
             'bower_components/angular-moment/angular-moment.min.js',
-            'bower_components/angular-moment/angular-poller.min.js',
+            // 'bower_components/angular-moment/angular-poller.min.js',
+            // 'bower_components/angular-tooltips/dist/angular-tooltips.min.js',
+            // 'bower_components/angular-tipped/tipped.js',
             'bower_components/angular-socket-io/socket.min.js'
         ]
     },

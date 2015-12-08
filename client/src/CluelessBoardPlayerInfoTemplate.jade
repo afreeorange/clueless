@@ -1,0 +1,7 @@
+div.player-info-wrapper
+    div.ng-transclude
+    //- div.player-info
+    div.player-info(ng-show="show")
+        strong ({{ show }})
+        strong {{ player.name }}
+        strong {{ player.suspect }}
