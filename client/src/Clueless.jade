@@ -17,199 +17,214 @@ html(ng-app="Clueless")
             h2 Won the game {{gc.gameState.winner}}
             h3 The case file contained (cards)
 
-        div.container
-            div.pure-g
-                div.pure-u-3-5
+        div.row
+            div.col-md-8
 
-                    //- Game Board
-                    table.pure-table.pure-table-bordered#board-map
+                h1: span Clueless
+
+                //- Game Board
+                table.pure-table.pure-table-bordered#board
+                    tbody
                         tr
-                            td#study
+                            td#space-study
+                                div.description {{ gc.expandShortname('study') | removeThe }}
+                                i.fa.fa-arrow-right.teleporter-arrow
                                 player-box(players="gc.gameState.map.study.players")
-                            td#study_to_hall
+                            td#space-study-to-hall.hallway
                                 player-box(players="gc.gameState.map.study_to_hall.players")
-                            td#hall
+                            td#space-hall
+                                div.description {{ gc.expandShortname('hall') | removeThe }}
                                 player-box(players="gc.gameState.map.hall.players")
-                            td#hall_to_lounge
+                            td#space-hall-to-lounge.hallway
                                 player-box(players="gc.gameState.map.hall_to_lounge.players")
-                            td#lounge
+                            td#space-lounge
+                                div.description {{ gc.expandShortname('lounge') | removeThe }}
+                                i.fa.fa-arrow-right.teleporter-arrow
                                 player-box(players="gc.gameState.map.lounge.players")
                         tr
-                            td#study_to_library
+                            td#space-study-to-library.hallway
                                 player-box(players="gc.gameState.map.study_to_library.players")
                             td.hole
-                            td#hall_to_billiard
+                            td#space-hall-to-billiard.hallway
                                 player-box(players="gc.gameState.map.hall_to_billiard.players")
                             td.hole
-                            td#lounge_to_dining
+                            td#space-lounge-to-dining.hallway
                                 player-box(players="gc.gameState.map.lounge_to_dining.players")
                         tr
-                            td#library
+                            td#space-library
+                                div.description {{ gc.expandShortname('library') | removeThe }}
                                 player-box(players="gc.gameState.map.library.players")
-                            td#library_to_billiard
+                            td#space-library-to-billiard.hallway
                                 player-box(players="gc.gameState.map.library_to_billiard.players")
-                            td#billiard_room
+                            td#space-billiard-room
+                                div.description {{ gc.expandShortname('billiard_room') | removeThe }}
                                 player-box(players="gc.gameState.map.billiard_room.players")
-                            td#billiard_to_dining
+                            td#space-billiard-to-dining.hallway
                                 player-box(players="gc.gameState.map.billiard_to_dining.players")
-                            td#dining_room
+                            td#space-dining-room
+                                div.description {{ gc.expandShortname('dining_room') | removeThe }}
                                 player-box(players="gc.gameState.map.dining_room.players")
                         tr
-                            td#library_to_conservatory
+                            td#space-library-to-conservatory.hallway
                                 player-box(players="gc.gameState.map.library_to_conservatory.players")
                             td.hole
-                            td#billiard_to_ballroom
+                            td#space-billiard-to-ballroom.hallway
                                 player-box(players="gc.gameState.map.billiard_to_ballroom.players")
                             td.hole
-                            td#dining_to_kitchen
+                            td#space-dining-to-kitchen.hallway
                                 player-box(players="gc.gameState.map.dining_to_kitchen.players")
                         tr
-                            td#conservatory
+                            td#space-conservatory
+                                div.description {{ gc.expandShortname('conservatory') | removeThe }}
+                                i.fa.fa-arrow-right.teleporter-arrow
                                 player-box(players="gc.gameState.map.conservatory.players")
-                            td#conservatory_to_ballroom
+                            td#space-conservatory-to-ballroom.hallway
                                 player-box(players="gc.gameState.map.conservatory_to_ballroom.players")
-                            td#ballroom
+                            td#space-ballroom
+                                div.description {{ gc.expandShortname('ballroom') | removeThe }}
                                 player-box(players="gc.gameState.map.ballroom.players")
-                            td#ballroom_to_kitchen
+                            td#space-ballroom-to-kitchen.hallway
                                 player-box(players="gc.gameState.map.ballroom_to_kitchen.players")
-                            td#kitchen
+                            td#space-kitchen
+                                div.description {{ gc.expandShortname('kitchen') | removeThe }}
+                                i.fa.fa-arrow-right.teleporter-arrow
                                 player-box(players="gc.gameState.map.kitchen.players")
 
-                    div(ng-if="gc.gameState.game_over")
-                        h3 Game Over
-                        h4 {{ gc.gameState.winner.name }} ({{ gc.expandShortname(gc.gameState.winner.suspect) }}) has won the game!
+                div.ui-view(name="logs")
 
-                    div(ng-if="gc.gameState.game_started && gc.playerData && gc.playerData.suggestions.length > 0")
-                        h3 Suggestions
-                        ul
-                            li(ng-repeat="item in gc.playerData.suggestions")
-                                |{{ gc.expandShortname(item.suggestion.suspect) }}
-                                |with a {{ gc.expandShortname(item.suggestion.weapon) }}
-                                |in {{ gc.expandShortname(item.suggestion.room) }}
-                                br
-                                small Disproved when {{ item.disprove.player }} ({{ gc.expandShortname(item.disprove.suspect) }}) showed you "{{ gc.expandShortname(item.disprove.card) }}"
+                div(ng-if="gc.gameState.game_over")
+                    h3 Game Over
+                    h4 {{ gc.gameState.winner.name }} ({{ gc.expandShortname(gc.gameState.winner.suspect) }}) has won the game!
 
-                div.pure-u-1-5
-
-                    h2 In the game? {{ gc.playerData.in_the_game }}
-                    h2 Current turn? {{ gc.playerData.is_current_turn }}
-
-                    div(ng-if="!gc.gameState.game_started") 
-                        h3 The game has not started yet
-
-
-                    div(ng-if="gc.playerData")
-                        h2 {{ gc.playerData.name }} as {{ gc.expandShortname(gc.playerData.suspect) }}
-                        h3 Cards
-                        ul
-                            li(ng-repeat="card in gc.playerData.cards") {{gc.expandShortname(card)}}
-
-                    div(ng-show="!gc.gameState.game_started&& !gc.gameState.game_over && !gc.playerData")
-                        h3 Add
-                        form
-                            input(type="text" ng-model="gc.addForm.name")
-                            select(ng-model="gc.addForm.suspect")
-                                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects"
-                                       ng-disabled="gc.gameState.suspect_to_player[shortname] != null"
-                                       value="{{shortname}}"
-                                       ) {{fullname}}
-                            button(type="submit" ng-click="gc.addPlayer()") Go
-
-                        hr
-
-                    div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
-                        h3 Current Player
-                        h4
-                            |{{ gc.gameState.current_player.name }}
+                div(ng-if="gc.gameState.game_started && gc.playerData && gc.playerData.suggestions.length > 0")
+                    h3 Suggestions
+                    ul
+                        li(ng-repeat="item in gc.playerData.suggestions")
+                            |{{ gc.expandShortname(item.suggestion.suspect) }}
+                            |with a {{ gc.expandShortname(item.suggestion.weapon) }}
+                            |in {{ gc.expandShortname(item.suggestion.room) }}
                             br
-                            small {{ gc.gameState.current_player.suspect_fullname }}
+                            small Disproved when {{ item.disprove.player }} ({{ gc.expandShortname(item.disprove.suspect) }}) showed you "{{ gc.expandShortname(item.disprove.card) }}"
 
-                        hr
+            div.col-md-2
 
-                    div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
-                        h3 Move ({{ gc.playerData.turn.moved }})
-                        form
-                            select(ng-model="gc.moveForm.target")
-                                optgroup(label="Rooms")
-                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.rooms" value="{{shortname}}") {{fullname | removeThe }}
-                                optgroup(label="Hallways")
-                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.hallways" value="{{shortname}}") {{fullname | removeThe }}
-                            button(type="submit" ng-click="gc.movePlayer()") Go
+                h2 In the game? {{ gc.playerData.in_the_game }}
+                h2 Current turn? {{ gc.playerData.is_current_turn }}
 
-                        hr
+                div(ng-if="!gc.gameState.game_started") 
+                    h3 The game has not started yet
 
-                    div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
-                        h3 Suggest ({{ gc.playerData.turn.suggested }})
-                        form
-                            div.form-group
-                                label Suspect
-                                select(ng-model="gc.suggestForm.suspect")
-                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects" value="{{shortname}}") {{fullname}}
+                div(ng-show="!gc.gameState.game_started&& !gc.gameState.game_over && !gc.playerData")
+                    h3 Add
+                    form
+                        input(type="text" ng-model="gc.addForm.name")
+                        select(ng-model="gc.addForm.suspect")
+                            option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects"
+                                   ng-disabled="gc.gameState.suspect_to_player[shortname] != null"
+                                   value="{{shortname}}"
+                                   ) {{fullname}}
+                        button(type="submit" ng-click="gc.addPlayer()") Go
 
-                            div.form-group
-                                label Weapon
-                                select(ng-model="gc.suggestForm.weapon")
-                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.weapons" value="{{shortname}}") {{fullname}}
+                    hr
 
-                            button(type="submit" ng-click="gc.makeSuggestion()") Go
+                div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
+                    h3 Current Player
+                    h4
+                        |{{ gc.gameState.current_player.name }}
+                        br
+                        small {{ gc.gameState.current_player.suspect_fullname }}
 
-                        hr
+                    hr
 
-                    div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
-                        h3 Accuse ({{ gc.playerData.turn.accused }})
-                        form
-                            div.form-group
-                                label Suspect
-                                select(ng-model="gc.accuseForm.suspect")
-                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects" value="{{shortname}}") {{fullname}}
+                div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
+                    h3 Move ({{ gc.playerData.turn.moved }})
+                    form
+                        select(ng-model="gc.moveForm.target")
+                            optgroup(label="Rooms")
+                                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.rooms" value="{{shortname}}") {{fullname | removeThe }}
+                            optgroup(label="Hallways")
+                                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.hallways" value="{{shortname}}") {{fullname | removeThe }}
+                        button(type="submit" ng-click="gc.movePlayer()") Go
 
-                            div.form-group
-                                label Room
-                                select(ng-model="gc.accuseForm.room")
-                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.rooms" value="{{shortname}}") {{fullname | removeThe}}
+                    hr
 
-                            div.form-group
-                                label Weapon
-                                select(ng-model="gc.accuseForm.weapon")
-                                    option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.weapons" value="{{shortname}}") {{fullname}}
+                div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
+                    h3 Suggest ({{ gc.playerData.turn.suggested }})
+                    form
+                        div.form-group
+                            label Suspect
+                            select(ng-model="gc.suggestForm.suspect")
+                                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects" value="{{shortname}}") {{fullname}}
 
-                            button(type="submit" ng-click="gc.makeAccusation()") Go
+                        div.form-group
+                            label Weapon
+                            select(ng-model="gc.suggestForm.weapon")
+                                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.weapons" value="{{shortname}}") {{fullname}}
 
-                        hr
+                        button(type="submit" ng-click="gc.makeSuggestion()") Go
 
-                    div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
-                        button(type="button" ng-click="gc.endTurn()") End Turn {{ gc.playerData.turn.moved || gc.playerData.turn.suggested }}
+                    hr
 
-                        hr
+                div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
+                    h3 Accuse ({{ gc.playerData.turn.accused }})
+                    form
+                        div.form-group
+                            label Suspect
+                            select(ng-model="gc.accuseForm.suspect")
+                                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects" value="{{shortname}}") {{fullname}}
 
-                    div(ng-show="gc.gameState.game_started")
-                        h3 Game Sheet
-                        table.pure-table.pure-table-bordered
-                            thead
-                                tr
-                                    th(colspan="2") Suspects
-                            tbody
-                                tr(ng-repeat="(shortname, status) in gc.playerData.game_sheet.suspects")
-                                    td {{ gc.expandShortname(shortname) }}
-                                    td: span(ng-if="status == false") X
-                            thead
-                                tr
-                                    th(colspan="2") Weapons
-                            tbody
-                                tr(ng-repeat="(shortname, status) in gc.playerData.game_sheet.weapons")
-                                    td {{ gc.expandShortname(shortname) }}
-                                    td: span(ng-if="status == false") X
-                            thead
-                                tr
-                                    th(colspan="2") Rooms
-                            tbody
-                                tr(ng-repeat="(shortname, status) in gc.playerData.game_sheet.rooms")
-                                    td {{ gc.expandShortname(shortname) }}
-                                    td: span(ng-if="status == false") X
+                        div.form-group
+                            label Room
+                            select(ng-model="gc.accuseForm.room")
+                                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.rooms" value="{{shortname}}") {{fullname | removeThe}}
 
-                div.pure-u-1-5
+                        div.form-group
+                            label Weapon
+                            select(ng-model="gc.accuseForm.weapon")
+                                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.weapons" value="{{shortname}}") {{fullname}}
 
-                    div.ui-view(name="logs")
+                        button(type="submit" ng-click="gc.makeAccusation()") Go
+
+                    hr
+
+                div(ng-show="gc.gameState.game_started && !gc.gameState.game_over")
+                    button(type="button" ng-click="gc.endTurn()") End Turn {{ gc.playerData.turn.moved || gc.playerData.turn.suggested }}
+
+                    hr
+
+            div.col-md-2
+
+                div(ng-if="gc.playerData")
+                    h2 {{ gc.playerData.name }} as {{ gc.expandShortname(gc.playerData.suspect) }}
+                    h3 Cards
+                    div.player-card(ng-repeat="card in gc.playerData.cards" class="player-card-{{card}}")
+                        span {{gc.expandShortname(card)}}
+
+                div#game-sheet(ng-show="gc.gameState.game_started")
+                    h3
+                        span Game Sheet
+                    table.pure-table.pure-table-bordered
+                        thead
+                            tr
+                                th(colspan="2") Suspects
+                        tbody
+                            tr(ng-repeat="(shortname, status) in gc.playerData.game_sheet.suspects")
+                                td {{ gc.expandShortname(shortname) }}
+                                td: span(ng-if="status == false"): i.fa.fa-times
+                        thead
+                            tr
+                                th(colspan="2") Weapons
+                        tbody
+                            tr(ng-repeat="(shortname, status) in gc.playerData.game_sheet.weapons")
+                                td {{ gc.expandShortname(shortname) }}
+                                td: span(ng-if="status == false"): i.fa.fa-times
+                        thead
+                            tr
+                                th(colspan="2") Rooms
+                        tbody
+                            tr(ng-repeat="(shortname, status) in gc.playerData.game_sheet.rooms")
+                                td {{ gc.expandShortname(shortname) | removeThe }}
+                                td: span(ng-if="status == false"): i.fa.fa-times
 
         script(type="application/javascript", src="/scripts/vendor.js")
         script(type="application/javascript", src="/scripts/app.js")

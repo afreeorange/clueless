@@ -10,7 +10,8 @@ var development_port = 5000;
 var paths = {
     vendor: {
         styles: [
-            'bower_components/pure/pure-min.css',
+            'bower_components/flexboxgrid/dist/flexboxgrid.min.css',
+            'bower_components/font-awesome/css/font-awesome.min.css',
             'bower_components/toastr/toastr.min.css'
         ],
         scripts: [
@@ -18,7 +19,7 @@ var paths = {
             'bower_components/toastr/toastr.min.js',
             'bower_components/moment/min/moment.min.js',
             'bower_components/loglevel/dist/loglevel.min.js',
-            'cached_assets/**/*.js',
+            'static/js/*.js',
             'bower_components/angular/angular.min.js',
             'bower_components/angular-ui-router/release/angular-ui-router.min.js',
             'bower_components/angular-local-storage/dist/angular-local-storage.min.js',
@@ -42,11 +43,33 @@ var paths = {
         ],
         templates: [
             'src/**/*.jade'
+        ],
+        images: [
+          '!static/img/src',
+          '!static/img/src/*',
+          'static/img/**'
+        ],
+        fonts: [
+          'bower_components/font-awesome/fonts/**'
         ]
     },
     source: 'src',
     destination: 'dist'
 }
+
+// ------ Images ------
+
+gulp.task('images', [], function() {
+    return gulp.src(paths.app.images)
+               .pipe(gulp.dest(paths.destination + '/images'));
+});
+
+// ------ Fonts ------
+
+gulp.task('fonts', [], function() {
+    return gulp.src(paths.app.fonts)
+               .pipe(gulp.dest(paths.destination + '/fonts'));
+});
 
 // ------ Scripts ------    
 
@@ -83,7 +106,7 @@ gulp.task('scripts', ['vendor.scripts', 'app.scripts'], function() {
 
 // ------ Styles ------
 
-gulp.task('vendor.styles',[], function() {
+gulp.task('vendor.styles', [], function() {
     return gulp.src(paths.vendor.styles)
                .pipe($.debug())
                .pipe($.cssmin())
@@ -91,13 +114,14 @@ gulp.task('vendor.styles',[], function() {
                .pipe(gulp.dest(paths.destination + '/styles'));
 });
 
-gulp.task('app.styles',[], function() {
+gulp.task('app.styles', [], function() {
     return gulp.src(paths.app.styles)
                .pipe($.debug())
                .pipe($.concat('app.less'))
                .pipe($.less())
                .pipe($.recess({noIDs: false, strictPropertyOrder: false, noOverqualifying: false})) // Because it's 2AM and I don't care.
                .pipe($.recess.reporter())
+               .pipe($.autoprefixer())
                .pipe($.cssmin())
                .pipe($.rename('app.css'))
                .pipe(gulp.dest(paths.destination + '/styles'));
@@ -109,7 +133,7 @@ gulp.task('styles', ['vendor.styles', 'app.styles'], function() {
 
 // ------ Templates ------
 
-gulp.task('templates',[], function() {
+gulp.task('templates', [], function() {
     return gulp.src(paths.source + '/Clueless.jade')
                .pipe($.debug())
                .pipe($.jade())
@@ -125,7 +149,7 @@ gulp.task('watch', ['app.styles', 'app.scripts', 'templates'], function() {
     gulp.watch(paths.app.templates, ['app.scripts', 'templates']);
 });
 
-gulp.task('clean',[], function() {
+gulp.task('clean', [], function() {
     del(paths.destination);
 });
 
@@ -143,6 +167,6 @@ gulp.task('serve', [], function() {
 
 // ------ Main task ------
 
-gulp.task('default', ['clean', 'styles', 'scripts', 'templates'], function() {
+gulp.task('default', ['clean', 'images', 'fonts', 'styles', 'scripts', 'templates'], function() {
     return;
 });

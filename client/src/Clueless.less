@@ -1,3 +1,84 @@
+@import url(https://fonts.googleapis.com/css?family=Oswald:700,400,300);
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700,900,300);
+
+h1 span {
+display: none;
+}
+h1 {
+margin: 5px 0 0 0;
+padding: 0;
+width: 200px;
+height: 40px;
+background: url('/images/logo.png') center no-repeat;
+}
+
+
+
+#game-sheet h3 {
+margin: 0 0 5px 0;
+padding: 0 0 5px 0;
+width: 100%;
+text-align: center;
+font-family: Lato;
+font-weight: 900;
+}
+#game-sheet table {
+width: 100%;
+background-size: contain;
+border-collapse: collapse;
+}
+#game-sheet table thead {
+font-family: Lato;
+}
+#game-sheet table tbody {
+width: 95%;
+}
+#game-sheet table tr td {
+border-bottom: 1px dotted #CCC;
+padding: 2px 5px;
+font-family: Oswald;
+font-weight: 300;
+font-size: 12px;
+}
+#game-sheet table tr td:first-child {
+padding-left: 15px;
+}
+#game-sheet table tr td:nth-child(2) {
+text-align: center;
+}
+#game-sheet table tr:last-child td {
+border-bottom: none;
+}
+
+
+
+.player-card span {
+display: none;
+}
+.player-card {
+width: 32%;
+height: 100px;
+float: left;
+}
+.player-card-wrench {
+background: #333;
+background: url('/images/card-suspect-peacock.png') center no-repeat;
+background-size: contain;
+}
+.player-card-peacock {
+background: #333;
+background: url('/images/card-suspect-scarlet.png') center no-repeat;
+background-size: contain;
+}
+.player-card-library {
+background: #333;
+background: url('/images/card-suspect-plum.png') center no-repeat;
+background-size: contain;
+}
+
+
+
+
 .container {
     margin: 0 auto;
 }
@@ -34,79 +115,170 @@
     }
 }
 
-#board-map {
-    width: 100%;
-    tbody {
-        td {
-            width: 100px;
-            height: 100px;
-        }
-        .hole {
-            background: #333;
-        }
-    }
+#board {
+border: 1px solid #FFF;
+border-collapse: collapse;
+margin-top: 25px;
+}
+#board td {
+width: 125px;
+height: 100px;
+border: 1px dashed #CCC;
+vertical-align:bottom;
+position: relative;
+}
+#board .hole {
+border: 0!important;
+background: #666;
+}
+#board tr td .description {
+position: absolute;
+top: 3px;
+left: 3px;
+font-family: Oswald;
+font-weight: 100;
+font-size: 16px;
+color: #999;
 }
 
-#study {
-    
+
+// Arrows to show secret passages
+#board .teleporter-arrow {
+position: absolute;
+bottom: 0;
+color: #666;
 }
-#study_to_hall {
-    
+#space-conservatory .teleporter-arrow {
+transform: rotate(-45deg);
 }
-#hall {
-    
+#space-lounge .teleporter-arrow {
+transform: rotate(135deg);
 }
-#hall_to_lounge {
-    
+#space-study .teleporter-arrow {
+transform: rotate(45deg);
 }
-#lounge {
-    
+#space-kitchen .teleporter-arrow {
+transform: rotate(-135deg);
 }
-#study_to_library {
-    
+
+.board-suspect div {
+display: none;
 }
-#hall_to_billiard {
-    
+.board-suspect {
+width: 30px;
+height: 30px;
+margin: 2px;
+background-color: #333;
+border: 1px solid transparent;
+border-radius: 50%;
+float: right;
+text-align: center;
+line-height: 175%;
+color: white;
+font-family: lato;
+font-size: 16px;
+text-transform: capitalize;
 }
-#lounge_to_dining {
-    
+.board-suspect-white {
+background-color: #FFF;
+border: 1px solid #666;
+color: #333;
 }
-#library {
-    
+.board-suspect-green {
+background-color: #79AC07;
+border-color: #79AC07;
 }
-#library_to_billiard {
-    
+.board-suspect-mustard {
+background-color: #F3E705;
+border-color: #F3E705;
 }
-#billiard_room {
-    
+.board-suspect-peacock {
+background-color: #56A9C9;
+border-color: #56A9C9;
 }
-#billiard_to_dining {
-    
+.board-suspect-plum {
+background-color: #6C006F;
+border-color: #6C006F;
 }
-#dining_room {
-    
+.board-suspect-scarlet {
+background-color: #F90403;
+border-color: #F90403;
 }
-#conservatory {
-    
-}
-#conservatory_to_ballroom {
-    
-}
-#ballroom {
-    
-}
-#ballroom_to_kitchen {
-    
-}
-#kitchen {
-    
-}
-#library_to_conservatory {
-    
-}
-#billiard_to_ballroom {
-    
-}
-#dining_to_kitchen {
-    
-}
+
+// .player-card {
+// width: 90px;
+// height: 120px;
+// background: url('/images/card-suspect-white.png') no-repeat;
+// background-size: contain;
+// }
+// .player-card span {
+// display: none;
+// }
+
+// #study {
+// background: url('/images/board-study.png') center no-repeat;
+// }
+// #study-to-hall {
+// background: url('/images/board-study_to_hall.png') center no-repeat;
+// }
+// #hall {
+// background: url('/images/board-hall.png') center no-repeat;
+// }
+// #hall-to-lounge {
+// background: url('/images/board-hall_to_lounge.png') center no-repeat;
+// }
+// #lounge {
+// background: url('/images/board-lounge.png') center no-repeat;
+// }
+// #study-to-library {
+// background: url('/images/board-study_to_library.png') center no-repeat;
+// }
+// #hall-to-billiard {
+// background: url('/images/board-hall_to_billiard.png') center no-repeat;
+// }
+// #lounge-to-dining {
+// background: url('/images/board-lounge_to_dining.png') center no-repeat;
+// }
+// #library {
+// background: url('/images/board-library.png') center no-repeat;
+// }
+// #library-to-billiard {
+// background: url('/images/board-library_to_billiard.png') center no-repeat;
+// }
+// #billiard-room {
+// background: url('/images/board-billiard_room.png') center no-repeat;
+// }
+// #billiard-to-dining {
+// background: url('/images/board-billiard_to_dining.png') center no-repeat;
+// }
+// #dining-room {
+// background: url('/images/board-dining_room.png') center no-repeat;
+// }
+// #conservatory {
+// background: url('/images/board-conservatory.png') center no-repeat;
+// }
+// #conservatory-to-ballroom {
+// background: url('/images/board-conservatory_to_ballroom.png') center no-repeat;
+// }
+// #ballroom {
+// background: url('/images/board-ballroom.png') center no-repeat;
+// }
+// #ballroom-to-kitchen {
+// background: url('/images/board-ballroom_to_kitchen.png') center no-repeat;
+// }
+// #kitchen {
+// background: url('/images/board-kitchen.png') center no-repeat;
+// }
+// #library-to-conservatory {
+// background: url('/images/board-library_to_conservatory.png') center no-repeat;
+// }
+// #billiard-to-ballroom {
+// background: url('/images/board-billiard_to_ballroom.png') center no-repeat;
+// }
+// #dining-to-kitchen {
+// background: url('/images/board-dining_to_kitchen.png') center no-repeat;
+// }
+
+
+    // background-color: #FFF;
+    // background-blend-mode: luminosity, normal;
