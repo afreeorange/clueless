@@ -2,12 +2,19 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:400,700,900,300);
 @import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
 
-
 @green: #79AC07;
 @mustard: #D5D500;
 @peacock: #56A9C9;
 @plum: #6C006F;
 @scarlet: #F90403;
+
+.ng-enter {
+transition: all 0.5s ease-in-out;
+opacity:0;
+}
+.ng-enter.ng-enter-active {
+  opacity:1;
+}
 
 html, body {
 margin: 0;
@@ -31,205 +38,85 @@ height: 40px;
 background: url('/images/logo.png') center no-repeat;
 }
 
-#add-player-background {
-width: 99%;
-height: 99%;
-position: absolute;
-z-index: 999;
-background: white;
-opacity: 0.85;
+// ------ This player ------
+
+#this-player {
+margin-top: 0;
+padding-top: 50px;
 }
-#add-player {
-z-index: 9999;
-position: absolute;
-text-align: center;
-width: 100%;
-margin-top: 5%;
-}
-#add-player h2 {
-margin: 0 0 15px 0;
+#this-player h2,
+#this-player h3 {
+margin: 0;
 padding: 0;
-color: #111;
-font-size: 46px;
-font-family: Montserrat;
-letter-spacing: -1px;
 }
-#add-player form input {
-display: block;
-margin: 0 auto;
-text-align: center;
-font-size: 30px;
+#this-player h2 {
 font-family: Montserrat;
-padding: 5px;
 }
-#add-player h3 {
-margin: 15px 0 25px 0;
-padding: 0;
-font-size: 30px;
-font-family: Montserrat;
+#this-player h3 {
+font-family: Oswald;
+font-weight: 100;
+}
+.this-player-green {
+background: url('/images/character-green.png') top right no-repeat;
+background-size: 200px;
+background-position-y: -10px;
+}
+.this-player-scarlet {
+background: url('/images/character-scarlet.png') top right no-repeat;
+background-size: 160px;
+background-position-y: -20px;
+}
+.this-player-plum {
+background: url('/images/character-plum.png') top right no-repeat;
+background-size: 160px;
+background-position-y: 3px;
+}
+.this-player-peacock {
+background: url('/images/character-peacock.png') top right no-repeat;
+background-size: 200px;
+background-position-y: -10px;
+}
+.this-player-mustard {
+background: url('/images/character-mustard.png') top right no-repeat;
+background-size: 200px;
+background-position-y: -5px;
+}
+.this-player-green h2 {
+color: @green;
+}
+.this-player-green h3 {
+color: lighten(@green, 10%);
+}
+.this-player-mustard h2 {
+color: @mustard;
+}
+.this-player-mustard h3 {
+color: darken(@mustard, 10%);
+}
+.this-player-peacock h2 {
+color: @peacock;
+}
+.this-player-peacock h3 {
+color: lighten(@peacock, 10%);
+}
+.this-player-plum h2 {
+color: @plum;
+}
+.this-player-plum h3 {
+color: lighten(@plum, 10%);
+}
+.this-player-scarlet h2 {
+color: @scarlet;
+}
+.this-player-scarlet h3 {
+color: lighten(@scarlet, 10%);
+}
+.this-player-white h2 {
+color: #333;
+}
+.this-player-white h3 {
 color: #666;
 }
-
-#add-player label {
-cursor: pointer;
-user-select: none;
-}
-#add-player label > input {
-visibility: hidden;
-position: absolute;
-}
-#add-player input[disabled]+b {
-display: none;
-}
-#add-player label > b {
-display: inline-block;
-vertical-align: middle;
-width: 100px;
-height: 200px;
-background-size: contain;
-background-repeat: no-repeat;
-background-position: center bottom;
-transition: all .2s ease-in-out;
-}
-#add-player label > b:hover {
-transform: scale(1.2);
-}
-#add-player {
-z-index: 9999;
-position: absolute;
-text-align: center;
-width: 100%;
-}
-.add-player-suspect-white {
-background: url('/images/character-white.png');
-width: 120px!important;
-}
-.add-player-suspect-green {
-background: url('/images/character-green.png');
-width: 115px!important;
-}
-.add-player-suspect-mustard {
-background: url('/images/character-mustard.png');
-width: 120px!important;
-}
-.add-player-suspect-peacock {
-background: url('/images/character-peacock.png');
-width: 115px!important;
-}
-.add-player-suspect-plum {
-background: url('/images/character-plum.png');
-}
-.add-player-suspect-scarlet {
-background: url('/images/character-scarlet.png');
-}
-
-#add-player button {
-display: block;
-margin: 50px auto 10px auto;
-background: #FFF;
-color: red;
-border: 1px solid red;
-width: 50px;
-height: 50px;
-border-radius: 50px;
-font-family: Montserrat;
-font-size: 30px;
-letter-spacing: -1px;
-transition: all .2s ease-in-out;
-cursor: pointer;
-text-transform: lowercase;
-}
-#add-player button:hover {
-transform: scale(1.5);
-background: red;
-color: white;
-border: 1px solid red;
-}
-
-
-// Toastr
-#toast-container {
-position: fixed;
-bottom: 0;
-left:0;
-width: 100%;
-}
-.toast {
-position: relative;
-height: 30px;
-opacity: 0.95;
-color: white;
-padding: 0 10px;
-line-height: 30px;
-font-family: Lato;
-font-weight: 100;
-cursor: pointer;
-}
-.toast .toast-message {
-z-index: 9999;
-}
-.toast .toast-progress {
-position: absolute;
-left: 0;
-top: 0;
-width: 100%;
-height: 30px;
-z-index: -999;
-}
-.toast-info {
-display: none;
-}
-.toast-error {
-background: #F90403;
-border-top: 1px solid #FF0000;
-}
-.toast-error .toast-progress {
-background: #990000;
-}
-.toast-success {
-background: #698C00;
-}
-.toast-success .toast-progress {
-background: #4C6600;
-}
-
-
-#game-sheet h3 {
-margin: 0 0 5px 0;
-padding: 0 0 5px 0;
-width: 100%;
-text-align: center;
-font-family: Lato;
-font-weight: 900;
-}
-#game-sheet table {
-width: 100%;
-background-size: contain;
-border-collapse: collapse;
-}
-#game-sheet table thead {
-font-family: Lato;
-}
-#game-sheet table tbody {
-width: 95%;
-}
-#game-sheet table tr td {
-border-bottom: 1px dotted #CCC;
-padding: 2px 5px;
-font-family: Oswald;
-font-weight: 300;
-font-size: 12px;
-}
-#game-sheet table tr td:first-child {
-padding-left: 15px;
-}
-#game-sheet table tr td:nth-child(2) {
-text-align: center;
-}
-#game-sheet table tr:last-child td {
-border-bottom: none;
-}
-
 
 
 .player-card span {
@@ -273,7 +160,7 @@ color: #FFF!important;
 }
 
 .red {
-    color: red;
+color: red!important;
 }
 
 #game-over {
@@ -295,6 +182,8 @@ color: #FFF!important;
         text-align: center;
     }
 }
+
+
 
 #board {
 border: 1px solid #FFF;
@@ -330,6 +219,7 @@ font-family: Oswald;
 font-weight: 100;
 font-size: 16px;
 color: #999;
+z-index: -999;
 }
 
 
@@ -536,11 +426,233 @@ border-top-color: #CCC;
 40% {transform: translateY(-10px);}
 60% {transform: translateY(-5px);}
 }
+@keyframes pulse {
+    from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+    }
+    50% {
+    -webkit-transform: scale3d(1.5, 1.5, 1.5);
+    transform: scale3d(1.5, 1.5, 1.5);
+    }
+    to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+    }
+}
 .player-current-turn {
 animation-name: bounce;
 animation-duration: 2s;
 animation-iteration-count: infinite;
 }
+
+// ------ Toastr -------
+
+// Toastr
+#toast-container {
+position: fixed;
+bottom: 0;
+left:0;
+width: 100%;
+}
+.toast {
+position: relative;
+height: 30px;
+opacity: 0.95;
+color: white;
+padding: 0 10px;
+line-height: 30px;
+font-family: Lato;
+font-weight: 100;
+cursor: pointer;
+}
+.toast .toast-message {
+z-index: 9999;
+}
+.toast .toast-progress {
+position: absolute;
+left: 0;
+top: 0;
+width: 100%;
+height: 30px;
+z-index: -999;
+}
+.toast-info {
+display: none;
+}
+.toast-error {
+background: #F90403;
+border-top: 1px solid #FF0000;
+}
+.toast-error .toast-progress {
+background: #990000;
+}
+.toast-success {
+background: #698C00;
+}
+.toast-success .toast-progress {
+background: #4C6600;
+}
+
+
+// ------ Add Player Dialog ------
+
+#add-player-background {
+width: 99%;
+height: 99%;
+position: absolute;
+z-index: 999;
+background: white;
+}
+#add-player {
+z-index: 9999;
+position: absolute;
+text-align: center;
+width: 100%;
+margin-top: 5%;
+}
+#add-player h2 {
+margin: 0 0 15px 0;
+padding: 0;
+color: #111;
+font-size: 30px;
+font-family: Montserrat;
+letter-spacing: -1px;
+background: url('/images/logo-red.png') top center no-repeat;
+padding-top: 75px;
+}
+#add-player form input {
+display: block;
+margin: 0 auto;
+text-align: center;
+font-size: 30px;
+font-family: Montserrat;
+font-weight: 700;
+padding: 5px;
+border: 1px solid white;
+border-bottom: 1px solid #CCC;
+}
+.add-player-name-ok {
+border: 1px solid white!important;
+}
+#add-player h3 {
+margin: 15px 0 25px 0;
+padding: 0;
+font-size: 30px;
+font-family: Montserrat;
+color: #333;
+letter-spacing: -1px;
+}
+
+// http://jsbin.com/image-instead-of-radio-button/3/edit
+#add-player label {
+cursor: pointer;
+user-select: none;
+}
+#add-player label > input {
+visibility: hidden;
+position: absolute;
+}
+#add-player input[disabled]+b {
+display: none;
+}
+#add-player label > b {
+display: inline-block;
+vertical-align: middle;
+width: 100px;
+height: 200px;
+background-size: contain;
+background-repeat: no-repeat;
+background-position: center bottom;
+transition: all .2s ease-in-out;
+}
+#add-player label > b:hover {
+transform: scale(1.2);
+}
+
+.add-player-suspect-white {
+background: url('/images/character-white.png');
+width: 120px!important;
+}
+.add-player-suspect-green {
+background: url('/images/character-green.png');
+width: 115px!important;
+}
+.add-player-suspect-mustard {
+background: url('/images/character-mustard.png');
+width: 120px!important;
+}
+.add-player-suspect-peacock {
+background: url('/images/character-peacock.png');
+width: 115px!important;
+}
+.add-player-suspect-plum {
+background: url('/images/character-plum.png');
+}
+.add-player-suspect-scarlet {
+background: url('/images/character-scarlet.png');
+}
+
+#add-player button {
+display: block;
+margin: 40px auto 10px auto;
+background: red;
+color: white;
+border: 1px solid red;
+width: 50px;
+height: 50px;
+border-radius: 50px;
+font-family: Montserrat;
+font-size: 30px;
+letter-spacing: -1px;
+transition: all .2s ease-in-out;
+cursor: pointer;
+text-transform: lowercase;
+}
+#add-player button:hover {
+transform: scale(1.5);
+}
+
+
+// ------ Gamesheet ------
+
+#game-sheet h3 {
+margin: 0 0 5px 0;
+padding: 0 0 5px 0;
+width: 100%;
+text-align: center;
+font-family: Montserrat;
+font-weight: 900;
+}
+#game-sheet table {
+width: 100%;
+background-size: contain;
+border-collapse: collapse;
+}
+#game-sheet table thead {
+font-family: Montserrat;
+}
+#game-sheet table tbody {
+width: 95%;
+}
+#game-sheet table tr td {
+border-bottom: 1px dotted #CCC;
+padding: 2px 5px;
+font-family: Oswald;
+font-weight: 300;
+font-size: 12px;
+}
+#game-sheet table tr td:first-child {
+padding-left: 15px;
+}
+#game-sheet table tr td:nth-child(2) {
+text-align: center;
+}
+#game-sheet table tr:last-child td {
+border-bottom: none;
+}
+
+
 
 
 // .player-card {

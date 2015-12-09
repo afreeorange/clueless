@@ -441,6 +441,7 @@ class Board:
         if suspect in player.cards or weapon in player.cards:
             raise BadSuggestion('Look at your cards, yo...')
 
+        player.turn['moved'] = True
         player.turn['suggested'] = True
 
         suggestion = {
@@ -721,7 +722,7 @@ class Board:
         suspects_in_space = [
             _
             for _ in new_space.suspects_present
-            if _ != player.suspect and _.in_the_game
+            if _ != player.suspect and self.get_player_mapped_to(_).in_the_game
         ]
 
         if suspects_in_space:
@@ -735,7 +736,7 @@ class Board:
 
     def __valid_player(self, player):
         if player not in self.__suspect_to_player_map.values():
-            raise InvalidPlayer('Don\'t know this player')
+            raise InvalidPlayer('I don\'t know this player')
 
     def __valid_player_turn(self, player):
         current_player = self.current_player

@@ -73,6 +73,7 @@ class BoardService:
         self.engine_log.setLevel(logging.INFO)
         self.engine_log.addHandler(handler)
         self.engine_log.addHandler(JSONHandler(self.__game_log))
+        self.engine_log.info('Waiting for all players...')
 
         # For testing only!
         self.__test_mode = test_mode
@@ -154,6 +155,7 @@ class BoardService:
             'in_the_game': player.in_the_game,
             'is_current_turn': True if self.__board.current_player == player else False,
             'suspect': self.get_stub(player.suspect),
+            'suspect_fullname': player.suspect.name,
             'cards': [self.get_stub(_) for _ in player.cards],
             'game_sheet': {
                     'rooms': {
@@ -270,7 +272,9 @@ class BoardService:
         return {
             'name': self.get_player_name_from_suspect(suspect),
             'suspect': self.get_stub_from_suspect(suspect),
-            'in_the_game': self.get_player_object_from_suspect(suspect).in_the_game if self.get_player_object_from_suspect(suspect) else None
+            'suspect_fullname': suspect.name,
+            'in_the_game': self.get_player_object_from_suspect(suspect).in_the_game if self.get_player_object_from_suspect(suspect) else None,
+            'is_current_turn': True if self.__board.current_player == self.get_player_object_from_suspect(suspect) else False
         }
 
     def __map_token_to_player(self, player_token, player_object):
