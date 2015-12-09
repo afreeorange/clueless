@@ -12,12 +12,30 @@ html(ng-app="Clueless")
 
     body.ui-view
 
+        div(ng-show="!gc.gameState.game_started&& !gc.gameState.game_over && !gc.playerData")
+            div#add-player-background
+            div#add-player
+                h2 Let's get started with
+                form
+                    input(type="text" ng-model="gc.addForm.name" placeholder="your name")
+                    span(ng-if="gc.addForm.name.length >= 3")
+                        h3(ng-if="!gc.addForm.suspect") and a character {{ gc.expandShortname(gc.addForm.suspect) }}
+                        h3(ng-if="gc.addForm.suspect") as {{ gc.expandShortname(gc.addForm.suspect) }}
+                        label(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects")
+                            input(type="radio"
+                                  ng-model="gc.addForm.suspect"
+                                  id="{{shortname}}"
+                                  value="{{shortname}}"
+                                  ng-disabled="gc.gameState.suspect_to_player[shortname] != null")
+                            b(class="add-player-suspect-{{shortname}}")
+                        button(type="button" ng-click="gc.addPlayer()") Go
+
         div#game-over(ng-if="gc.gameState.game_over")
             h1 Game Over
             h2 Won the game {{gc.gameState.winner}}
             h3 The case file contained (cards)
 
-        div.row
+        div.row.container
             div.col-md-8
 
                 h1: span Clueless
@@ -27,70 +45,91 @@ html(ng-app="Clueless")
                     tbody
                         tr
                             td#space-study
-                                div.description {{ gc.expandShortname('study') | removeThe }}
-                                i.fa.fa-arrow-right.teleporter-arrow
-                                player-box(players="gc.gameState.map.study.players")
-                            td#space-study-to-hall.hallway
-                                player-box(players="gc.gameState.map.study_to_hall.players")
-                            td#space-hall
-                                div.description {{ gc.expandShortname('hall') | removeThe }}
-                                player-box(players="gc.gameState.map.hall.players")
-                            td#space-hall-to-lounge.hallway
-                                player-box(players="gc.gameState.map.hall_to_lounge.players")
-                            td#space-lounge
-                                div.description {{ gc.expandShortname('lounge') | removeThe }}
-                                i.fa.fa-arrow-right.teleporter-arrow
-                                player-box(players="gc.gameState.map.lounge.players")
+                                div.cell-content
+                                    div.description {{ gc.expandShortname('study') | removeThe }}
+                                    i.fa.fa-arrow-right.teleporter-arrow
+                                    player-box(players="gc.gameState.map.study.players")
+                            td#space-study-to-hall.hallway 
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.study_to_hall.players")
+                            td#space-hall 
+                                div.cell-content
+                                    div.description {{ gc.expandShortname('hall') | removeThe }}
+                                    player-box(players="gc.gameState.map.hall.players")
+                            td#space-hall-to-lounge.hallway 
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.hall_to_lounge.players")
+                            td#space-lounge 
+                                div.cell-content
+                                    div.description {{ gc.expandShortname('lounge') | removeThe }}
+                                    i.fa.fa-arrow-right.teleporter-arrow
+                                    player-box(players="gc.gameState.map.lounge.players")
                         tr
                             td#space-study-to-library.hallway
-                                player-box(players="gc.gameState.map.study_to_library.players")
-                            td.hole
-                            td#space-hall-to-billiard.hallway
-                                player-box(players="gc.gameState.map.hall_to_billiard.players")
-                            td.hole
-                            td#space-lounge-to-dining.hallway
-                                player-box(players="gc.gameState.map.lounge_to_dining.players")
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.study_to_library.players")
+                            td.hole 
+                            td#space-hall-to-billiard.hallway 
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.hall_to_billiard.players")
+                            td.hole 
+                            td#space-lounge-to-dining.hallway 
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.lounge_to_dining.players")
                         tr
                             td#space-library
-                                div.description {{ gc.expandShortname('library') | removeThe }}
-                                player-box(players="gc.gameState.map.library.players")
+                                div.cell-content
+                                    div.description {{ gc.expandShortname('library') | removeThe }}
+                                    player-box(players="gc.gameState.map.library.players")
                             td#space-library-to-billiard.hallway
-                                player-box(players="gc.gameState.map.library_to_billiard.players")
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.library_to_billiard.players")
                             td#space-billiard-room
-                                div.description {{ gc.expandShortname('billiard_room') | removeThe }}
-                                player-box(players="gc.gameState.map.billiard_room.players")
+                                div.cell-content
+                                    div.description {{ gc.expandShortname('billiard_room') | removeThe }}
+                                    player-box(players="gc.gameState.map.billiard_room.players")
                             td#space-billiard-to-dining.hallway
-                                player-box(players="gc.gameState.map.billiard_to_dining.players")
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.billiard_to_dining.players")
                             td#space-dining-room
-                                div.description {{ gc.expandShortname('dining_room') | removeThe }}
-                                player-box(players="gc.gameState.map.dining_room.players")
+                                div.cell-content
+                                    div.description {{ gc.expandShortname('dining_room') | removeThe }}
+                                    player-box(players="gc.gameState.map.dining_room.players")
                         tr
                             td#space-library-to-conservatory.hallway
-                                player-box(players="gc.gameState.map.library_to_conservatory.players")
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.library_to_conservatory.players")
                             td.hole
                             td#space-billiard-to-ballroom.hallway
-                                player-box(players="gc.gameState.map.billiard_to_ballroom.players")
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.billiard_to_ballroom.players")
                             td.hole
                             td#space-dining-to-kitchen.hallway
-                                player-box(players="gc.gameState.map.dining_to_kitchen.players")
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.dining_to_kitchen.players")
                         tr
                             td#space-conservatory
-                                div.description {{ gc.expandShortname('conservatory') | removeThe }}
-                                i.fa.fa-arrow-right.teleporter-arrow
-                                player-box(players="gc.gameState.map.conservatory.players")
+                                div.cell-content
+                                    div.description {{ gc.expandShortname('conservatory') | removeThe }}
+                                    i.fa.fa-arrow-right.teleporter-arrow
+                                    player-box(players="gc.gameState.map.conservatory.players")
                             td#space-conservatory-to-ballroom.hallway
-                                player-box(players="gc.gameState.map.conservatory_to_ballroom.players")
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.conservatory_to_ballroom.players")
                             td#space-ballroom
-                                div.description {{ gc.expandShortname('ballroom') | removeThe }}
-                                player-box(players="gc.gameState.map.ballroom.players")
+                                div.cell-content
+                                    div.description {{ gc.expandShortname('ballroom') | removeThe }}
+                                    player-box(players="gc.gameState.map.ballroom.players")
                             td#space-ballroom-to-kitchen.hallway
-                                player-box(players="gc.gameState.map.ballroom_to_kitchen.players")
+                                div.cell-content
+                                    player-box(players="gc.gameState.map.ballroom_to_kitchen.players")
                             td#space-kitchen
-                                div.description {{ gc.expandShortname('kitchen') | removeThe }}
-                                i.fa.fa-arrow-right.teleporter-arrow
-                                player-box(players="gc.gameState.map.kitchen.players")
+                                div.cell-content
+                                    div.description {{ gc.expandShortname('kitchen') | removeThe }}
+                                    i.fa.fa-arrow-right.teleporter-arrow
+                                    player-box(players="gc.gameState.map.kitchen.players")
 
-                div.ui-view(name="logs")
+                div#logs.ui-view(name="logs")
 
                 div(ng-if="gc.gameState.game_over")
                     h3 Game Over
@@ -113,17 +152,6 @@ html(ng-app="Clueless")
 
                 div(ng-if="!gc.gameState.game_started") 
                     h3 The game has not started yet
-
-                div(ng-show="!gc.gameState.game_started&& !gc.gameState.game_over && !gc.playerData")
-                    h3 Add
-                    form
-                        input(type="text" ng-model="gc.addForm.name")
-                        select(ng-model="gc.addForm.suspect")
-                            option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects"
-                                   ng-disabled="gc.gameState.suspect_to_player[shortname] != null"
-                                   value="{{shortname}}"
-                                   ) {{fullname}}
-                        button(type="submit" ng-click="gc.addPlayer()") Go
 
                     hr
 

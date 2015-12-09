@@ -1,7 +1,5 @@
 div.player-info-wrapper
     div.ng-transclude
-    //- div.player-info
-    div.player-info(ng-show="show")
-        strong ({{ show }})
-        strong {{ player.name }}
-        strong {{ player.suspect }}
+    div.player-info(ng-show="show" class="player-info-{{player.suspect}}")
+        strong.player-info-name {{ player.name }}
+        strong.player-info-suspect {{ player.suspect_fullname }}

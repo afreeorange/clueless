@@ -1,17 +1,197 @@
 @import url(https://fonts.googleapis.com/css?family=Oswald:700,400,300);
 @import url(https://fonts.googleapis.com/css?family=Lato:400,700,900,300);
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
 
-h1 span {
+
+@green: #79AC07;
+@mustard: #D5D500;
+@peacock: #56A9C9;
+@plum: #6C006F;
+@scarlet: #F90403;
+
+html, body {
+margin: 0;
+padding: 0;
+}
+
+.container {
+width: 1000px;
+margin: 0 auto;
+position: relative;
+}
+
+.container h1 span {
 display: none;
 }
-h1 {
-margin: 5px 0 0 0;
+.container h1 {
+margin: 10px 0 0 0;
 padding: 0;
 width: 200px;
 height: 40px;
 background: url('/images/logo.png') center no-repeat;
 }
 
+#add-player-background {
+width: 99%;
+height: 99%;
+position: absolute;
+z-index: 999;
+background: white;
+opacity: 0.85;
+}
+#add-player {
+z-index: 9999;
+position: absolute;
+text-align: center;
+width: 100%;
+margin-top: 5%;
+}
+#add-player h2 {
+margin: 0 0 15px 0;
+padding: 0;
+color: #111;
+font-size: 46px;
+font-family: Montserrat;
+letter-spacing: -1px;
+}
+#add-player form input {
+display: block;
+margin: 0 auto;
+text-align: center;
+font-size: 30px;
+font-family: Montserrat;
+padding: 5px;
+}
+#add-player h3 {
+margin: 15px 0 25px 0;
+padding: 0;
+font-size: 30px;
+font-family: Montserrat;
+color: #666;
+}
+
+#add-player label {
+cursor: pointer;
+user-select: none;
+}
+#add-player label > input {
+visibility: hidden;
+position: absolute;
+}
+#add-player input[disabled]+b {
+display: none;
+}
+#add-player label > b {
+display: inline-block;
+vertical-align: middle;
+width: 100px;
+height: 200px;
+background-size: contain;
+background-repeat: no-repeat;
+background-position: center bottom;
+transition: all .2s ease-in-out;
+}
+#add-player label > b:hover {
+transform: scale(1.2);
+}
+#add-player {
+z-index: 9999;
+position: absolute;
+text-align: center;
+width: 100%;
+}
+.add-player-suspect-white {
+background: url('/images/character-white.png');
+width: 120px!important;
+}
+.add-player-suspect-green {
+background: url('/images/character-green.png');
+width: 115px!important;
+}
+.add-player-suspect-mustard {
+background: url('/images/character-mustard.png');
+width: 120px!important;
+}
+.add-player-suspect-peacock {
+background: url('/images/character-peacock.png');
+width: 115px!important;
+}
+.add-player-suspect-plum {
+background: url('/images/character-plum.png');
+}
+.add-player-suspect-scarlet {
+background: url('/images/character-scarlet.png');
+}
+
+#add-player button {
+display: block;
+margin: 50px auto 10px auto;
+background: #FFF;
+color: red;
+border: 1px solid red;
+width: 50px;
+height: 50px;
+border-radius: 50px;
+font-family: Montserrat;
+font-size: 30px;
+letter-spacing: -1px;
+transition: all .2s ease-in-out;
+cursor: pointer;
+text-transform: lowercase;
+}
+#add-player button:hover {
+transform: scale(1.5);
+background: red;
+color: white;
+border: 1px solid red;
+}
+
+
+// Toastr
+#toast-container {
+position: fixed;
+bottom: 0;
+left:0;
+width: 100%;
+}
+.toast {
+position: relative;
+height: 30px;
+opacity: 0.95;
+color: white;
+padding: 0 10px;
+line-height: 30px;
+font-family: Lato;
+font-weight: 100;
+cursor: pointer;
+}
+.toast .toast-message {
+z-index: 9999;
+}
+.toast .toast-progress {
+position: absolute;
+left: 0;
+top: 0;
+width: 100%;
+height: 30px;
+z-index: -999;
+}
+.toast-info {
+display: none;
+}
+.toast-error {
+background: #F90403;
+border-top: 1px solid #FF0000;
+}
+.toast-error .toast-progress {
+background: #990000;
+}
+.toast-success {
+background: #698C00;
+}
+.toast-success .toast-progress {
+background: #4C6600;
+}
 
 
 #game-sheet h3 {
@@ -79,10 +259,6 @@ background-size: contain;
 
 
 
-.container {
-    margin: 0 auto;
-}
-
 .player-current-turn {
     color: green;
 }
@@ -130,14 +306,24 @@ width: 125px;
 height: 100px;
 border: 1px dashed #CCC;
 vertical-align:bottom;
-position: relative;
 }
 #board .hole {
 border: 0!important;
 background: #666;
 }
+// Need to Strangest position:relative glitches with Chrome...
+#board tr td .cell-content {
+position: relative;
+// overflow: hidden;
+width: 125px;
+height: 100px;
+display: table-cell;
+vertical-align: bottom;
+}
 #board tr td .description {
 position: absolute;
+width: 100%;
+height: 100%;
 top: 3px;
 left: 3px;
 font-family: Oswald;
@@ -151,7 +337,7 @@ color: #999;
 #board .teleporter-arrow {
 position: absolute;
 bottom: 0;
-color: #666;
+color: #CCC;
 }
 #space-conservatory .teleporter-arrow {
 transform: rotate(-45deg);
@@ -175,7 +361,7 @@ width: 30px;
 height: 30px;
 margin: 2px;
 background-color: #333;
-border: 1px solid transparent;
+border: 3px solid transparent;
 border-radius: 50%;
 float: right;
 text-align: center;
@@ -187,28 +373,29 @@ text-transform: capitalize;
 }
 .board-suspect-white {
 background-color: #FFF;
-border: 1px solid #666;
+border-color: #DDD;
 color: #333;
 }
 .board-suspect-green {
-background-color: #79AC07;
-border-color: #79AC07;
+background-color: @green;
+border-color: lighten(@green, 20%);
 }
 .board-suspect-mustard {
-background-color: #F3E705;
-border-color: #F3E705;
+background-color: @mustard;
+border-color: lighten(@mustard, 20%);
+color: #333;
 }
 .board-suspect-peacock {
-background-color: #56A9C9;
-border-color: #56A9C9;
+background-color: @peacock;
+border-color: lighten(@peacock, 20%);
 }
 .board-suspect-plum {
-background-color: #6C006F;
-border-color: #6C006F;
+background-color: @plum;
+border-color: lighten(@plum, 20%);
 }
 .board-suspect-scarlet {
-background-color: #F90403;
-border-color: #F90403;
+background-color: @scarlet;
+border-color: lighten(@scarlet, 20%);
 }
 
 
@@ -217,16 +404,16 @@ border-color: #F90403;
 position: relative;
 cursor: pointer;
 }
+
 .player-info {
 background: #FFF;
 color: #333!important;
 position: relative;
 width: 150px;
-height: 100px;
+height: 85px;
 background: #FFF;
-border: 2px solid #CCC;
-left: -62px;
-top: -155px;
+left: -60px;
+top: -140px;
 z-index: 9999;
 border-radius: 5px;
 }
@@ -242,15 +429,117 @@ pointer-events: none;
 }
 .player-info:after {
 border-color: rgba(255, 255, 255, 0);
-border-top-color: #FFF;
 border-width: 20px;
 margin-left: -20px;
 }
 .player-info:before {
 border-color: rgba(204, 204, 204, 0);
-border-top-color: #CCC;
 border-width: 23px;
 margin-left: -23px;
+}
+
+.player-info-name {
+display: block;
+font-family: Montserrat;
+font-size: 20px;
+padding: 5px 0;
+}
+.player-info-suspect {
+display: block;
+font-family: Oswald;
+font-size: 20px;
+font-weight: 100;
+padding: 10px;
+color: white;
+}
+
+.player-info-green .player-info-name {
+background: @green;
+color: white;
+}
+.player-info-green .player-info-suspect {
+background: lighten(@green, 10%);
+}
+.player-info-mustard .player-info-name {
+background: @mustard;
+}
+.player-info-mustard .player-info-suspect {
+background: lighten(@mustard, 10%);
+color: #333;
+}
+.player-info-peacock .player-info-name {
+background: @peacock;
+color: white;
+}
+.player-info-peacock .player-info-suspect {
+background: lighten(@peacock, 10%);
+}
+.player-info-plum .player-info-name {
+background: @plum;
+color: white;
+}
+.player-info-plum .player-info-suspect {
+background: lighten(@plum, 10%);
+}
+.player-info-scarlet .player-info-name {
+background: @scarlet;
+color: white;
+}
+.player-info-scarlet .player-info-suspect {
+background: lighten(@scarlet, 10%);
+}
+.player-info-white {
+border: 1px solid #EEE;
+}
+.player-info-white .player-info-name {
+background: #FFF;
+border-bottom: 1px solid #EEE;
+color: #333;
+}
+.player-info-white .player-info-suspect {
+color: #333;
+}
+
+.player-info-green.player-info:after {
+border-top-color: lighten(@green, 10%);
+}
+.player-info-mustard.player-info:after {
+border-top-color: lighten(@mustard, 10%);
+}
+.player-info-peacock.player-info:after {
+border-top-color: lighten(@peacock, 10%);
+}
+.player-info-plum.player-info:after {
+border-top-color: lighten(@plum, 10%);
+}
+.player-info-scarlet.player-info:after {
+border-top-color: lighten(@scarlet, 10%);
+}
+.player-info-white.player-info:after {
+border-top-color: #EEE;
+}
+
+.player-out-of-game .player-info-name {
+background: #999;
+}
+.player-out-of-game .player-info-suspect {
+background: #CCC;
+}
+.player-out-of-game .player-info:after {
+border-top-color: #CCC;
+}
+
+
+// Show a nice little jiggle for the current player
+@keyframes bounce {
+0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+40% {transform: translateY(-10px);}
+60% {transform: translateY(-5px);}
+}
+.player-current-turn {
+animation-name: bounce;
+animation-duration: 2s;
+animation-iteration-count: infinite;
 }
 
 

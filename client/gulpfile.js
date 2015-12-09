@@ -11,8 +11,8 @@ var paths = {
     vendor: {
         styles: [
             'bower_components/flexboxgrid/dist/flexboxgrid.min.css',
-            'bower_components/font-awesome/css/font-awesome.min.css',
-            'bower_components/toastr/toastr.min.css'
+            'bower_components/font-awesome/css/font-awesome.min.css'
+            // 'bower_components/toastr/toastr.min.css'
         ],
         scripts: [
             'bower_components/jquery/dist/jquery.min.js',

@@ -1,6 +1,5 @@
-div
-    div.board-suspect(ng-repeat="player in players" ng-if="player.name" ng-class="{'player-out-of-game': player.in_the_game === false}" class="board-suspect-{{player.suspect}}")
-        strong(player-info player="player") {{ player.suspect | limitTo:2 }}
-        div.player-suspect {{ player.name }}
-        div.player-name(ng-if="player.name") 
-            small {{ pbc.expandShortname(player.suspect) }}
+div.board-suspect(ng-repeat="player in players"
+                  ng-if="player.name"
+                  ng-class="{'player-out-of-game': player.in_the_game === false, 'player-current-turn': player.is_current_turn === true}"
+                  class="board-suspect-{{player.suspect}}")
+    strong(player-info player="player") {{ player.suspect | limitTo:2 }}
