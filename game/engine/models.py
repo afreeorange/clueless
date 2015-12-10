@@ -622,7 +622,6 @@ class Board:
 
         if players_status == {False}:
             self.__game_over = True
-            # self.__winner = player
             message = 'No players available. Game Over.'
             self.log.info(message)
             raise GameOver(message)
