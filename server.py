@@ -92,6 +92,11 @@ class CluelessMakeAccusation(Resource):
                 room=request.json.get('room'),
                 )
         except Exception as e:
+            # Doing this twice since the last player's wrong accusation
+            # throws a "GameOver" exception. Need to push the board
+            # state and logs before croaking...
+            socketio.emit('board:state', bs.state)
+            socketio.emit('board:log', bs.log)
             return {'message': str(e)}, 400
         else:
             socketio.emit('board:state', bs.state)
@@ -165,6 +170,9 @@ def board_metadata():
 def new_game():
     global bs
     bs = BoardService(test_mode=True)
+    socketio.emit('board:state', bs.state)
+    socketio.emit('board:log', bs.log)
+    socketio.emit('board:playerdata', None)
     return jsonify(bs.state)
 
 
