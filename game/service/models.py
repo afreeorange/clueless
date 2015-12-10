@@ -294,6 +294,7 @@ class BoardService:
                 'name': self.__board.winner.name if self.__board.winner else None,
                 'suspect': self.get_stub_from_suspect(self.__board.winner.suspect) if self.__board.winner else None
             },
+            'confidential_file': [self.get_stub(_) for _ in self.__board.confidential_file] if self.__board.game_over else None,
             'suspect_to_player': {
                 self.get_stub_from_suspect(suspect): player_object.name if player_object else None
                 for suspect, player_object
