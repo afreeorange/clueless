@@ -2,6 +2,30 @@ div#suggestions(ng-if="gc.gameState.game_started")
     h3 Suggestions
     table
         tbody
+            tr(ng-if="gc.playerData.suggestions.length == 0")
+                td
+                    div.player-card
+                        div.player-card-name &nbsp;
+                        div.player-card-background
+                        div.player-card-name-rotated &nbsp;
+
+                    div.player-card
+                        div.player-card-name &nbsp;
+                        div.player-card-background
+                        div.player-card-name-rotated &nbsp;
+
+                    div.player-card
+                        div.player-card-name &nbsp;
+                        div.player-card-background
+                        div.player-card-name-rotated &nbsp;
+                td
+                    span 
+                td
+                    div.player-card
+                        div.player-card-name &nbsp;
+                        div.player-card-background
+                        div.player-card-name-rotated &nbsp;
+
             tr(ng-repeat="item in gc.playerData.suggestions | reverse")
                 td
                     div.player-card(class="player-card-{{item.suggestion.suspect}}")
