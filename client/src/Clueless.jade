@@ -40,7 +40,10 @@ html(ng-app="Clueless")
                         div.player-card-name-rotated {{gc.expandShortname(card) | removeThe }}
 
                 div#game-not-started(ng-if="!gc.gameState.game_started") 
-                    h3 #[i.fa.fa-arrow-up] Those are your game cards. You'll find that 
+                    h3 #[i.fa.fa-arrow-up] Those are your cards. 
+                        br
+                        small They're marked off on your game sheet. Cards that disprove all suggestions you make will be on there as well.
+                    h3 #[i.fa.fa-hourglass-half] Waiting for all players to join&hellip;
 
                 div.row
                     

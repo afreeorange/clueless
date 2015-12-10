@@ -73,7 +73,7 @@ angular.module('Clueless')
         return $http.put(CluelessAPI + '/move', data)
             .then(
                 function(response) {
-                    toastr.success('Moved player');
+                    // toastr.success('Moved player');
                     return response.data;
                 },
                function(response) {
@@ -93,7 +93,7 @@ angular.module('Clueless')
         return $http.put(CluelessAPI + '/suggest', data)
             .then(
                 function(response) {
-                    toastr.success('Sent suggestion');
+                    // toastr.success('Sent suggestion');
                     return response.data;
                 },
                function(response) {
@@ -114,7 +114,7 @@ angular.module('Clueless')
         return $http.put(CluelessAPI + '/accuse', data)
             .then(
                 function(response) {
-                    toastr.success('Sent accusation');
+                    // toastr.success('Sent accusation');
                     return response.data;
                 },
                function(response) {
@@ -132,7 +132,7 @@ angular.module('Clueless')
         return $http.put(CluelessAPI + '/end_turn', data)
             .then(
                 function(response) {
-                    toastr.success('Ended turn');
+                    // toastr.success('Ended turn');
                     return response.data;
                 },
                function(response) {

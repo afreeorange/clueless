@@ -5,6 +5,7 @@ div#game-over(ng-if="gc.gameState.game_over")
             div.winner-panel(class="winner-panel-{{ gc.gameState.winner.suspect }}")
                 h2 {{ gc.gameState.winner.name }}
                 h3 {{ gc.expandShortname(gc.gameState.winner.suspect) }}
+
         div(ng-if="!gc.gameState.winner.name")
             h1 Nobody won this game #[i.fa.fa-frown-o]
 

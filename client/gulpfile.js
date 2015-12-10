@@ -97,7 +97,7 @@ gulp.task('app.scripts', [], function() {
                .pipe($.jshint())
                .pipe($.jshint.reporter('jshint-stylish'))
                .pipe($.ngAnnotate({single_quotes: true}))
-               // .pipe($.uglify())
+               .pipe($.uglify())
                .pipe(addStream.obj(prepareTemplatesForCaching()))
                .pipe($.concat('app.js'))
                .pipe(gulp.dest(paths.destination + '/scripts'));
