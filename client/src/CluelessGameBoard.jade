@@ -1,0 +1,87 @@
+table.pure-table.pure-table-bordered#board.no-animate
+    tbody
+        tr
+            td#space-study
+                div.cell-content
+                    div.description {{ gc.expandShortname('study') | removeThe }}
+                    i.fa.fa-arrow-right.teleporter-arrow
+                    player-box(players="gc.gameState.map.study.players")
+            td#space-study-to-hall.hallway 
+                div.cell-content
+                    player-box(players="gc.gameState.map.study_to_hall.players")
+            td#space-hall 
+                div.cell-content
+                    div.description {{ gc.expandShortname('hall') | removeThe }}
+                    player-box(players="gc.gameState.map.hall.players")
+            td#space-hall-to-lounge.hallway 
+                div.cell-content
+                    player-box(players="gc.gameState.map.hall_to_lounge.players")
+            td#space-lounge 
+                div.cell-content
+                    div.description {{ gc.expandShortname('lounge') | removeThe }}
+                    i.fa.fa-arrow-right.teleporter-arrow
+                    player-box(players="gc.gameState.map.lounge.players")
+        tr
+            td#space-study-to-library.hallway
+                div.cell-content
+                    player-box(players="gc.gameState.map.study_to_library.players")
+            td.hole 
+            td#space-hall-to-billiard.hallway 
+                div.cell-content
+                    player-box(players="gc.gameState.map.hall_to_billiard.players")
+            td.hole 
+            td#space-lounge-to-dining.hallway 
+                div.cell-content
+                    player-box(players="gc.gameState.map.lounge_to_dining.players")
+        tr
+            td#space-library
+                div.cell-content
+                    div.description {{ gc.expandShortname('library') | removeThe }}
+                    player-box(players="gc.gameState.map.library.players")
+            td#space-library-to-billiard.hallway
+                div.cell-content
+                    player-box(players="gc.gameState.map.library_to_billiard.players")
+            td#space-billiard-room
+                div.cell-content
+                    div.description {{ gc.expandShortname('billiard_room') | removeThe }}
+                    player-box(players="gc.gameState.map.billiard_room.players")
+            td#space-billiard-to-dining.hallway
+                div.cell-content
+                    player-box(players="gc.gameState.map.billiard_to_dining.players")
+            td#space-dining-room
+                div.cell-content
+                    div.description {{ gc.expandShortname('dining_room') | removeThe }}
+                    player-box(players="gc.gameState.map.dining_room.players")
+        tr
+            td#space-library-to-conservatory.hallway
+                div.cell-content
+                    player-box(players="gc.gameState.map.library_to_conservatory.players")
+            td.hole
+            td#space-billiard-to-ballroom.hallway
+                div.cell-content
+                    player-box(players="gc.gameState.map.billiard_to_ballroom.players")
+            td.hole
+            td#space-dining-to-kitchen.hallway
+                div.cell-content
+                    player-box(players="gc.gameState.map.dining_to_kitchen.players")
+        tr
+            td#space-conservatory
+                div.cell-content
+                    div.description {{ gc.expandShortname('conservatory') | removeThe }}
+                    i.fa.fa-arrow-right.teleporter-arrow
+                    player-box(players="gc.gameState.map.conservatory.players")
+            td#space-conservatory-to-ballroom.hallway
+                div.cell-content
+                    player-box(players="gc.gameState.map.conservatory_to_ballroom.players")
+            td#space-ballroom
+                div.cell-content
+                    div.description {{ gc.expandShortname('ballroom') | removeThe }}
+                    player-box(players="gc.gameState.map.ballroom.players")
+            td#space-ballroom-to-kitchen.hallway
+                div.cell-content
+                    player-box(players="gc.gameState.map.ballroom_to_kitchen.players")
+            td#space-kitchen
+                div.cell-content
+                    div.description {{ gc.expandShortname('kitchen') | removeThe }}
+                    i.fa.fa-arrow-right.teleporter-arrow
+                    player-box(players="gc.gameState.map.kitchen.players")

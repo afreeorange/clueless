@@ -1,0 +1,20 @@
+div(ng-show="!gc.gameState.game_started && !gc.gameState.game_over && !gc.playerData")
+    div#add-player-background
+    div#add-player
+        h2 Let's get started with
+        form
+            input(type="text" ng-model="gc.addForm.name" placeholder="your name" ng-class="{'add-player-name-ok': gc.addForm.name.length >= 3}")
+
+            span(ng-if="gc.addForm.name.length >= 3")
+                h3(ng-if="!gc.addForm.suspect") and a character {{ gc.expandShortname(gc.addForm.suspect) }}
+                h3(ng-if="gc.addForm.suspect") as {{ gc.expandShortname(gc.addForm.suspect) }}
+
+                label(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects")
+                    input(type="radio"
+                          ng-model="gc.addForm.suspect"
+                          id="{{shortname}}"
+                          value="{{shortname}}"
+                          ng-disabled="gc.gameState.suspect_to_player[shortname] != null")
+                    b(class="add-player-suspect-{{shortname}}")
+
+                button(type="button" ng-click="gc.addPlayer()" ng-if="gc.addForm.suspect") Go

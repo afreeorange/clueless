@@ -1,0 +1,16 @@
+div#game-over(ng-if="gc.gameState.game_over")
+    div.game-over-wrapper
+        div(ng-if="gc.gameState.winner.name")
+            h1 We have a winner!
+            div.winner-panel(class="winner-panel-{{ gc.gameState.winner.suspect }}")
+                h2 {{ gc.gameState.winner.name }}
+                h3 {{ gc.expandShortname(gc.gameState.winner.suspect) }}
+        div(ng-if="!gc.gameState.winner.name")
+            h1 Nobody won this game #[i.fa.fa-frown-o]
+
+        div(ng-class="{'game-over-centered': !gc.gameState.winner.name}")
+            h4 here's what the Confidential Case File contained
+            div.player-card(ng-repeat="card in gc.gameState.confidential_file" class="player-card-{{card}}")
+                div.player-card-name {{gc.expandShortname(card) | removeThe }}
+                div.player-card-background
+                div.player-card-name-rotated {{gc.expandShortname(card) | removeThe }}

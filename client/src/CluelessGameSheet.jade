@@ -1,0 +1,25 @@
+div#game-sheet
+    h3
+        span Game Sheet
+    table
+        thead
+            tr
+                th(colspan="2") Suspects
+        tbody
+            tr(ng-repeat="(shortname, status) in gc.playerData.game_sheet.suspects")
+                td {{ gc.expandShortname(shortname) }}
+                td: span(ng-if="status == false"): i.fa.fa-times
+        thead
+            tr
+                th(colspan="2") Weapons
+        tbody
+            tr(ng-repeat="(shortname, status) in gc.playerData.game_sheet.weapons")
+                td {{ gc.expandShortname(shortname) }}
+                td: span(ng-if="status == false"): i.fa.fa-times
+        thead
+            tr
+                th(colspan="2") Rooms
+        tbody
+            tr(ng-repeat="(shortname, status) in gc.playerData.game_sheet.rooms")
+                td {{ gc.expandShortname(shortname) | removeThe }}
+                td: span(ng-if="status == false"): i.fa.fa-times

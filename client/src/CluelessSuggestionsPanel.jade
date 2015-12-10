@@ -1,0 +1,27 @@
+div#suggestions(ng-if="gc.gameState.game_started") 
+    h3 Suggestions
+    table
+        tbody
+            tr(ng-repeat="item in gc.playerData.suggestions | reverse")
+                td
+                    div.player-card(class="player-card-{{item.suggestion.suspect}}")
+                        div.player-card-name {{gc.expandShortname(item.suggestion.suspect) | removeThe }}
+                        div.player-card-background
+                        div.player-card-name-rotated {{gc.expandShortname(item.suggestion.suspect) | removeThe }}
+
+                    div.player-card(class="player-card-{{item.suggestion.weapon}}")
+                        div.player-card-name {{gc.expandShortname(item.suggestion.weapon)}}
+                        div.player-card-background
+                        div.player-card-name-rotated {{gc.expandShortname(item.suggestion.weapon)}}
+
+                    div.player-card(class="player-card-{{item.suggestion.room}}")
+                        div.player-card-name {{gc.expandShortname(item.suggestion.room)}}
+                        div.player-card-background
+                        div.player-card-name-rotated {{gc.expandShortname(item.suggestion.room)}}
+                td
+                    span {{ item.disprove.player }} ({{ gc.expandShortname(item.disprove.suspect) }}) showed you
+                td
+                    div.player-card(class="player-card-{{item.disprove.card}}")
+                        div.player-card-name {{gc.expandShortname(item.disprove.card) | removeThe }}
+                        div.player-card-background
+                        div.player-card-name-rotated {{gc.expandShortname(item.disprove.card) | removeThe }}

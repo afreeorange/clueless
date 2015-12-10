@@ -1,10 +1,10 @@
 div#logs(ng-if="lc.logs.length > 0")
-    h2 Logs
-
-    table.pure-table.pure-table-bordered
-        ul(ng-repeat="log in lc.logs | orderBy:'-timestamp'")
-            li {{ log.message }}
-                br
-                span(am-time-ago="log.timestamp")
-                br
-                small {{ log.timestamp }}
+    h3 Game Log
+    ul(ng-repeat="log in lc.logs | orderBy:'-timestamp'")
+        li
+            span(am-time-ago="log.timestamp")
+            br
+            |{{ log.message }}
+            
+            //- br
+            //- small {{ log.timestamp }}
