@@ -1,0 +1,12 @@
+div#actions
+    h3 Actions
+    div.action-mask(ng-if="gc.gameState.current_player.suspect != gc.playerData.suspect || !gc.gameState.game_started")
+
+    include ./actionMove.jade
+
+    include ./actionSuggest.jade
+
+    include ./actionAccuse.jade
+
+    div#end-turn
+        button(type="submit" ng-click="gc.endTurn()") End Turn

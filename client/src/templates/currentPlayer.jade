@@ -1,0 +1,6 @@
+div#current-player(ng-show="gc.gameState.game_started" class="current-player-{{gc.gameState.current_player.suspect}}")
+    h3 Current Player
+    h4
+        |{{ gc.gameState.current_player.name }}
+        br
+        small {{ gc.gameState.current_player.suspect_fullname }}
