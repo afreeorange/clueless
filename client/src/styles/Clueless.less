@@ -1,16 +1,17 @@
 @import url(https://fonts.googleapis.com/css?family=Oswald:700,400,300);
 @import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
-
 @green: #79AC07;
 @mustard: #D5D500;
 @peacock: #56A9C9;
 @plum: #6C006F;
 @scarlet: #F90403;
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
 }
+
 .container {
     width: 1000px;
     margin: 0 auto;
@@ -26,7 +27,9 @@ html, body {
         span {
             display: none;
         }
+
     }
+
 }
 
 // ------ Game not started message ------
@@ -41,7 +44,9 @@ html, body {
         small {
             color: #999;
         }
+
     }
+
 }
 
 @import "add-player";
@@ -61,9 +66,26 @@ html, body {
 
 // Show a nice little jiggle for the current player
 .player-current-turn {
-    // animation-name: bounce;
-    // animation-duration: 2s;
-    // animation-iteration-count: infinite;
+    animation-name: bounce;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+}
+
+// Scrollbar
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: #EEE;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #999;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #666;
 }
 
 // background-blend-mode: luminosity, normal;
