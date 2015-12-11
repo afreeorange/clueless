@@ -7,7 +7,7 @@
   ],
   "license": "MIT",
   "moduleType": [],
-  "homepage": "",
+  "homepage": "https://github.com/afreeorange/clueless",
   "ignore": [
     "**/.*",
     "node_modules",
