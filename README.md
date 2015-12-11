@@ -32,6 +32,10 @@ Now navigate to `localhost:8080` to see the game.
 	
 Nikhil Anand <mail@nikhil.io>
 
+## Image Sources
+
+[1](http://craftypantscarol.com/2012/12/clue-board-game-1950-edition.html.), [2](https://www.pinterest.com/pin/113786328058659174/), [3](https://www.pinterest.com/pin/41095415327567834/), [4](https://www.pinterest.com/pin/537898749219226995/), [5](https://www.flickr.com/photos/rosered/sets/805113)
+
 ## License
 
 MIT
