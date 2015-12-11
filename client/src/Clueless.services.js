@@ -1,6 +1,6 @@
 angular.module('Clueless')
 
-.factory('SocketService', function (socketFactory, CluelessSocketServer) {
+.factory('SocketService', function(socketFactory, CluelessSocketServer) {
     return socketFactory({
         ioSocket: io.connect(CluelessSocketServer)
     });
@@ -11,29 +11,29 @@ angular.module('Clueless')
 
     // Metadata services
     service.metadata = $http.get(CluelessAPI + '/meta')
-                            .then(
-                                function(response) {
-                                    return response.data;
-                                }, 
-                                function(response) {
-                                    toastr.error('Could not fetch game metadata');
-                                    return false;
-                                }
-                            );
+        .then(
+            function(response) {
+                return response.data;
+            },
+            function(response) {
+                toastr.error('Could not fetch game metadata');
+                return false;
+            }
+        );
     service.getMetadata = function() {
         return service.metadata;
     };
 
     // State services
     service.state = $http.get(CluelessAPI)
-                             .then(
-                                 function(response) {
-                                     return response.data;
-                                 },
-                                function(response) {
-                                     toastr.error('Could not get board state');
-                                 }
-                             );
+        .then(
+            function(response) {
+                return response.data;
+            },
+            function(response) {
+                toastr.error('Could not get board state');
+            }
+        );
     service.getState = function() {
         return service.state;
     };
@@ -53,7 +53,7 @@ angular.module('Clueless')
 
                     return response.data;
                 },
-               function(response) {
+                function(response) {
                     toastr.error(response.data.message);
                 }
             );
@@ -76,7 +76,7 @@ angular.module('Clueless')
                     // toastr.success('Moved player');
                     return response.data;
                 },
-               function(response) {
+                function(response) {
                     toastr.error(response.data.message);
                 }
             );
@@ -96,7 +96,7 @@ angular.module('Clueless')
                     // toastr.success('Sent suggestion');
                     return response.data;
                 },
-               function(response) {
+                function(response) {
                     toastr.error(response.data.message);
                 }
             );
@@ -117,7 +117,7 @@ angular.module('Clueless')
                     // toastr.success('Sent accusation');
                     return response.data;
                 },
-               function(response) {
+                function(response) {
                     toastr.error(response.data.message);
                 }
             );
@@ -135,7 +135,7 @@ angular.module('Clueless')
                     // toastr.success('Ended turn');
                     return response.data;
                 },
-               function(response) {
+                function(response) {
                     toastr.error(response.data.message);
                 }
             );
@@ -148,14 +148,14 @@ angular.module('Clueless')
     var service = {};
 
     service.logs = $http.get(CluelessAPI + '/logs')
-                        .then(
-                            function(response) {
-                                 return response.data;
-                            },
-                           function(response) {
-                                 toastr.error('Could not get logs');
-                            }
-                        );
+        .then(
+            function(response) {
+                return response.data;
+            },
+            function(response) {
+                toastr.error('Could not get logs');
+            }
+        );
 
     service.getLogs = function() {
         return service.logs;

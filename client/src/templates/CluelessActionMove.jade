@@ -1,0 +1,10 @@
+div.action.action-move
+    div.action-mask(ng-if="gc.playerData.turn.moved")
+    h4 Move
+    form
+        select(ng-model="gc.moveForm.target")
+            optgroup(label="Rooms")
+                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.rooms" value="{{shortname}}") {{fullname | removeThe }}
+            optgroup(label="Hallways")
+                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.hallways" value="{{shortname}}") {{fullname | removeThe }}
+        button(type="submit" ng-click="gc.movePlayer()") Go

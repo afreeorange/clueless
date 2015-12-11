@@ -1,0 +1,164 @@
+// http://cssarrowplease.com/
+.player-info-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.player-info {
+    background: #FFF;
+    color: #333 !important;
+    position: relative;
+    width: 150px;
+    height: 85px;
+    background: #FFF;
+    left: -60px;
+    top: -140px;
+    z-index: 9999;
+    border-radius: 5px;
+}
+
+.player-info:after,
+.player-info:before {
+    top: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.player-info:after {
+    border-color: rgba(255, 255, 255, 0);
+    border-width: 20px;
+    margin-left: -20px;
+}
+
+.player-info:before {
+    border-color: rgba(204, 204, 204, 0);
+    border-width: 23px;
+    margin-left: -23px;
+}
+
+.player-info-name {
+    display: block;
+    font-family: Montserrat;
+    font-size: 20px;
+    padding: 5px 0;
+}
+
+.player-info-suspect {
+    display: block;
+    font-family: Oswald;
+    font-size: 20px;
+    font-weight: 100;
+    padding: 10px;
+    color: white;
+}
+
+.player-info-green .player-info-name {
+    background: @green;
+    color: white;
+}
+
+.player-info-green .player-info-suspect {
+    background: lighten(@green, 10%);
+}
+
+.player-info-mustard .player-info-name {
+    background: @mustard;
+}
+
+.player-info-mustard .player-info-suspect {
+    background: lighten(@mustard, 10%);
+    color: #333;
+}
+
+.player-info-peacock .player-info-name {
+    background: @peacock;
+    color: white;
+}
+
+.player-info-peacock .player-info-suspect {
+    background: lighten(@peacock, 10%);
+}
+
+.player-info-plum .player-info-name {
+    background: @plum;
+    color: white;
+}
+
+.player-info-plum .player-info-suspect {
+    background: lighten(@plum, 10%);
+}
+
+.player-info-scarlet .player-info-name {
+    background: @scarlet;
+    color: white;
+}
+
+.player-info-scarlet .player-info-suspect {
+    background: lighten(@scarlet, 10%);
+}
+
+.player-info-white {
+    border: 1px solid #EEE;
+}
+
+.player-info-white .player-info-name {
+    background: #999;
+    border-bottom: 1px solid #EEE;
+    color: white;
+}
+
+.player-info-white .player-info-suspect {
+    color: #333;
+}
+
+.player-info-green.player-info:after {
+    border-top-color: lighten(@green, 10%);
+}
+
+.player-info-mustard.player-info:after {
+    border-top-color: lighten(@mustard, 10%);
+}
+
+.player-info-peacock.player-info:after {
+    border-top-color: lighten(@peacock, 10%);
+}
+
+.player-info-plum.player-info:after {
+    border-top-color: lighten(@plum, 10%);
+}
+
+.player-info-scarlet.player-info:after {
+    border-top-color: lighten(@scarlet, 10%);
+}
+
+.player-info-white.player-info:after {
+    border-top-color: #CCC;
+}
+
+.player-out-of-game {
+    background-color: white !important;
+    border-color: #CCC !important;
+    border-style: dotted;
+    color: #CCC;
+}
+
+.player-out-of-game strong {
+    color: #FFF !important;
+}
+
+.player-out-of-game .player-info-name {
+    background: #CCC;
+}
+
+.player-out-of-game .player-info-suspect {
+    background: #DDD;
+}
+
+.player-out-of-game .player-info:after {
+    border-top-color: #DDD;
+}

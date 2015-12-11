@@ -1,13 +1,13 @@
 angular.module('Clueless')
 
-.directive('playerBox', function(){
+.directive('playerBox', function() {
     return {
         restrict: 'E',
         scope: {
             players: '='
         },
         replace: true,
-        templateUrl: 'CluelessPlayerOnBoard.html'
+        templateUrl: 'templates/CluelessPlayerOnBoard.html'
     };
 })
 
@@ -31,7 +31,7 @@ angular.module('Clueless')
                 });
             });
         },
-        templateUrl: 'CluelessBoardPlayerInfoTemplate.html'
+        templateUrl: 'templates/CluelessBoardPlayerInfoTemplate.html'
     };
 })
 

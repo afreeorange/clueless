@@ -1,0 +1,15 @@
+div.action.action-suggest
+    div.action-mask(ng-if="gc.playerData.turn.suggested")
+    h4 Suggest
+    form
+        div.form-group
+            label Suspect
+            select(ng-model="gc.suggestForm.suspect")
+                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects" value="{{shortname}}") {{fullname}}
+
+        div.form-group
+            label Weapon
+            select(ng-model="gc.suggestForm.weapon")
+                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.weapons" value="{{shortname}}") {{fullname}}
+
+        button(type="submit" ng-click="gc.makeSuggestion()") Suggest

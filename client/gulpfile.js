@@ -33,7 +33,7 @@ var paths = {
     },
     app: {
         styles: [
-            'src/**/*.less'
+            'src/styles/*.less'
         ],
         scripts: [
             'src/**/Clueless.module.js',
@@ -122,8 +122,8 @@ gulp.task('app.styles', [], function() {
                .pipe($.debug())
                .pipe($.concat('app.less'))
                .pipe($.less())
-               // .pipe($.recess({noIDs: false, strictPropertyOrder: false, noOverqualifying: false, noUnderscores: false, noUniversalSelectors: false})) // Because it's 2AM and I don't care.
-               // .pipe($.recess.reporter())
+               .pipe($.recess({noIDs: false, strictPropertyOrder: false, noOverqualifying: false, noUnderscores: false, noUniversalSelectors: false})) // Because it's 2AM and I don't care.
+               .pipe($.recess.reporter())
                .pipe($.autoprefixer())
                .pipe($.cssmin())
                .pipe($.rename('app.css'))
@@ -137,7 +137,7 @@ gulp.task('styles', ['vendor.styles', 'app.styles'], function() {
 // ------ Templates ------
 
 gulp.task('templates', [], function() {
-    return gulp.src(paths.source + '/Clueless.jade')
+    return gulp.src(paths.source + '/templates/Clueless.jade')
                .pipe($.debug())
                .pipe($.jade())
                .pipe($.rename('index.html'))

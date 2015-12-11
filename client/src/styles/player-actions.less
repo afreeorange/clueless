@@ -1,0 +1,98 @@
+// ------ Actions ------
+
+#actions h3,
+h4,
+form {
+    margin: 0;
+    padding: 0;
+}
+
+#actions h3 {
+    margin: 10px 0 10px 0;
+    font-family: Montserrat;
+}
+
+#actions h4 {
+    font-family: Montserrat;
+    font-weight: 400;
+    font-size: 15px;
+    margin: 0 0 5px 0;
+}
+
+#actions select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    display: block;
+    padding: 3px;
+    border: 1px solid #CCC;
+    border-radius: 5px !important;
+    margin: 0 0 5px 0;
+    background: white url('/images/select-dropdown-arrow.png') no-repeat;
+    background-size: 10px;
+    background-position: 97% 5px;
+    color: #333;
+}
+
+.action {
+    border-bottom: 1px solid #DDD;
+    padding: 0 0 10px 0;
+    margin: 10px 0 0 0;
+}
+
+#actions form label {
+    font-family: Oswald;
+    font-weight: 100;
+    font-size: 13px;
+    color: #666;
+}
+
+#actions button[type='submit'] {
+    cursor: pointer;
+    border: 0;
+    background: #EEE;
+    width: 100%;
+    border-radius: 5px;
+    color: #333;
+    font-family: Montserrat;
+    font-size: 12px;
+}
+
+#actions button:hover {
+    background: #CCC;
+}
+
+#actions #end-turn {
+    padding: 5px 0;
+}
+
+#actions #end-turn button {
+    background: #999;
+    color: white;
+    font-size: 15px;
+}
+
+#actions #end-turn button:hover {
+    background: #666;
+}
+
+.action-mask {
+    background: #FFF;
+    position: absolute;
+    opacity: 0.65;
+    cursor: not-allowed;
+    width: 155px;
+}
+
+#actions > .action-mask {
+    height: 485px;
+}
+
+.action-move > .action-mask {
+    height: 75px;
+}
+
+.action-suggest > .action-mask {
+    height: 140px;
+}

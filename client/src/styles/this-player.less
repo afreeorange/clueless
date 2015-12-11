@@ -1,0 +1,118 @@
+// ------ This player ------
+
+#this-player {
+    margin-top: 0;
+    padding-top: 50px;
+}
+
+#this-player h2,
+#this-player h3 {
+    margin: 0;
+    padding: 0;
+}
+
+#this-player h2 {
+    font-family: Montserrat;
+}
+
+#this-player h3 {
+    font-family: Oswald;
+    font-weight: 100;
+}
+
+.this-player-green {
+    background: url('/images/character-green.png') top right no-repeat;
+    background-size: 200px;
+    background-position-y: -10px;
+}
+
+.this-player-scarlet {
+    background: url('/images/character-scarlet.png') top right no-repeat;
+    background-size: 160px;
+    background-position-y: -20px;
+}
+
+.this-player-plum {
+    background: url('/images/character-plum.png') top right no-repeat;
+    background-size: 160px;
+    background-position-y: 3px;
+}
+
+.this-player-peacock {
+    background: url('/images/character-peacock.png') top right no-repeat;
+    background-size: 200px;
+    background-position-y: -10px;
+}
+
+.this-player-mustard {
+    background: url('/images/character-mustard.png') top right no-repeat;
+    background-size: 200px;
+    background-position-y: -5px;
+}
+
+.this-player-green h2 {
+    color: @green;
+}
+
+.this-player-green h3 {
+    color: lighten(@green, 10%);
+}
+
+.this-player-mustard h2 {
+    color: @mustard;
+}
+
+.this-player-mustard h3 {
+    color: darken(@mustard, 10%);
+}
+
+.this-player-peacock h2 {
+    color: @peacock;
+}
+
+.this-player-peacock h3 {
+    color: lighten(@peacock, 10%);
+}
+
+.this-player-plum h2 {
+    color: @plum;
+}
+
+.this-player-plum h3 {
+    color: lighten(@plum, 10%);
+}
+
+.this-player-scarlet h2 {
+    color: @scarlet;
+}
+
+.this-player-scarlet h3 {
+    color: lighten(@scarlet, 10%);
+}
+
+.this-player-white h2 {
+    color: #333;
+}
+
+.this-player-white h3 {
+    color: #666;
+}
+
+.this-player-is-done h2 {
+    color: #999;
+}
+
+.this-player-is-done h3 {
+    color: #CCC;
+}
+
+.this-player-is-done #this-player,
+.this-player-is-done #cards,
+.this-player-is-done #game-sheet table {
+    -webkit-filter: grayscale(1);
+    opacity: 0.5;
+}
+
+.this-player-is-done #current-player h3 {
+    color: #333;
+}

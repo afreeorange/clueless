@@ -1,0 +1,228 @@
+// ------- Cards ------
+
+#cards {
+    overflow: hidden;
+    margin: 25px 0 0 0;
+    padding: 0 0 10px 0;
+    border-bottom: 1px dotted #CCC;
+}
+
+#cards h3 {
+    display: none;
+}
+
+.player-card {
+    height: 125px;
+    width: 95px;
+    margin-right: 5px;
+    float: left;
+    position: relative;
+    background-color: white;
+}
+
+.player-card-name,
+.player-card-name-rotated {
+    font-family: Montserrat;
+    font-weight: 100;
+    font-size: 10px;
+    text-align: center;
+    padding: 3px 0;
+    border-bottom: 1px solid #CCC;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid #999;
+}
+
+.player-card-background {
+    background-position: top center !important;
+    background-repeat: no-repeat !important;
+    background-size: 75px !important;
+    width: 98%;
+    height: 85px;
+    border-left: 1px solid #999;
+    border-right: 1px solid #999;
+}
+
+.player-card-name-rotated {
+    transform: rotate(-180deg);
+    position: absolute;
+    width: 93px;
+    bottom: 0;
+}
+
+.player-card-scarlet div[class^="player-card-name"] {
+    background: @scarlet;
+    color: white;
+}
+
+.player-card-scarlet .player-card-background {
+    background: url('/images/character-scarlet.png');
+}
+
+.player-card-mustard div[class^="player-card-name"] {
+    background: @mustard;
+}
+
+.player-card-mustard .player-card-background {
+    background: url('/images/character-mustard.png');
+}
+
+.player-card-white div[class^="player-card-name"] {
+    background: #999;
+    color: white;
+}
+
+.player-card-white .player-card-background {
+    background: url('/images/character-white.png');
+}
+
+.player-card-green div[class^="player-card-name"] {
+    background: @green;
+}
+
+.player-card-green .player-card-background {
+    background: url('/images/character-green.png');
+}
+
+.player-card-peacock div[class^="player-card-name"] {
+    background: @peacock;
+}
+
+.player-card-peacock .player-card-background {
+    background: url('/images/character-peacock.png');
+}
+
+.player-card-plum div[class^="player-card-name"] {
+    background: @plum;
+    color: white;
+}
+
+.player-card-plum .player-card-background {
+    background: url('/images/character-plum.png');
+}
+
+.player-card-study div[class^="player-card-name"] {
+}
+
+.player-card-study .player-card-background {
+    background: url('/images/room-study.png');
+}
+
+.player-card-hall div[class^="player-card-name"] {
+}
+
+.player-card-hall .player-card-background {
+    background: url('/images/room-hall.png');
+}
+
+.player-card-lounge div[class^="player-card-name"] {
+}
+
+.player-card-lounge .player-card-background {
+    background: url('/images/room-lounge.png');
+}
+
+.player-card-library div[class^="player-card-name"] {
+}
+
+.player-card-library .player-card-background {
+    background: url('/images/room-library.png');
+    background-position-y: 10px !important;
+}
+
+.player-card-billiard_room div[class^="player-card-name"] {
+}
+
+.player-card-billiard_room .player-card-background {
+    background: url('/images/room-billiard_room.png');
+    background-size: 60px !important;
+}
+
+.player-card-dining_room div[class^="player-card-name"] {
+}
+
+.player-card-dining_room .player-card-background {
+    background: url('/images/room-dining_room.png');
+}
+
+.player-card-conservatory div[class^="player-card-name"] {
+}
+
+.player-card-conservatory .player-card-background {
+    background: url('/images/room-conservatory.png');
+    background-size: 60px !important;
+}
+
+.player-card-ballroom div[class^="player-card-name"] {
+}
+
+.player-card-ballroom .player-card-background {
+    background: url('/images/room-ballroom.png');
+}
+
+.player-card-kitchen div[class^="player-card-name"] {
+}
+
+.player-card-kitchen .player-card-background {
+    background: url('/images/room-kitchen.png');
+}
+
+.player-card-rope div[class*="player-card-name"] {
+    background: #111;
+    color: white;
+}
+
+.player-card-rope .player-card-background {
+    background: url('/images/weapon-rope.png');
+    background-size: 70px !important;
+}
+
+.player-card-knife div[class^="player-card-name"] {
+    background: #111;
+    color: white;
+}
+
+.player-card-knife .player-card-background {
+    background: url('/images/weapon-knife.png');
+    background-size: 60px !important;
+}
+
+.player-card-lead_pipe div[class^="player-card-name"] {
+    background: #111;
+    color: white;
+}
+
+.player-card-lead_pipe .player-card-background {
+    background: url('/images/weapon-pipe.png');
+    background-size: 60px !important;
+}
+
+.player-card-wrench div[class^="player-card-name"] {
+    background: #111;
+    color: white;
+}
+
+.player-card-wrench .player-card-background {
+    background: url('/images/weapon-wrench.png');
+    background-size: 60px !important;
+}
+
+.player-card-revolver div[class^="player-card-name"] {
+    background: #111;
+    color: white;
+}
+
+.player-card-revolver .player-card-background {
+    background: url('/images/weapon-revolver.png');
+    background-size: 70px !important;
+}
+
+.player-card-candlestick div[class^="player-card-name"] {
+    background: #111;
+    color: white;
+}
+
+.player-card-candlestick .player-card-background {
+    background: url('/images/weapon-candlestick.png');
+    background-size: 55px !important;
+}

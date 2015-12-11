@@ -1,0 +1,132 @@
+// ------ Add Player Dialog ------
+
+#add-player-background {
+    width: 99%;
+    height: 99%;
+    position: absolute;
+    z-index: 999;
+    background: white;
+}
+
+#add-player {
+    z-index: 9999;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    margin-top: 5%;
+}
+
+#add-player h2 {
+    margin: 0 0 15px 0;
+    padding: 0;
+    color: #111;
+    font-size: 30px;
+    font-family: Montserrat;
+    letter-spacing: -1px;
+    background: url('/images/logo-red.png') top center no-repeat;
+    padding-top: 75px;
+}
+
+#add-player form input {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 30px;
+    font-family: Montserrat;
+    font-weight: 700;
+    padding: 5px;
+    border: 1px solid white;
+    border-bottom: 1px solid #CCC;
+}
+
+.add-player-name-ok {
+    border: 1px solid white !important;
+}
+
+#add-player h3 {
+    margin: 15px 0 25px 0;
+    padding: 0;
+    font-size: 30px;
+    font-family: Montserrat;
+    color: #333;
+    letter-spacing: -1px;
+}
+
+// http://jsbin.com/image-instead-of-radio-button/3/edit
+#add-player label {
+    cursor: pointer;
+    user-select: none;
+}
+
+#add-player label > input {
+    visibility: hidden;
+    position: absolute;
+}
+
+#add-player input[disabled]+b {
+    display: none;
+}
+
+#add-player label > b {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100px;
+    height: 200px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    transition: all .2s ease-in-out;
+}
+
+#add-player label > b:hover {
+    transform: scale(1.2);
+}
+
+.add-player-suspect-white {
+    background: url('/images/character-white.png');
+    width: 120px !important;
+}
+
+.add-player-suspect-green {
+    background: url('/images/character-green.png');
+    width: 115px !important;
+}
+
+.add-player-suspect-mustard {
+    background: url('/images/character-mustard.png');
+    width: 120px !important;
+}
+
+.add-player-suspect-peacock {
+    background: url('/images/character-peacock.png');
+    width: 115px !important;
+}
+
+.add-player-suspect-plum {
+    background: url('/images/character-plum.png');
+}
+
+.add-player-suspect-scarlet {
+    background: url('/images/character-scarlet.png');
+}
+
+#add-player button {
+    display: block;
+    margin: 40px auto 10px auto;
+    background: red;
+    color: white;
+    border: 1px solid red;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    font-family: Montserrat;
+    font-size: 30px;
+    letter-spacing: -1px;
+    transition: all .2s ease-in-out;
+    cursor: pointer;
+    text-transform: lowercase;
+}
+
+#add-player button:hover {
+    transform: scale(1.5);
+}

@@ -1,0 +1,19 @@
+div.action.action-accuse
+    h4 Accuse
+    form
+        div.form-group
+            label Suspect
+            select(ng-model="gc.accuseForm.suspect")
+                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.suspects" value="{{shortname}}") {{fullname}}
+
+        div.form-group
+            label Room
+            select(ng-model="gc.accuseForm.room")
+                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.rooms" value="{{shortname}}") {{fullname | removeThe}}
+
+        div.form-group
+            label Weapon
+            select(ng-model="gc.accuseForm.weapon")
+                option(ng-repeat="(shortname, fullname) in gc.gameMetadata.organized_shortname_map.weapons" value="{{shortname}}") {{fullname}}
+
+        button(type="submit" ng-click="gc.makeAccusation()") Accuse

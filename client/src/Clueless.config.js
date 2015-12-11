@@ -9,20 +9,20 @@ angular.module('Clueless')
 
     // Set default route
     $urlRouterProvider
-    .when('', '/')
-    .otherwise(
-        function($injector, $location) {
-            $injector.get('$state').go('404');
-        }
-    );
+        .when('', '/')
+        .otherwise(
+            function($injector, $location) {
+                $injector.get('$state').go('404');
+            }
+        );
 
 })
 
-.config(function (localStorageServiceProvider) {
+.config(function(localStorageServiceProvider) {
     localStorageServiceProvider.setPrefix('Clueless');
 })
 
-.run(function(localStorageService, GameService, SocketService, $http){
+.run(function(localStorageService, GameService, SocketService, $http) {
 
     // Manage local storage based on Board ID
     GameService.getState().then(
@@ -37,7 +37,9 @@ angular.module('Clueless')
 
                 if (player_token) {
                     console.log('Fetching data for existing player token');
-                    SocketService.emit('board:playerdata', {'token': player_token});
+                    SocketService.emit('board:playerdata', {
+                        'token': player_token
+                    });
                 }
 
             } else {
