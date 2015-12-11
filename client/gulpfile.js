@@ -12,7 +12,6 @@ var paths = {
         styles: [
             'bower_components/flexboxgrid/dist/flexboxgrid.min.css',
             'bower_components/font-awesome/css/font-awesome.min.css'
-            // 'bower_components/toastr/toastr.min.css'
         ],
         scripts: [
             'bower_components/jquery/dist/jquery.min.js',
@@ -25,9 +24,6 @@ var paths = {
             'bower_components/angular-local-storage/dist/angular-local-storage.min.js',
             'bower_components/angular-moment/angular-moment.min.js',
             'bower_components/angular-animate/angular-animate.min.js',
-            // 'bower_components/angular-moment/angular-poller.min.js',
-            // 'bower_components/angular-tooltips/dist/angular-tooltips.min.js',
-            // 'bower_components/angular-tipped/tipped.js',
             'bower_components/angular-socket-io/socket.min.js'
         ]
     },

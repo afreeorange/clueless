@@ -12,20 +12,20 @@ html(ng-app="Clueless")
 
     body.ui-view
 
-        include ./CluelessAddPlayer.jade
+        include ./addPlayer.jade
 
-        include ./CluelessGameOver.jade
+        include ./gameOver.jade
 
         div.row.container
             div.col-md-8
 
                 h1: span Clueless
 
-                include ./CluelessGameBoard.jade
+                include ./gameBoard.jade
 
                 div.ui-view(name="logs")
 
-                include ./CluelessSuggestionsPanel.jade
+                include ./suggestionsPanel.jade
 
             div.col-md-4(ng-class="{'this-player-is-done': !gc.playerData.in_the_game}")
                 
@@ -60,18 +60,18 @@ html(ng-app="Clueless")
                             h3 Actions
                             div.action-mask(ng-if="gc.gameState.current_player.suspect != gc.playerData.suspect || !gc.gameState.game_started")
 
-                            include ./CluelessActionMove.jade
+                            include ./actionMove.jade
 
-                            include ./CluelessActionSuggest.jade
+                            include ./actionSuggest.jade
 
-                            include ./CluelessActionAccuse.jade
+                            include ./actionAccuse.jade
 
                             div#end-turn
                                 button(type="submit" ng-click="gc.endTurn()") End Turn
 
                     div.col-md-6
 
-                        include ./CluelessGameSheet.jade
+                        include ./gameSheet.jade
 
         script(type="application/javascript", src="/scripts/vendor.js")
         script(type="application/javascript", src="/scripts/app.js")

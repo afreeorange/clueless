@@ -7,7 +7,7 @@ angular.module('Clueless')
             players: '='
         },
         replace: true,
-        templateUrl: 'templates/CluelessPlayerOnBoard.html'
+        templateUrl: 'templates/playerOnBoard.html'
     };
 })
 
@@ -31,7 +31,7 @@ angular.module('Clueless')
                 });
             });
         },
-        templateUrl: 'templates/CluelessBoardPlayerInfoTemplate.html'
+        templateUrl: 'templates/boardPlayerInfoTemplate.html'
     };
 })
 

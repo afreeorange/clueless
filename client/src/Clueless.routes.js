@@ -21,7 +21,7 @@ angular.module('Clueless')
             },
 
             'logs@index': {
-                templateUrl: 'templates/CluelessLogs.html',
+                templateUrl: 'templates/logs.html',
                 controller: 'logsController',
                 controllerAs: 'lc',
                 resolve: {
