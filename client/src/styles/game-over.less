@@ -8,46 +8,48 @@
     z-index: 9999;
     opacity: 0.95;
     padding: 75px 0 0 0;
-}
 
-#game-over h1 {
-    font-family: Montserrat;
-    font-size: 56px;
-    letter-spacing: -1px;
-    text-align: center;
-    margin: 0;
-    padding: 0 0 30px 0;
-}
+    h1 {
+        font-family: Montserrat;
+        font-size: 56px;
+        letter-spacing: -1px;
+        text-align: center;
+        margin: 0;
+        padding: 0 0 30px 0;
+    }
 
-#game-over .game-over-wrapper {
-    width: 600px;
-    height: 400px;
-    margin: 0 auto;
-}
+    .game-over-wrapper {
+        width: 600px;
+        height: 400px;
+        margin: 0 auto;
 
-#game-over .game-over-wrapper h2,
-#game-over .game-over-wrapper h3,
-#game-over .game-over-wrapper h4 {
-    margin: 0;
-    padding: 0;
-}
+        h2,
+        h3,
+        h4 {
+            margin: 0;
+            padding: 0;
+        }
 
-#game-over .game-over-wrapper h2 {
-    font-family: Montserrat;
-    font-size: 46px;
-}
+        h2 {
+            font-family: Montserrat;
+            font-size: 46px;
+        }
 
-#game-over .game-over-wrapper h3 {
-    font-family: Oswald;
-    font-size: 36px;
-    font-weight: 400;
-}
+        h3 {
+            font-family: Oswald;
+            font-size: 36px;
+            font-weight: 400;
+        }
 
-#game-over .game-over-wrapper h4 {
-    font-family: Montserrat;
-    color: #333;
-    margin: 35px 0;
-    width: 250px;
+        h4 {
+            font-family: Montserrat;
+            color: #333;
+            margin: 35px 0;
+            width: 250px;
+        }
+
+    }
+
 }
 
 .winner-panel {
@@ -60,93 +62,100 @@
 .winner-panel-green {
     background: url('/images/character-green.png') top right no-repeat;
     background-size: 225px;
+
+    h2 {
+        color: @green;
+    }
+
+    h3 {
+        color: lighten(@green, 10%);
+    }
+
 }
 
 .winner-panel-mustard {
     background: url('/images/character-mustard.png') top right no-repeat;
     background-size: 225px;
+
+    h2 {
+        color: @mustard;
+    }
+
+    h3 {
+        color: darken(@mustard, 10%);
+    }
+
 }
 
 .winner-panel-peacock {
     background: url('/images/character-peacock.png') top right no-repeat;
     background-size: 225px;
+
+    h2 {
+        color: @peacock;
+    }
+
+    h3 {
+        color: lighten(@peacock, 10%);
+    }
+
 }
 
 .winner-panel-plum {
     background: url('/images/character-plum.png') top right no-repeat;
     background-size: 200px;
+
+    h2 {
+        color: @plum;
+    }
+
+    h3 {
+        color: lighten(@plum, 10%);
+    }
+
 }
 
 .winner-panel-scarlet {
     background: url('/images/character-scarlet.png') top right no-repeat;
     background-size: 150px;
+
+    h2 {
+        color: @scarlet;
+    }
+
+    h3 {
+        color: lighten(@scarlet, 10%);
+    }
+
 }
 
 .winner-panel-white {
     background: url('/images/character-white.png') top right no-repeat;
     background-size: 200px;
-}
 
-.winner-panel-green h2 {
-    color: @green;
-}
+    h2 {
+        color: #333;
+    }
 
-.winner-panel-green h3 {
-    color: lighten(@green, 10%);
-}
+    h3 {
+        color: #666;
+    }
 
-.winner-panel-mustard h2 {
-    color: @mustard;
-}
-
-.winner-panel-mustard h3 {
-    color: darken(@mustard, 10%);
-}
-
-.winner-panel-peacock h2 {
-    color: @peacock;
-}
-
-.winner-panel-peacock h3 {
-    color: lighten(@peacock, 10%);
-}
-
-.winner-panel-plum h2 {
-    color: @plum;
-}
-
-.winner-panel-plum h3 {
-    color: lighten(@plum, 10%);
-}
-
-.winner-panel-scarlet h2 {
-    color: @scarlet;
-}
-
-.winner-panel-scarlet h3 {
-    color: lighten(@scarlet, 10%);
-}
-
-.winner-panel-white h2 {
-    color: #333;
-}
-
-.winner-panel-white h3 {
-    color: #666;
 }
 
 .game-over-centered {
     width: 100%;
     overflow: hidden;
     text-align: center;
-}
 
-.game-over-centered h4 {
-    width: 100% !important;
-}
+    h4 {
+        width: 100% !important;
+    }
 
-.game-over-centered .player-card {
-    margin-left: 75px !important;
+    .player-card {
+        margin-left: 75px !important;
+    }
+
 }
 
 .game-over-with-winner {

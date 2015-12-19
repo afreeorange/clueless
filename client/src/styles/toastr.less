@@ -1,6 +1,3 @@
-// ------ Toastr -------
-
-// Toastr
 #toast-container {
     position: fixed;
     bottom: 0;
@@ -19,19 +16,20 @@
     font-family: Montserrat;
     font-weight: 100;
     cursor: pointer;
-}
 
-.toast .toast-message {
-    z-index: 9999;
-}
+    .toast-message {
+        z-index: 9999;
+    }
 
-.toast .toast-progress {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 30px;
-    z-index: -999;
+    .toast-progress {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 30px;
+        z-index: -999;
+    }
+
 }
 
 .toast-info {
@@ -41,16 +39,18 @@
 .toast-error {
     background: #F90403;
     border-top: 1px solid #FF0000;
-}
 
-.toast-error .toast-progress {
-    background: #990000;
+    .toast-progress {
+        background: #990000;
+    }
+
 }
 
 .toast-success {
     background: #698C00;
-}
 
-.toast-success .toast-progress {
-    background: #4C6600;
+    .toast-progress {
+        background: #4C6600;
+    }
+
 }

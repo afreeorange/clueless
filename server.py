@@ -1,11 +1,10 @@
-import json
-
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 from flask_socketio import SocketIO, emit
 from game.service import BoardService
 
-bs = BoardService(test_mode=True)
+# bs = BoardService(test_mode=True)
+bs = BoardService()
 
 app = Flask(__name__)
 app.debug = True
@@ -16,9 +15,15 @@ socketio = SocketIO(app, async_mode='eventlet')
 # CORS Headers
 @app.after_request
 def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+        'Access-Control-Allow-Methods': 'GET,PUT,POST',
+    }
+
+    for k, v in headers.items():
+        response.headers.add(k, v)
+
     return response
 
 
@@ -157,12 +162,12 @@ def board_metadata():
 
 
 @socketio.on('board:state')
-def board_metadata():
+def board_state():
     emit('board:state', bs.state)
 
 
 @socketio.on('board:log')
-def board_metadata():
+def board_log():
     emit('board:log', bs.log)
 
 
@@ -178,4 +183,3 @@ def new_game():
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=8000)
-
