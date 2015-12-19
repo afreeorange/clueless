@@ -86,6 +86,12 @@ GET /api
 GET /api/logs
 ```
 
+### See Board Metadata
+
+```
+GET /api/meta
+```
+
 ### See Confidential File
 
 ```
